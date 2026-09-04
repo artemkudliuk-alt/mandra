@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandra Invest — Просунуте Шрифтове Меню</title>
+<style>
+  /* Font Declarations */
+  @font-face { font-family: 'Forum'; src: url('assets/fonts/Forum-Regular.ttf') format('truetype'); font-weight: 400; }
+  @font-face { font-family: 'Prata'; src: url('assets/fonts/Prata-Regular.ttf') format('truetype'); font-weight: 400; }
+  @font-face { font-family: 'BodoniZ37'; src: url('assets/fonts/Bodoni Z37 M Compressed Bold.otf') format('opentype'); font-weight: 700; }
+  @font-face { font-family: 'UniSans'; src: url('assets/fonts/Uni Sans Thin.otf') format('opentype'); font-weight: 300; }
+  @font-face { font-family: 'UniSans'; src: url('assets/fonts/Uni Sans Heavy.otf') format('opentype'); font-weight: 800; }
+  @font-face { font-family: 'Cocogoose'; src: url('assets/fonts/Cocogoose-Condensed-Regular-trial.ttf') format('truetype'); font-weight: 500; }
+  @font-face { font-family: 'TenorSans'; src: url('assets/fonts/TenorSans-Regular.ttf') format('truetype'); font-weight: 400; }
+  @font-face { font-family: 'Arshila'; src: url('assets/fonts/ArshilaDemo-Regular.otf') format('opentype'); font-weight: 400; }
+  @font-face { font-family: 'Sreda'; src: url('assets/fonts/Glen Jan - Sreda.otf') format('opentype'); font-weight: 400; }
+  @font-face { font-family: 'Syne'; src: url('assets/fonts/Syne[wght].ttf') format('truetype'); font-weight: 700; }
+  @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope[wght].ttf') format('truetype'); font-weight: 300 800; }
+  @font-face { font-family: 'HN'; src: url('assets/fonts/HelveticaNeue-Light.otf') format('opentype'); font-weight: 300; }
+  @font-face { font-family: 'HN'; src: url('assets/fonts/HelveticaNeue-Roman.otf') format('opentype'); font-weight: 400; }
+  @font-face { font-family: 'Unbounded'; src: url('assets/fonts/Unbounded.ttf') format('truetype'); font-weight: 800; }
+
+  :root {
+    --bg-dark: #07080a;
+    --accent: #E8D8C8;
+    --accent-gold: #D4AF37;
+    --glass-bg: rgba(16, 18, 24, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.16);
+    --glass-blur: blur(20px);
+
+    /* Dynamic Variables controlled by Sliders */
+    --title-size: 3.8vw;
+    --title-weight: 400;
+    --title-lh: 1.08;
+    --title-ls: 0.015em;
+    --title-x: 0px;
+    --title-y: 0px;
+    --hero-max-w: 80vw;
+    --btn-x: 0px;
+    --btn-y: 0px;
+    --stats-y: 0px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-dark); color: #fff; font-family: 'HN', sans-serif; }
+
+  /* Background Scene */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background: url('assets/bg_hero.jpg') center 36% / cover no-repeat;
+    transform: scale(1.02);
+    z-index: 1;
+    transition: transform 0.3s ease;
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(95deg, rgba(7,8,10,0.92) 0%, rgba(7,8,10,0.70) 34%, rgba(7,8,10,0.25) 58%, rgba(7,8,10,0.06) 82%);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .vignette {
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 140px rgba(0,0,0,0.6);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.2vw 3.5vw 0;
+  }
+  .header-left { display: flex; align-items: center; gap: 3vw; }
+  .logo { height: 2.5vw; min-height: 32px; display: block; filter: brightness(1.08); }
+  nav { display: flex; align-items: center; gap: 2.2vw; }
+  nav a { color: rgba(255,255,255,0.80); text-decoration: none; font-size: 0.84vw; letter-spacing: 0.08em; text-transform: uppercase; transition: color .2s; }
+  nav a:hover { color: #fff; }
+  .header-actions { display: flex; align-items: center; gap: 1vw; }
+  .phone-link {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    padding: 0.6vw 1.2vw;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.86vw;
+    font-family: 'Manrope', sans-serif;
+    text-decoration: none;
+  }
+  .btn-cta-top {
+    background: #fff;
+    color: #0b0c0f;
+    font-size: 0.82vw;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.68vw 1.5vw;
+    border-radius: 999px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* Main Draggable / Repositionable Content Container */
+  main {
+    position: relative;
+    z-index: 10;
+    padding: 4.5vw 0 0 3.5vw;
+    max-width: var(--hero-max-w);
+    cursor: default;
+    transition: max-width 0.2s ease;
+  }
+
+  .drag-handle-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5vw;
+    background: rgba(232, 216, 200, 0.12);
+    border: 1px dashed rgba(232, 216, 200, 0.4);
+    padding: 0.35vw 0.8vw;
+    border-radius: 6px;
+    font-size: 0.68vw;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2vw;
+    cursor: grab;
+    user-select: none;
+  }
+  .drag-handle-badge:active { cursor: grabbing; }
+
+  /* Headline with Free Placement and Huge Sizing */
+  .hero-title-wrap {
+    transform: translate(var(--title-x), var(--title-y));
+    transition: transform 0.05s linear;
+    width: 100%;
+  }
+
+  h1.hero-title {
+    font-family: 'Forum', serif;
+    font-size: var(--title-size);
+    font-weight: var(--title-weight);
+    line-height: var(--title-lh);
+    letter-spacing: var(--title-ls);
+    color: #ffffff;
+    margin-bottom: 1.8vw;
+    text-shadow: 0 4px 35px rgba(0, 0, 0, 0.75);
+    white-space: normal;
+    word-break: break-word;
+    transition: font-size 0.1s, letter-spacing 0.1s, line-height 0.1s;
+  }
+
+  h1.hero-title .italic-accent {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .lead-desc {
+    font-family: 'HN', sans-serif;
+    font-weight: 300;
+    font-size: 1.02vw;
+    line-height: 1.68;
+    color: rgba(255,255,255,0.84);
+    max-width: 33vw;
+    margin-bottom: 2.4vw;
+  }
+
+  /* Actions with Free Repositioning */
+  .hero-cta-group {
+    transform: translate(var(--btn-x), var(--btn-y));
+    display: flex;
+    align-items: center;
+    gap: 1.4vw;
+    margin-bottom: 2.8vw;
+    transition: transform 0.05s linear;
+  }
+
+  .btn-primary-glow {
+    background: var(--accent);
+    color: #121316;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.84vw;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 1.0vw 2.2vw;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85vw;
+    box-shadow: 0 10px 32px rgba(232, 216, 200, 0.25);
+  }
+  .btn-ghost-outline {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    color: #ffffff;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.84vw;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 1.0vw 2.0vw;
+    border-radius: 999px;
+  }
+
+  /* Trust Indicators */
+  .trust-strip {
+    transform: translateY(var(--stats-y));
+    position: absolute;
+    bottom: 2.5vw;
+    left: 3.5vw;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2.8vw;
+    transition: transform 0.05s linear;
+  }
+  .stat-val { font-family: 'Forum', serif; font-size: 1.7vw; color: var(--accent); line-height: 1; }
+  .stat-lbl { font-family: 'Manrope', sans-serif; font-size: 0.7vw; text-transform: uppercase; color: rgba(255,255,255,0.55); letter-spacing: 0.06em; }
+  .stat-div { width: 1px; height: 2vw; background: rgba(255,255,255,0.15); }
+
+  /* -------------------------------------------------------------
+     MINIMALIST FLOATING EXPANDABLE CONTROLLER (Bottom-Right)
+     ------------------------------------------------------------- */
+  .dock-container {
+    position: fixed;
+    right: 1.8vw;
+    bottom: 1.8vw;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  /* Minimized Pill Toggle */
+  .dock-toggle-btn {
+    background: rgba(18, 20, 26, 0.85);
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 0.65vw 1.2vw;
+    display: flex;
+    align-items: center;
+    gap: 0.65vw;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+  .dock-toggle-btn:hover {
+    background: rgba(28, 32, 42, 0.95);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .dock-toggle-btn .badge {
+    background: var(--accent);
+    color: #0b0c0f;
+    font-size: 0.65vw;
+    font-weight: 700;
+    padding: 0.15vw 0.5vw;
+    border-radius: 999px;
+  }
+  .dock-toggle-btn .chevron {
+    transition: transform 0.3s ease;
+  }
+  .dock-container.open .dock-toggle-btn .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Expanded Panel */
+  .dock-panel {
+    display: none;
+    width: 25vw;
+    min-width: 360px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: rgba(14, 16, 22, 0.88);
+    backdrop-filter: blur(30px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.3vw;
+    margin-bottom: 0.8vw;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+    animation: fadeInSlide .25s ease;
+  }
+  .dock-container.open .dock-panel {
+    display: block;
+  }
+
+  @keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dock-panel::-webkit-scrollbar { width: 4px; }
+  .dock-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 4px; }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.0vw;
+    padding-bottom: 0.6vw;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .panel-title {
+    font-size: 0.88vw;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .btn-reset {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7vw;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .btn-reset:hover { color: #fff; }
+
+  /* Sections in Dock */
+  .section-label {
+    font-size: 0.72vw;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0.9vw 0 0.5vw;
+  }
+
+  /* Font Cards Grid */
+  .font-select-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4vw;
+    margin-bottom: 0.8vw;
+  }
+  .f-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.5vw 0.6vw;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .f-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .f-card.active {
+    background: rgba(232, 216, 200, 0.18);
+    border-color: var(--accent);
+  }
+  .f-card-name { font-size: 0.82vw; font-weight: 600; color: #fff; }
+  .f-card.active .f-card-name { color: var(--accent); }
+  .f-card-cat { font-size: 0.62vw; color: rgba(255, 255, 255, 0.45); }
+
+  /* Slider Row */
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25vw;
+    margin-bottom: 0.65vw;
+  }
+  .control-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74vw;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .control-val {
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 0.74vw;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(232, 216, 200, 0.6);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+  }
+
+  /* Two column controls for X / Y */
+  .xy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6vw;
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg" id="heroBg"></div>
+  <div class="scrim"></div>
+  <div class="vignette"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <img class="logo" src="assets/logo_minvest.png" alt="Mandra Invest">
+      <nav>
+        <a href="#">Mandra</a>
+        <a href="#">Інфраструктура</a>
+        <a href="#">Інтерактивна мапа</a>
+        <a href="#">Будівництво</a>
+        <a href="#">Контакти</a>
+      </nav>
+    </div>
+    <div class="header-actions">
+      <a class="phone-link" href="tel:+380501571311">050 157 13 11</a>
+      <a class="btn-cta-top" href="#">Онлайн заявка</a>
+    </div>
+  </header>
+
+  <!-- Main Hero Screen with Custom Positioning -->
+  <main id="heroMain">
+    <div class="drag-handle-badge" id="dragBadge" title="Можна перетягувати мишкою або керувати повзунками">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>
+      Резорт-комплекси майбутнього · Карпати
+    </div>
+
+    <div class="hero-title-wrap" id="titleWrap">
+      <h1 class="hero-title" id="heroHeadline">
+        Створюємо <span class="italic-accent">дохідну</span><br>
+        заміську нерухомість,<br>
+        у яку хочеться <span class="italic-accent">повертатися</span>
+      </h1>
+    </div>
+
+    <p class="lead-desc" id="heroDesc">
+      Mandra Invest будує та управляє заміськими resort-комплексами з продуманою інфраструктурою. Ми створюємо готові об'єкти, які працюють для гостя та генерують стабільний дохід для власника.
+    </p>
+
+    <div class="hero-cta-group" id="heroCta">
+      <button class="btn-primary-glow">
+        <span>Дізнатися більше</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </button>
+      <button class="btn-ghost-outline">Каталог шале</button>
+    </div>
+  </main>
+
+  <!-- Trust Indicators -->
+  <div class="trust-strip" id="trustStrip">
+    <div>
+      <div class="stat-val">12–16%</div>
+      <div class="stat-lbl">Річна дохідність</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <div class="stat-val">100%</div>
+      <div class="stat-lbl">Пасивний дохід</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <div class="stat-val">Mandra</div>
+      <div class="stat-lbl">Отельний оператор</div>
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------------
+       EXPANDABLE MINIMALIST DOCK IN BOTTOM-RIGHT
+       ------------------------------------------------------------- -->
+  <div class="dock-container open" id="dockContainer">
+    <!-- Panel Content -->
+    <div class="dock-panel">
+      <div class="panel-header">
+        <span class="panel-title">Налаштування типографіки</span>
+        <button class="btn-reset" onclick="resetSettings()">Скинути</button>
+      </div>
+
+      <!-- Font Selector Grid -->
+      <div class="section-label">1. Оберіть шрифт (10 варіантів)</div>
+      <div class="font-select-grid" id="fontGrid"></div>
+
+      <!-- Typography Size & Weight -->
+      <div class="section-label">2. Розмір та параметри шрифту</div>
+      <div class="control-row">
+        <div class="control-top">
+          <span>Розмір заголовка (Max Zoom)</span>
+          <span class="control-val" id="valTitleSize">3.8vw</span>
+        </div>
+        <input type="range" id="sliderTitleSize" min="2.0" max="8.5" step="0.1" value="3.8">
+      </div>
+
+      <div class="control-row">
+        <div class="control-top">
+          <span>Товщина шрифту (Weight)</span>
+          <span class="control-val" id="valTitleWeight">400</span>
+        </div>
+        <input type="range" id="sliderTitleWeight" min="200" max="900" step="100" value="400">
+      </div>
+
+      <div class="xy-grid">
+        <div class="control-row">
+          <div class="control-top">
+            <span>Інтерліньяж</span>
+            <span class="control-val" id="valTitleLh">1.08</span>
+          </div>
+          <input type="range" id="sliderTitleLh" min="0.85" max="1.50" step="0.02" value="1.08">
+        </div>
+
+        <div class="control-row">
+          <div class="control-top">
+            <span>Міжлітерний</span>
+            <span class="control-val" id="valTitleLs">0.015em</span>
+          </div>
+          <input type="range" id="sliderTitleLs" min="-0.04" max="0.15" step="0.005" value="0.015">
+        </div>
+      </div>
+
+      <!-- Positioning: Move Left, Right, Up, Down -->
+      <div class="section-label">3. Позиціонування на екрані (X / Y)</div>
+      
+      <div class="control-row">
+        <div class="control-top">
+          <span>Максимальна ширина блоку</span>
+          <span class="control-val" id="valMaxW">80vw</span>
+        </div>
+        <input type="range" id="sliderMaxW" min="40" max="95" step="1" value="80">
+      </div>
+
+      <div class="xy-grid">
+        <div class="control-row">
+          <div class="control-top">
+            <span>Заголовок X (Вліво / Вправо)</span>
+            <span class="control-val" id="valTitleX">0px</span>
+          </div>
+          <input type="range" id="sliderTitleX" min="-150" max="250" step="2" value="0">
+        </div>
+
+        <div class="control-row">
+          <div class="control-top">
+            <span>Заголовок Y (Вгору / Вниз)</span>
+            <span class="control-val" id="valTitleY">0px</span>
+          </div>
+          <input type="range" id="sliderTitleY" min="-120" max="180" step="2" value="0">
+        </div>
+      </div>
+
+      <div class="xy-grid">
+        <div class="control-row">
+          <div class="control-top">
+            <span>Кнопки X (Вліво / Вправо)</span>
+            <span class="control-val" id="valBtnX">0px</span>
+          </div>
+          <input type="range" id="sliderBtnX" min="-100" max="250" step="2" value="0">
+        </div>
+
+        <div class="control-row">
+          <div class="control-top">
+            <span>Кнопки Y (Вгору / Вниз)</span>
+            <span class="control-val" id="valBtnY">0px</span>
+          </div>
+          <input type="range" id="sliderBtnY" min="-80" max="150" step="2" value="0">
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-top">
+          <span>Нижні показники Y (Вгору / Вниз)</span>
+          <span class="control-val" id="valStatsY">0px</span>
+        </div>
+        <input type="range" id="sliderStatsY" min="-80" max="60" step="2" value="0">
+      </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="dock-toggle-btn" onclick="toggleDock()">
+      <span class="badge">10</span>
+      <span style="font-size:0.82vw; font-weight:500;">Шрифти & Позиції</span>
+      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <script>
+    const fontList = [
+      { id: 'forum', name: 'Forum', family: 'Forum, serif', cat: 'Римський сериф', defSize: 3.8, defW: 400, italic: true },
+      { id: 'prata', name: 'Prata', family: 'Prata, serif', cat: 'Didone Luxury', defSize: 3.5, defW: 400, italic: false },
+      { id: 'bodoni', name: 'Bodoni Z37', family: 'BodoniZ37, serif', cat: '1001fonts / Глянець', defSize: 4.1, defW: 700, italic: false },
+      { id: 'unisans-light', name: 'Uni Sans (Thin)', family: 'UniSans, sans-serif', cat: '1001fonts / Мінімалізм', defSize: 3.6, defW: 300, italic: false },
+      { id: 'unisans-heavy', name: 'Uni Sans (Bold)', family: 'UniSans, sans-serif', cat: '1001fonts / Монумент', defSize: 3.4, defW: 800, italic: false },
+      { id: 'cocogoose', name: 'Cocogoose', family: 'Cocogoose, sans-serif', cat: '1001fonts / Бренд', defSize: 3.4, defW: 600, italic: false },
+      { id: 'tenor', name: 'Tenor Sans', family: 'TenorSans, sans-serif', cat: 'Fashion & Resort', defSize: 3.6, defW: 400, italic: false },
+      { id: 'arshila', name: 'Arshila', family: 'Arshila, serif', cat: '1001fonts / Курортний', defSize: 3.5, defW: 400, italic: false },
+      { id: 'sreda', name: 'Sreda', family: 'Sreda, serif', cat: '1001fonts / Брусковий', defSize: 3.3, defW: 400, italic: false },
+      { id: 'syne', name: 'Syne', family: 'Syne, sans-serif', cat: 'Авторський дисплей', defSize: 3.3, defW: 700, italic: false },
+      { id: 'manrope', name: 'Manrope', family: 'Manrope, sans-serif', cat: 'Swiss Гротеск', defSize: 3.4, defW: 600, italic: false },
+      { id: 'unbounded', name: 'Unbounded', family: 'Unbounded, sans-serif', cat: 'Попередній (старий)', defSize: 3.4, defW: 800, italic: false }
+    ];
+
+    const root = document.documentElement;
+    const headline = document.getElementById('heroHeadline');
+    const dockContainer = document.getElementById('dockContainer');
+    const fontGrid = document.getElementById('fontGrid');
+
+    let activeFontIdx = 0;
+
+    function toggleDock() {
+      dockContainer.classList.toggle('open');
+    }
+
+    function renderFontGrid() {
+      fontGrid.innerHTML = '';
+      fontList.forEach((f, idx) => {
+        const card = document.createElement('div');
+        card.className = 'f-card' + (idx === activeFontIdx ? ' active' : '');
+        card.onclick = () => selectFont(idx);
+        card.innerHTML = `
+          <div class="f-card-name" style="font-family: ${f.family}">${f.name}</div>
+          <div class="f-card-cat">${f.cat}</div>
+        `;
+        fontGrid.appendChild(card);
+      });
+    }
+
+    function selectFont(idx) {
+      activeFontIdx = idx;
+      const f = fontList[idx];
+      headline.style.fontFamily = f.family;
+      
+      const accents = headline.querySelectorAll('.italic-accent');
+      accents.forEach(a => {
+        a.style.fontStyle = f.italic ? 'italic' : 'normal';
+      });
+
+      // update weight slider to match default
+      document.getElementById('sliderTitleWeight').value = f.defW;
+      document.getElementById('valTitleWeight').innerText = f.defW;
+      root.style.setProperty('--title-weight', f.defW);
+
+      renderFontGrid();
+    }
+
+    // Wiring up Sliders
+    function setupSlider(id, valId, cssVar, unit = '') {
+      const slider = document.getElementById(id);
+      const valLabel = document.getElementById(valId);
+      slider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        valLabel.innerText = val + unit;
+        root.style.setProperty(cssVar, val + unit);
+      });
+    }
+
+    setupSlider('sliderTitleSize', 'valTitleSize', '--title-size', 'vw');
+    setupSlider('sliderTitleWeight', 'valTitleWeight', '--title-weight', '');
+    setupSlider('sliderTitleLh', 'valTitleLh', '--title-lh', '');
+    setupSlider('sliderTitleLs', 'valTitleLs', '--title-ls', 'em');
+    setupSlider('sliderMaxW', 'valMaxW', '--hero-max-w', 'vw');
+    setupSlider('sliderTitleX', 'valTitleX', '--title-x', 'px');
+    setupSlider('sliderTitleY', 'valTitleY', '--title-y', 'px');
+    setupSlider('sliderBtnX', 'valBtnX', '--btn-x', 'px');
+    setupSlider('sliderBtnY', 'valBtnY', '--btn-y', 'px');
+    setupSlider('sliderStatsY', 'valStatsY', '--stats-y', 'px');
+
+    function resetSettings() {
+      selectFont(0);
+      document.getElementById('sliderTitleSize').value = 3.8;
+      document.getElementById('valTitleSize').innerText = '3.8vw';
+      root.style.setProperty('--title-size', '3.8vw');
+
+      document.getElementById('sliderTitleWeight').value = 400;
+      document.getElementById('valTitleWeight').innerText = '400';
+      root.style.setProperty('--title-weight', '400');
+
+      document.getElementById('sliderTitleLh').value = 1.08;
+      document.getElementById('valTitleLh').innerText = '1.08';
+      root.style.setProperty('--title-lh', '1.08');
+
+      document.getElementById('sliderTitleLs').value = 0.015;
+      document.getElementById('valTitleLs').innerText = '0.015em';
+      root.style.setProperty('--title-ls', '0.015em');
+
+      document.getElementById('sliderMaxW').value = 80;
+      document.getElementById('valMaxW').innerText = '80vw';
+      root.style.setProperty('--hero-max-w', '80vw');
+
+      document.getElementById('sliderTitleX').value = 0;
+      document.getElementById('valTitleX').innerText = '0px';
+      root.style.setProperty('--title-x', '0px');
+
+      document.getElementById('sliderTitleY').value = 0;
+      document.getElementById('valTitleY').innerText = '0px';
+      root.style.setProperty('--title-y', '0px');
+
+      document.getElementById('sliderBtnX').value = 0;
+      document.getElementById('valBtnX').innerText = '0px';
+      root.style.setProperty('--btn-x', '0px');
+
+      document.getElementById('sliderBtnY').value = 0;
+      document.getElementById('valBtnY').innerText = '0px';
+      root.style.setProperty('--btn-y', '0px');
+
+      document.getElementById('sliderStatsY').value = 0;
+      document.getElementById('valStatsY').innerText = '0px';
+      root.style.setProperty('--stats-y', '0px');
+    }
+
+    // Direct Mouse Dragging on Hero Main
+    const dragBadge = document.getElementById('dragBadge');
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialX = 0, initialY = 0;
+
+    dragBadge.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      initialX = parseInt(document.getElementById('sliderTitleX').value) || 0;
+      initialY = parseInt(document.getElementById('sliderTitleY').value) || 0;
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const newX = Math.max(-150, Math.min(250, initialX + dx));
+      const newY = Math.max(-120, Math.min(180, initialY + dy));
+      
+      document.getElementById('sliderTitleX').value = newX;
+      document.getElementById('valTitleX').innerText = newX + 'px';
+      root.style.setProperty('--title-x', newX + 'px');
+
+      document.getElementById('sliderTitleY').value = newY;
+      document.getElementById('valTitleY').innerText = newY + 'px';
+      root.style.setProperty('--title-y', newY + 'px');
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Keyboard navigation (1-9 to swap fonts quickly)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key >= '1' && e.key <= '9') {
+        const idx = parseInt(e.key) - 1;
+        if (idx < fontList.length) selectFont(idx);
+      } else if (e.key === '0' && fontList.length >= 10) {
+        selectFont(9);
+      }
+    });
+
+    // Init
+    renderFontGrid();
+    selectFont(0);
+  </script>
+</body>
+</html>
