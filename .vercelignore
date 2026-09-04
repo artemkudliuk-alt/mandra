@@ -1,0 +1,14 @@
+﻿/assets/
+/_РЕФЕРЕНСИ/
+/archive/
+/tools/
+/.git/
+/.agents/
+/.claude/
+/serve.py
+/*.png
+/*.jpg
+/*.pdf
+/*.txt
+/*.md
+/google_drive_files.json

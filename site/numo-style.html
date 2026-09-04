@@ -37,12 +37,12 @@
 
     /* 1. MAIN HEADLINE (БЛОК 1) */
     --title-font: 'Unbounded', sans-serif;
-    --title-size: 4.0vw;
+    --title-size: 3.6vw;
     --title-weight: 700;
     --title-lh: 1.15;
     --title-ls: -0.02em;
     --title-transform: none;
-    --title-max-w: 54vw;
+    --title-max-w: 66vw;
     --title-x: 0vw;
     --title-y: 0vh;
 
@@ -408,6 +408,7 @@
   .hero-main-content {
     position: relative;
     padding: 0 3.6vw;
+    padding-left: calc(3.6vw + 50px);
     margin-bottom: 8vh;
     display: flex;
     flex-direction: column;
@@ -516,9 +517,8 @@
      FREE-FLOATING CTA BUTTON (ACROSS ENTIRE SCREEN X / Y)
      ------------------------------------------------------------- */
   .free-floating-cta {
-    position: absolute;
-    left: var(--btn-pos-x);
-    top: var(--btn-pos-y);
+    position: relative;
+    margin-top: 1.6vw;
     z-index: 50;
     transform: scale(var(--btn-scale));
     transform-origin: left center;
@@ -4165,20 +4165,9 @@
             Створюємо відпочинкові проєкти, що поєднують нерухомість, сервіс і інвестиційну цінність у Карпатах.
           </p>
         </div>
-      </main>
 
-      <!-- Bottom Spacer -->
-      <div></div>
-    </div>
-
-    <!-- 4. SCROLL INDICATOR (BOTTOM CENTER) -->
-    <a class="scroll-indicator" href="#about" aria-label="Скролл до наступного блоку">
-      <span class="scroll-text">SCROLL</span>
-      <div class="scroll-line"></div>
-    </a>
-
-    <!-- 3. FREE-FLOATING CTA BUTTON (Color: #81B873) -->
-    <div class="free-floating-cta" id="freeCta">
+        <!-- BLOCK 3: CTA BUTTON (in-flow, directly under subtitle) -->
+        <div class="free-floating-cta" id="freeCta">
       <!-- 1. NUMO Style (Unified Capsule with Internal Flip Arrow) -->
       <a class="cta-btn-numo" id="btnStyleNumo" href="#invest" aria-label="Дізнатися більше" style="display: inline-flex;">
         <span class="btn-arrow btn-arrow-left" aria-hidden="true">
@@ -4218,7 +4207,18 @@
         <span>Дізнатися більше</span>
         <span class="glass-icon-circle">↗</span>
       </a>
+        </div>
+      </main>
+
+      <!-- Bottom Spacer -->
+      <div></div>
     </div>
+
+    <!-- 4. SCROLL INDICATOR (BOTTOM CENTER) -->
+    <a class="scroll-indicator" href="#about" aria-label="Скролл до наступного блоку">
+      <span class="scroll-text">SCROLL</span>
+      <div class="scroll-line"></div>
+    </a>
   </div>
 
 
@@ -5381,8 +5381,8 @@
 
         <div class="section-label">Параметри заголовка</div>
         <div class="control-row">
-          <div class="control-top"><span>Розмір літер (Size)</span><span class="control-val" id="valTitleSize">4.0vw</span></div>
-          <input type="range" id="rngTitleSize" min="2.0" max="7.5" step="0.1" value="4.0" oninput="updateVar('--title-size', this.value + 'vw', 'valTitleSize')">
+          <div class="control-top"><span>Розмір літер (Size)</span><span class="control-val" id="valTitleSize">3.6vw</span></div>
+          <input type="range" id="rngTitleSize" min="2.0" max="7.5" step="0.1" value="3.6" oninput="updateVar('--title-size', this.value + 'vw', 'valTitleSize')">
         </div>
         <div class="control-row">
           <div class="control-top"><span>Товщина (Weight)</span><span class="control-val" id="valTitleWeight">700</span></div>
@@ -5397,8 +5397,8 @@
           <input type="range" id="rngTitleLs" min="-0.06" max="0.2" step="0.005" value="-0.02" oninput="updateVar('--title-ls', this.value + 'em', 'valTitleLs')">
         </div>
         <div class="control-row">
-          <div class="control-top"><span>Ширина блоку заголовка</span><span class="control-val" id="valTitleMaxW">54vw</span></div>
-          <input type="range" id="rngTitleMaxW" min="30" max="85" step="1" value="54" oninput="updateVar('--title-max-w', this.value + 'vw', 'valTitleMaxW')">
+          <div class="control-top"><span>Ширина блоку заголовка</span><span class="control-val" id="valTitleMaxW">66vw</span></div>
+          <input type="range" id="rngTitleMaxW" min="30" max="85" step="1" value="66" oninput="updateVar('--title-max-w', this.value + 'vw', 'valTitleMaxW')">
         </div>
 
         <div class="section-label">Переміщення заголовка (X / Y)</div>
@@ -6255,7 +6255,7 @@
         subX: document.getElementById('rngSubX').value,
         subY: document.getElementById('rngSubY').value
       };
-      localStorage.setItem('mandra_liquid_glass_state', JSON.stringify(state));
+      localStorage.setItem('mandra_hero_state_v2', JSON.stringify(state));
       const btn = document.querySelector('.btn-drawer-action.save');
       if (btn) {
         btn.textContent = '✓ Зафіксовано!';
@@ -6264,7 +6264,7 @@
     }
 
     function loadSettings() {
-      const saved = localStorage.getItem('mandra_liquid_glass_state') || localStorage.getItem('mandra_no_blur_state');
+      const saved = localStorage.getItem('mandra_hero_state_v2');
       if (!saved) {
         setButtonStyle('numo', document.querySelector('.style-card[data-style="numo"]'));
         setButtonPosition('15vw', '71vh');
@@ -6311,12 +6311,12 @@
             c.classList.toggle('active', c.getAttribute('data-font') === fName);
           });
         }
-        if (s.headlineSize && parseFloat(s.headlineSize) > 3.8) {
+        if (s.headlineSize && parseFloat(s.headlineSize) >= 3.0) {
           updateVar('--title-size', s.headlineSize + 'vw', 'valTitleSize');
           document.getElementById('rngTitleSize').value = s.headlineSize;
         } else {
-          updateVar('--title-size', '4.0vw', 'valTitleSize');
-          document.getElementById('rngTitleSize').value = '4.0';
+          updateVar('--title-size', '3.6vw', 'valTitleSize');
+          document.getElementById('rngTitleSize').value = '3.6';
         }
         if (s.headlineWeight) {
           updateVar('--title-weight', s.headlineWeight, 'valTitleWeight');
@@ -6396,7 +6396,7 @@
     }
 
     function resetAll() {
-      localStorage.removeItem('mandra_liquid_glass_state');
+      localStorage.removeItem('mandra_hero_state_v2');
       location.reload();
     }
 
