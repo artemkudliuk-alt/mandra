@@ -1180,9 +1180,9 @@
      ============================================================ */
   .section-scroll-showcase {
     position: relative;
-    background: #FFFFFF;
+    background: var(--bg-dark);
     margin-top: -1px;   /* без шва з маніфестом */
-    height: 138vh;                 /* мінімум для sticky-анімації */
+    height: 240vh;                 /* довший трек під 3 фази: збірка → пауза → розліт */
   }
   .showcase-sticky {
     position: sticky;
@@ -1192,23 +1192,28 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: visible;
-    padding: 9vh 3.6vw 2vh;
+    overflow: hidden;              /* ховаємо виліт карток за краї екрана */
+    padding: 0 3.6vw;              /* без верхнього відступу — сітка виходить за верх і низ */
   }
 
-  /* Заголовок прив'язаний до картки 01 і їде разом з нею */
+  /* Заголовок лежить ЗВЕРХУ НА картці 01, по центру; тане на старті розкриття */
   .showcase-title {
     position: absolute;
-    left: 0;
-    bottom: calc(100% + 1.1vw);   /* невеликий відступ над карткою */
+    left: 50%;
+    top: 13vh;                    /* видима зона картки під шапкою */
+    transform: translateX(-50%);
+    z-index: 5;                   /* над фото картки */
     margin: 0;
     white-space: nowrap;
+    text-align: center;
+    pointer-events: none;
     font-family: var(--title-font);
     font-size: var(--s2-title-size);
     font-weight: var(--title-weight);
     line-height: var(--title-lh);
     letter-spacing: var(--title-ls);
-    color: #0E1F0B;
+    color: #FFFFFF;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7), 0 1px 6px rgba(0, 0, 0, 0.5);
   }
   /* Обгортка: картка 01 + її заголовок як одне ціле */
   .showcase-lead {
@@ -1218,7 +1223,7 @@
     width: 100%;
     height: 100%;
     z-index: 4;            /* перше фото завжди зверху */
-    will-change: left, top, width, height;
+    will-change: left, top, width, height, transform, opacity;
   }
   .showcase-card-lead {
     position: absolute;
@@ -1229,8 +1234,9 @@
   .showcase-stage {
     position: relative;
     width: 100%;
-    max-width: 1080px;
-    height: 58vh;
+    max-width: 1240px;
+    height: 105vh;      /* +50% до висоти карток: сітка навмисно виходить за верх і низ екрана */
+    flex-shrink: 0;     /* без цього flex стискав сцену до 100vh і картки виглядали приплюснутими */
     margin: 0 auto;
   }
   .showcase-grid {
@@ -1243,7 +1249,7 @@
     overflow: hidden;
     border-radius: 20px;
     border: none;
-    will-change: left, top, width, height;
+    will-change: left, top, width, height, transform, opacity;
     /* Liquid Glass */
     background: #0E1F0B;
     box-shadow: 0 22px 60px rgba(14, 31, 11, 0.22);
@@ -1552,8 +1558,8 @@
      Темно-зелений текст (#0E1F0B) та глибокі тіні
      ============================================================ */
   .section-stats-stack {
-    background: #FFFFFF;
-    color: #11161B;
+    background: var(--bg-dark);
+    color: #FFFFFF;
     position: relative;
     padding: 70px 6vw 80px;
     overflow: visible;
@@ -1598,7 +1604,7 @@
     line-height: 1.1;
     max-width: 100%;               /* ширину задає колонка -> два рядки */
     letter-spacing: -0.02em;
-    color: #0E1F0B;                /* темний заголовок на білому */
+    color: #FFFFFF;                /* світлий заголовок на темному */
     margin: 0;
   }
 
@@ -1617,7 +1623,7 @@
     font-size: clamp(1rem, 1.12vw, 1.25rem);
     font-weight: 400;
     line-height: 1.65;
-    color: rgba(17, 22, 27, 0.62);
+    color: rgba(255, 255, 255, 0.72);
     margin: 0;
     max-width: 520px;
   }
@@ -4259,7 +4265,7 @@
           <div class="showcase-lead" data-q="tl">
             <h2 class="showcase-title" id="showcaseTitle">Ми відповідаємо за</h2>
             <div class="showcase-card showcase-card-lead">
-            <img src="assets/screen2/01_location.webp" alt="Локація та земля" loading="lazy" decoding="async">
+            <img src="assets/screen2/01_location.webp?v=2" alt="Локація та земля" loading="lazy" decoding="async">
               <span class="card-index">01</span>
               <div class="card-badge">
                 <span class="card-badge-title" id="sc1Title">Аналіз</span>
@@ -4278,7 +4284,7 @@
           </div>
 
           <div class="showcase-card" data-q="bl">
-            <img src="assets/screen2/03_infrastructure.webp" alt="Інфраструктура та SPA" loading="lazy" decoding="async">
+            <img src="assets/screen2/03_infrastructure.webp?v=2" alt="Інфраструктура та сервіс" loading="lazy" decoding="async">
             <span class="card-index">03</span>
             <div class="card-badge">
               <span class="card-badge-title" id="sc3Title">Інфраструктура та управління</span>
@@ -4287,7 +4293,7 @@
           </div>
 
           <div class="showcase-card" data-q="br">
-            <img src="assets/screen2/04_service.webp" alt="Готельний сервіс" loading="lazy" decoding="async">
+            <img src="assets/screen2/04_service.webp?v=2" alt="Робота з інвесторами" loading="lazy" decoding="async">
             <span class="card-index">04</span>
             <div class="card-badge">
               <span class="card-badge-title" id="sc4Title">Робота з інвесторами</span>
@@ -6459,7 +6465,20 @@
       const START = { l: 0, t: 0, w: 100, h: 100 };   /* усі під першим фото */
 
       function easeOutExpo(x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); }
+      function easeInCubic(x) { return x * x * x; }
       const lerp = (a, b, t) => a + (b - a) * t;
+      const clamp01 = (x) => Math.max(0, Math.min(1, x));
+
+      /* Фази скролу (частка загального треку) */
+      const ASSEMBLE_END = 0.42;   /* 0 → 42%: збірка у сітку 2x2 */
+      const HOLD_END     = 0.62;   /* 42 → 62%: пауза, сітка зафіксована */
+      /* 62 → 100%: розліт карток у сторони за межі екрана */
+      const FLY_VW = 95;           /* дистанція вильоту, vw */
+
+      /* Заголовок на картці 01: спокійно тане, поки картка починає розкриватись */
+      const TITLE_FADE_START = 0.02;
+      const TITLE_FADE_END   = 0.15;
+      const titleEl = track.querySelector('.showcase-title');
 
       let ticking = false, lastP = -1;
 
@@ -6468,26 +6487,43 @@
         const rect = track.getBoundingClientRect();
         const total = track.offsetHeight - window.innerHeight;
         let p = total > 0 ? (-rect.top) / total : 0;
-        p = Math.max(0, Math.min(1, p));
+        p = clamp01(p);
         if (Math.abs(p - lastP) < 0.0008) return;
         lastP = p;
 
-        const e = easeOutExpo(p);
+        /* Фаза 1: збірка у сітку (застигає під час паузи, бо a=1 при p>=42%) */
+        const a  = easeOutExpo(clamp01(p / ASSEMBLE_END));
+        /* Фаза 3: розліт у сторони після паузи (62%→100%) */
+        const fo = easeInCubic(clamp01((p - HOLD_END) / (1 - HOLD_END)));
+
+        /* Заголовок: статичний на старті, плавно зникає до початку розкриття */
+        if (titleEl) {
+          const tf = 1 - clamp01((p - TITLE_FADE_START) / (TITLE_FADE_END - TITLE_FADE_START));
+          titleEl.style.opacity = tf.toFixed(3);
+        }
 
         for (let i = 0; i < items.length; i++) {
           const el = items[i];
-          const f = FINAL[el.dataset.q];
+          const q  = el.dataset.q;
+          const f  = FINAL[q];
           if (!f) continue;
-          el.style.left   = lerp(START.l, f.l, e).toFixed(3) + '%';
-          el.style.top    = lerp(START.t, f.t, e).toFixed(3) + '%';
-          el.style.width  = lerp(START.w, f.w, e).toFixed(3) + '%';
-          el.style.height = lerp(START.h, f.h, e).toFixed(3) + '%';
 
-          /* підпис першої картки видно завжди, решта проявляються */
+          el.style.left   = lerp(START.l, f.l, a).toFixed(3) + '%';
+          el.style.top    = lerp(START.t, f.t, a).toFixed(3) + '%';
+          el.style.width  = lerp(START.w, f.w, a).toFixed(3) + '%';
+          el.style.height = lerp(START.h, f.h, a).toFixed(3) + '%';
+
+          /* Розліт: ліві (tl,bl) — вліво, праві (tr,br) — вправо + розчинення */
+          const dir = (q === 'tl' || q === 'bl') ? -1 : 1;
+          const tx  = (dir * FLY_VW * fo).toFixed(2);
+          el.style.transform = 'translate3d(' + tx + 'vw,0,0)';
+          el.style.opacity   = (1 - fo).toFixed(3);
+
+          /* підпис першої картки видно завжди, решта проявляються при збірці */
           const isLead = el.classList.contains('showcase-lead');
           const badge = el.querySelector('.card-badge');
           const num   = el.querySelector('.card-index');
-          const vis   = isLead ? 1 : Math.max(0, Math.min(1, (e - 0.3) / 0.45));
+          const vis   = isLead ? 1 : clamp01((a - 0.3) / 0.45);
           if (badge) badge.style.opacity = vis.toFixed(3);
           if (num)   num.style.opacity   = (isLead ? 1 : vis).toFixed(3);
         }
