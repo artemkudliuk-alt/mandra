@@ -72,8 +72,8 @@
     --sub-y: 0vh;
 
     /* 3. FREE-FLOATING CTA BUTTON (ВЕСЬ ЕКРАН X / Y) */
-    --btn-pos-x: 76vw;
-    --btn-pos-y: 80vh;
+    --btn-pos-x: 15vw;
+    --btn-pos-y: 71vh;
     --btn-scale: 1;
   }
 
@@ -5219,12 +5219,12 @@
 
         <div class="section-label">Вільне переміщення по ВСЬОМУ екрану</div>
         <div class="control-row">
-          <div class="control-top"><span>Позиція X (Ширина всього екрана)</span><span class="control-val" id="valBtnPosX">3.6vw</span></div>
-          <input type="range" id="rngBtnPosX" min="0" max="88" step="0.5" value="3.6" oninput="updateVar('--btn-pos-x', this.value + 'vw', 'valBtnPosX')">
+          <div class="control-top"><span>Позиція X (Ширина всього екрана)</span><span class="control-val" id="valBtnPosX">15vw</span></div>
+          <input type="range" id="rngBtnPosX" min="0" max="88" step="0.5" value="15" oninput="updateVar('--btn-pos-x', this.value + 'vw', 'valBtnPosX')">
         </div>
         <div class="control-row">
-          <div class="control-top"><span>Позиція Y (Висота всього екрана)</span><span class="control-val" id="valBtnPosY">80vh</span></div>
-          <input type="range" id="rngBtnPosY" min="10" max="92" step="0.5" value="80" oninput="updateVar('--btn-pos-y', this.value + 'vh', 'valBtnPosY')">
+          <div class="control-top"><span>Позиція Y (Висота всього екрана)</span><span class="control-val" id="valBtnPosY">71vh</span></div>
+          <input type="range" id="rngBtnPosY" min="10" max="92" step="0.5" value="71" oninput="updateVar('--btn-pos-y', this.value + 'vh', 'valBtnPosY')">
         </div>
 
         <div class="control-row">
@@ -6267,15 +6267,15 @@
       const saved = localStorage.getItem('mandra_liquid_glass_state') || localStorage.getItem('mandra_no_blur_state');
       if (!saved) {
         setButtonStyle('numo', document.querySelector('.style-card[data-style="numo"]'));
-        setButtonPosition('76vw', '80vh');
+        setButtonPosition('15vw', '71vh');
         return;
       }
       try {
         const s = JSON.parse(saved);
-        // За замовчуванням кнопка праворуч (NUMO стиль), як затверджено користувачем
+        // За замовчуванням кнопка зліва під текстом (NUMO стиль), як зафіксовано користувачем
         let styleToSet = s.btnStyle || 'numo';
-        let posX = s.btnPosX || '76';
-        let posY = s.btnPosY || '80';
+        let posX = s.btnPosX || '15';
+        let posY = s.btnPosY || '71';
 
         if (styleToSet === 'circle' && (posX === '3.5' || posX === '3.6')) {
           styleToSet = 'numo';
