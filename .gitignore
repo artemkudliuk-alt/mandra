@@ -10,6 +10,8 @@
 
 # Робочі скріншоти
 /_*.png
+/*.png
+serve.py
 
 # Службове
 node_modules/

@@ -37,7 +37,7 @@
 
     /* 1. MAIN HEADLINE (БЛОК 1) */
     --title-font: 'Unbounded', sans-serif;
-    --title-size: 3.8vw;
+    --title-size: 4.0vw;
     --title-weight: 700;
     --title-lh: 1.15;
     --title-ls: -0.02em;
@@ -207,7 +207,7 @@
      ------------------------------------------------------------- */
   .top-navbar {
     width: 100%;
-    padding: 1.1vw 3.6vw;
+    padding: 1.35vw 3.6vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -227,144 +227,169 @@
     text-decoration: none;
   }
   .brand-logo-img {
-    height: 2.3vw;
-    min-height: 32px;
+    height: 2.65vw;
+    min-height: 37px;
     display: block;
     filter: brightness(1.1);
   }
 
-  /* NAVIGATION MENU INSIDE FULL-WIDTH BAR */
+  /* NAVIGATION MENU INSIDE FULL-WIDTH BAR (+15% SCALE) */
   .nav-menu {
     display: flex;
     align-items: center;
-    gap: 2.2vw;
+    gap: 2.5vw;
   }
   .nav-link {
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-size: 0.74vw;
+    font-size: 0.85vw;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     position: relative;
-    padding: 0.3vw 0;
-    transition: color 0.2s ease;
+    padding: 0.35vw 0;
+    transition: color 0.25s ease;
   }
-  .nav-link:hover { color: #FFFFFF; }
-  .nav-link.active {
-    color: var(--accent-color);
-    font-weight: 700;
-  }
-  .nav-link.active::after {
+  .nav-link::after {
     content: '';
     position: absolute;
     bottom: -2px;
     left: 0;
     width: 100%;
-    height: 2px;
-    background: var(--accent-color);
-    border-radius: 2px;
+    height: 1px;
+    background: var(--accent-color, #81B873);
+    border-radius: 1px;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    opacity: 0;
+  }
+  .nav-link:hover {
+    color: var(--accent-color, #81B873);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    opacity: 0.85;
+  }
+  .nav-link.active {
+    color: var(--accent-color, #81B873);
+    font-weight: 700;
+  }
+  .nav-link.active::after {
+    transform: scaleX(1);
+    opacity: 0.85;
+    display: block;
+  }
+  /* When hovering other links in nav-menu, active link temporarily yields its highlight */
+  .nav-menu:hover .nav-link.active:not(:hover) {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .nav-menu:hover .nav-link.active:not(:hover)::after {
+    transform: scaleX(0);
+    opacity: 0;
   }
 
-  /* RIGHT HEADER ACTIONS: LANGUAGE SWITCHER + PHONE + TOP BUTTON */
+  /* RIGHT HEADER ACTIONS: PHONE + TOP BUTTON + LANGUAGE SWITCHER (+15% SCALE) */
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.8vw;
+    gap: 1vw;
   }
 
-  /* LIQUID GLASS LANGUAGE SWITCHER CAPSULE (NO BORDER, SHEER GLASS) */
-  .lang-capsule {
-    background: rgba(255, 255, 255, 0.08); /* легке прозоре скло, зовсім не темне */
-    border: none; /* рамки повністю прибрані */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: none;
-    border-radius: 999px;
-    padding: 0.34vw 0.8vw;
-    display: flex;
-    align-items: center;
-    gap: 0.35vw;
-    transition: background 0.2s ease;
-  }
-  .lang-capsule:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-  .lang-globe-icon {
-    width: 14px;
-    height: 14px;
-    color: rgba(255, 255, 255, 0.85);
-    display: block;
-    flex-shrink: 0;
-  }
-  .lang-btn {
-    background: none;
+  /* MINIMALIST RECTANGULAR FLAG BUTTON (+15% SCALE) */
+  .lang-toggle-btn {
+    background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.75);
-    font-family: 'Manrope', sans-serif;
-    font-size: 0.72vw;
-    font-weight: 700;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
-    padding: 0.15vw 0.4vw;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-  }
-  .lang-btn:hover {
-    color: #FFFFFF;
-  }
-  .lang-btn.active {
-    color: var(--btn-text-color);
-    background: var(--accent-color);
-    font-weight: 800;
-  }
-  .lang-sep {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.68vw;
-    user-select: none;
-  }
-
-  /* PHONE CAPSULE (NO BORDER, SHEER GLASS) */
-  .phone-capsule {
-    background: rgba(255, 255, 255, 0.08); /* легке прозоре скло, зовсім не темне */
-    border: none; /* рамки повністю прибрані */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: none;
-    color: #FFFFFF;
-    font-size: 0.8vw;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 0.4vw 1vw 0.4vw 0.55vw;
-    border-radius: 999px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5vw;
-    transition: background 0.25s ease;
-  }
-  .phone-capsule:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-  .phone-icon-badge {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--top-btn-bg);
-    color: var(--top-btn-text);
+    outline: none;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    line-height: 0;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+  }
+  .lang-toggle-btn:hover {
+    transform: translateY(-1px) scale(1.05);
+    filter: brightness(1.12);
+  }
+  .lang-toggle-btn:active {
+    transform: translateY(0) scale(0.97);
+  }
+  .lang-flag-wrap {
+    display: block;
+    width: 28px;
+    height: 18.5px;
+    border-radius: 2.5px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 5px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    flex-shrink: 0;
+    transition: box-shadow 0.2s ease;
+  }
+  .lang-toggle-btn:hover .lang-flag-wrap {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28), 0 3px 8px rgba(0, 0, 0, 0.5);
+  }
+  .lang-flag-wrap svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* FRAMELESS PHONE LINK (+15% SCALE) */
+  .phone-capsule,
+  .phone-link-frameless {
+    background: transparent !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    color: #FFFFFF;
+    font-size: 0.94vw;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.35vw 0.6vw;
+    border-radius: 999px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.52vw;
+    transition: color 0.25s ease, opacity 0.25s ease;
+  }
+  .phone-capsule:hover,
+  .phone-link-frameless:hover {
+    background: transparent !important;
+    color: var(--accent-color, #81B873);
+  }
+  .phone-icon-badge {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .phone-capsule:hover .phone-icon-badge,
+  .phone-link-frameless:hover .phone-icon-badge {
+    transform: scale(1.1);
+    background: var(--accent-color, #81B873);
+    color: #0E1F0B;
   }
 
   .btn-top-accent {
     background: var(--top-btn-bg);
     color: var(--top-btn-text);
-    font-size: 0.8vw;
+    font-size: 1.06vw;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 0.6vw 1.4vw;
+    padding: 0.82vw 1.85vw;
     border-radius: 999px;
     text-decoration: none;
     border: none;
@@ -404,6 +429,13 @@
     text-transform: var(--title-transform);
     transition: font-size 0.1s, line-height 0.1s;
     word-break: break-word;
+    border-bottom: none !important;
+    text-decoration: none !important;
+  }
+  .title-word-accent {
+    color: var(--accent-color, #81B873) !important;
+    -webkit-text-fill-color: var(--accent-color, #81B873) !important;
+    display: inline;
   }
 
   /* BLOCK 2: SUBTITLE / DESCRIPTION */
@@ -468,14 +500,14 @@
     border-bottom: none !important;
   }
 
-  /* Effect 5: Architectural Accent Line (Підкреслення тонкою лінією) */
+  /* Effect 5: Architectural Clean (Підкреслення вимкнено) */
   .fx-line {
     color: #FFFFFF;
     text-shadow: 0 4px 35px rgba(0, 0, 0, 0.85);
     -webkit-text-stroke: 0px transparent !important;
     background: none !important;
     -webkit-text-fill-color: initial !important;
-    border-bottom: 2.5px solid var(--accent-color) !important;
+    border-bottom: none !important;
     padding-bottom: 0.35vw;
     display: inline-block;
   }
@@ -493,46 +525,94 @@
     transition: transform 0.2s ease, opacity 0.3s ease;
   }
 
-  /* 1. STYLE: NUMO CAPSULE */
+  /* 1. STYLE: NUMO UNIFIED CAPSULE WITH FLIP-ARROW INTERACTION */
   .cta-btn-numo {
     display: inline-flex;
     align-items: center;
-    gap: 0.55vw;
-    text-decoration: none;
-  }
-  .cta-btn-numo .action-pill {
+    justify-content: center;
     background: var(--accent-color);
     color: var(--btn-text-color);
-    font-size: 0.86vw;
+    padding: 0.95vw 2.0vw;
+    border-radius: 999px;
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.35s ease;
+  }
+  .cta-btn-numo:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+  .cta-btn-numo .action-pill {
+    background: transparent !important;
+    color: inherit;
+    font-size: 0.88vw;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.95vw 2.2vw;
-    border-radius: 999px;
-    border: none;
-    box-shadow: none !important;
+    padding: 0 !important;
     white-space: nowrap;
-    transition: background 0.2s, transform 0.2s;
+    user-select: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .cta-btn-numo .action-arrow {
-    width: 3.1vw;
-    height: 3.1vw;
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    color: var(--btn-text-color);
-    display: flex;
+  .cta-btn-numo .btn-arrow {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    box-shadow: none !important;
-    transition: background 0.2s, transform 0.2s;
+    color: inherit;
+    overflow: hidden;
+    line-height: 0;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                margin 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .cta-btn-numo:hover .action-pill,
-  .cta-btn-numo:hover .action-arrow {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
+  .cta-btn-numo .btn-arrow svg {
+    width: 1.15vw;
+    height: 1.15vw;
+    min-width: 16px;
+    min-height: 16px;
+    display: block;
+    flex-shrink: 0;
+  }
+  /* Default state: Right arrow visible, Left arrow hidden */
+  .cta-btn-numo .btn-arrow-left {
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    transform: translateX(-14px) scale(0);
+    margin-right: 0;
+    pointer-events: none;
+  }
+  .cta-btn-numo .btn-arrow-right {
+    width: 1.15vw;
+    max-width: 25px;
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    margin-left: 0.65vw;
+  }
+  /* Hover state: Left arrow appears, Right arrow disappears */
+  .cta-btn-numo:hover .btn-arrow-left {
+    width: 1.15vw;
+    max-width: 25px;
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    margin-right: 0.65vw;
+  }
+  .cta-btn-numo:hover .btn-arrow-right {
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    transform: translateX(14px) scale(0);
+    margin-left: 0;
+    pointer-events: none;
   }
 
   /* 2. STYLE: BIG CIRCULAR BUTTON (Architectural Seal) */
@@ -4035,35 +4115,38 @@
 
         <!-- LIQUID GLASS MENU CAPSULE WITH PADDING -->
         <nav class="nav-menu" aria-label="Основне меню навігації">
-          <a class="nav-link active" href="#home">ГОЛОВНА</a>
-          <a class="nav-link" href="#about">MANDRA</a>
+          <a class="nav-link active" href="#petrichor">MANDRA PETRICOR</a>
           <a class="nav-link" href="#infrastructure">ІНФРАСТРУКТУРА</a>
           <a class="nav-link" href="#map">ІНТЕРАКТИВНА МАПА</a>
           <a class="nav-link" href="#construction">БУДІВНИЦТВО</a>
           <a class="nav-link" href="#contacts">КОНТАКТИ</a>
         </nav>
 
-        <!-- Right Header Actions: Language Switcher + Phone + Top Button -->
+        <!-- Right Header Actions: Minimalist Language Flag Toggle + Frameless Phone + Top Button -->
         <div class="header-actions">
-          <!-- BILINGUAL LANGUAGE SWITCHER (UA / EN) -->
-          <div class="lang-capsule" id="langSwitcher" title="Перемкнути мову / Switch Language">
-            <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-            <button class="lang-btn active" id="btnLangUA" onclick="setLanguage('ua')">UA</button>
-            <span class="lang-sep">|</span>
-            <button class="lang-btn" id="btnLangEN" onclick="setLanguage('en')">EN</button>
-          </div>
-
-          <a class="phone-capsule" href="tel:+380501571311">
+          <!-- FRAMELESS PHONE LINK (NO CAPSULE BACKGROUND / NO BORDER) -->
+          <a class="phone-capsule phone-link-frameless" href="tel:+380501571311" aria-label="Номер телефону Mandra Invest">
             <span class="phone-icon-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
             </span>
             <span>+380 50 157 13 11</span>
           </a>
-          <a class="btn-top-accent" id="btnTopAction" href="#request">Онлайн заявка</a>
+
+          <a class="btn-top-accent" id="btnTopAction" href="#contacts">Онлайн заявка</a>
+
+          <!-- BILINGUAL LANGUAGE SWITCHER (RECTANGULAR FLAG AT THE END) -->
+          <button class="lang-toggle-btn" id="langToggleBtn" onclick="toggleLanguage()" aria-label="Switch language to English" title="Switch language to English">
+            <span class="lang-flag-wrap" id="langFlagWrap">
+              <svg viewBox="0 0 60 40" preserveAspectRatio="none">
+                <rect width="60" height="40" fill="#012169"/>
+                <path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>
+                <path d="M0 0l30 20M60 40L30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, -1)"/>
+                <path d="M60 0L30 20M0 40l30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, 1)"/>
+                <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>
+                <path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/>
+              </svg>
+            </span>
+          </button>
         </div>
       </header>
 
@@ -4072,7 +4155,7 @@
         <!-- BLOCK 1: Main Headline -->
         <div class="title-wrapper">
           <h1 class="hero-main-headline fx-solid" id="heroMainHeadline">
-            Дохідна нерухомість, у яку хочеться повертатися
+            <span class="title-word-accent">Дохідна</span> нерухомість, у яку хочеться повертатися
           </h1>
         </div>
 
@@ -4096,11 +4179,14 @@
 
     <!-- 3. FREE-FLOATING CTA BUTTON (Color: #81B873) -->
     <div class="free-floating-cta" id="freeCta">
-      <!-- 1. NUMO Style (Default Active on Right) -->
+      <!-- 1. NUMO Style (Unified Capsule with Internal Flip Arrow) -->
       <a class="cta-btn-numo" id="btnStyleNumo" href="#invest" aria-label="Дізнатися більше" style="display: inline-flex;">
+        <span class="btn-arrow btn-arrow-left" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
         <span class="action-pill">Дізнатися більше</span>
-        <span class="action-arrow">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="btn-arrow btn-arrow-right" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>
 
@@ -5101,11 +5187,11 @@
       <div class="tab-pane active" id="tabButton">
         <div class="section-label">Вигляд кнопки (5 варіантів)</div>
         <div class="btn-style-grid">
-          <div class="style-card" data-style="numo" onclick="setButtonStyle('numo', this)">
+          <div class="style-card active" data-style="numo" onclick="setButtonStyle('numo', this)">
             <div class="style-card-title">1. Капсула NUMO</div>
-            <div class="style-card-desc">З окремою круглою стрілкою</div>
+            <div class="style-card-desc">Єдина капсула з фліп-стрілкою</div>
           </div>
-          <div class="style-card active" data-style="circle" onclick="setButtonStyle('circle', this)">
+          <div class="style-card" data-style="circle" onclick="setButtonStyle('circle', this)">
             <div class="style-card-title">2. Велика кругла ⚪</div>
             <div class="style-card-desc">Архітектурне коло з текстом</div>
           </div>
@@ -5295,8 +5381,8 @@
 
         <div class="section-label">Параметри заголовка</div>
         <div class="control-row">
-          <div class="control-top"><span>Розмір літер (Size)</span><span class="control-val" id="valTitleSize">3.8vw</span></div>
-          <input type="range" id="rngTitleSize" min="2.0" max="7.5" step="0.1" value="3.8" oninput="updateVar('--title-size', this.value + 'vw', 'valTitleSize')">
+          <div class="control-top"><span>Розмір літер (Size)</span><span class="control-val" id="valTitleSize">4.0vw</span></div>
+          <input type="range" id="rngTitleSize" min="2.0" max="7.5" step="0.1" value="4.0" oninput="updateVar('--title-size', this.value + 'vw', 'valTitleSize')">
         </div>
         <div class="control-row">
           <div class="control-top"><span>Товщина (Weight)</span><span class="control-val" id="valTitleWeight">700</span></div>
@@ -5595,14 +5681,13 @@
     /* BILINGUAL LANGUAGE SWITCHING (UA / EN) */
     const translations = {
       ua: {
-        navHome: 'ГОЛОВНА',
-        navAbout: 'MANDRA',
+        navPetrichor: 'MANDRA PETRICOR',
         navInfra: 'ІНФРАСТРУКТУРА',
         navMap: 'ІНТЕРАКТИВНА МАПА',
         navBuild: 'БУДІВНИЦТВО',
         navContacts: 'КОНТАКТИ',
         topBtn: 'Онлайн заявка',
-        headline: 'Дохідна нерухомість, у яку хочеться повертатися',
+        headline: '<span class="title-word-accent">Дохідна</span> нерухомість, у яку хочеться повертатися',
         desc: 'Створюємо відпочинкові проєкти, що поєднують нерухомість, сервіс і інвестиційну цінність у Карпатах.',
         ctaText: 'Дізнатися більше',
         ctaCircle: 'Дізнатися<br>більше',
@@ -5781,14 +5866,13 @@
         footerCreator: 'Зроблено в некствеб'
       },
       en: {
-        navHome: 'HOME',
-        navAbout: 'MANDRA',
+        navPetrichor: 'MANDRA PETRICOR',
         navInfra: 'INFRASTRUCTURE',
         navMap: 'INTERACTIVE MAP',
         navBuild: 'CONSTRUCTION',
         navContacts: 'CONTACTS',
         topBtn: 'Online Request',
-        headline: 'High-yield real estate you want to return to',
+        headline: '<span class="title-word-accent">High-yield</span> real estate you want to return to',
         desc: 'Creating resort projects combining real estate, premium service and investment value in the Carpathians.',
         ctaText: 'Learn More',
         ctaCircle: 'Learn<br>More',
@@ -5967,31 +6051,54 @@
       }
     };
 
+    const ukFlagSvg = `<svg viewBox="0 0 60 40" preserveAspectRatio="none"><rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l30 20M60 40L30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, -1)"/><path d="M60 0L30 20M0 40l30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, 1)"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/></svg>`;
+    const uaFlagSvg = `<svg viewBox="0 0 60 40" preserveAspectRatio="none"><rect width="60" height="20" fill="#0057B7"/><rect y="20" width="60" height="20" fill="#FFD700"/></svg>`;
+
     let currentLang = 'ua';
+
+    function toggleLanguage() {
+      setLanguage(currentLang === 'ua' ? 'en' : 'ua');
+    }
+
     function setLanguage(lang) {
       currentLang = lang;
-      document.getElementById('btnLangUA').classList.toggle('active', lang === 'ua');
-      document.getElementById('btnLangEN').classList.toggle('active', lang === 'en');
+      const btnUA = document.getElementById('btnLangUA');
+      if (btnUA) btnUA.classList.toggle('active', lang === 'ua');
+      const btnEN = document.getElementById('btnLangEN');
+      if (btnEN) btnEN.classList.toggle('active', lang === 'en');
+
+      const flagWrap = document.getElementById('langFlagWrap');
+      const toggleBtn = document.getElementById('langToggleBtn');
+      if (flagWrap) {
+        // When site is Ukrainian, show English flag to allow switching to EN. When site is English, show Ukrainian flag.
+        flagWrap.innerHTML = (lang === 'ua') ? ukFlagSvg : uaFlagSvg;
+      }
+      if (toggleBtn) {
+        const title = (lang === 'ua') ? 'Switch language to English' : 'Перемкнути на українську мову';
+        toggleBtn.setAttribute('title', title);
+        toggleBtn.setAttribute('aria-label', title);
+      }
 
       const t = translations[lang];
       const navLinks = document.querySelectorAll('.top-navbar .nav-link');
-      if (navLinks.length >= 6) {
-        navLinks[0].textContent = t.navHome;
-        navLinks[1].textContent = t.navAbout;
-        navLinks[2].textContent = t.navInfra;
-        navLinks[3].textContent = t.navMap;
-        navLinks[4].textContent = t.navBuild;
-        navLinks[5].textContent = t.navContacts;
+      if (navLinks.length >= 5) {
+        navLinks[0].textContent = t.navPetrichor || 'MANDRA PETRICOR';
+        navLinks[1].textContent = t.navInfra;
+        navLinks[2].textContent = t.navMap;
+        navLinks[3].textContent = t.navBuild;
+        navLinks[4].textContent = t.navContacts;
       }
       document.getElementById('btnTopAction').textContent = t.topBtn;
-      document.getElementById('heroMainHeadline').textContent = t.headline;
-      document.getElementById('inpMainHeadline').value = t.headline;
+      document.getElementById('heroMainHeadline').innerHTML = t.headline;
+      document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').textContent = t.desc;
       document.getElementById('inpMainDesc').value = t.desc;
 
       // Update CTA buttons
       const numoPill = document.querySelector('#btnStyleNumo .action-pill');
       if (numoPill) numoPill.textContent = t.ctaText;
+      const numoBtn = document.getElementById('btnStyleNumo');
+      if (numoBtn) numoBtn.setAttribute('aria-label', t.ctaText);
       const circleText = document.querySelector('#btnStyleCircle .circle-text');
       if (circleText) circleText.innerHTML = t.ctaCircle;
       const squareText = document.querySelector('#btnStyleSquare span:first-child');
@@ -6077,7 +6184,9 @@
 
     /* Text & Font Handlers */
     function setMainHeadline(val) {
-      document.getElementById('heroMainHeadline').textContent = val;
+      const cleanVal = val.replace(/<[^>]*>/g, '');
+      const formatted = cleanVal.replace(/^(Дохідна|High-yield)(\s+|$)/i, '<span class="title-word-accent">$1</span>$2');
+      document.getElementById('heroMainHeadline').innerHTML = formatted;
       saveSettings();
     }
     function setMainDesc(val) {
@@ -6184,10 +6293,13 @@
         }
 
           // Завжди прибираємо "MANDRA Invest — " з тексту заголовка та капіталізуємо першу літеру
-          let cleanText = s.headlineText.replace(/MANDRA\s*Invest\s*—\s*/gi, '').trim();
+          let cleanText = s.headlineText ? s.headlineText.replace(/MANDRA\s*Invest\s*—\s*/gi, '').replace(/<[^>]*>/g, '').trim() : '';
           if (cleanText) cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
-          document.getElementById('inpMainHeadline').value = cleanText || 'Дохідна нерухомість, у яку хочеться повертатися';
-          document.getElementById('heroMainHeadline').textContent = cleanText || 'Дохідна нерухомість, у яку хочеться повертатися';
+          const defaultHeadlineText = 'Дохідна нерухомість, у яку хочеться повертатися';
+          const textToUse = cleanText || defaultHeadlineText;
+          document.getElementById('inpMainHeadline').value = textToUse;
+          const formatted = textToUse.replace(/^(Дохідна|High-yield)(\s+|$)/i, '<span class="title-word-accent">$1</span>$2');
+          document.getElementById('heroMainHeadline').innerHTML = formatted;
         if (s.headlineFx) {
           const btn = Array.from(document.querySelectorAll('#headlineFxGrid .fx-btn')).find(b => b.getAttribute('onclick').includes(s.headlineFx));
           setHeadlineEffect(s.headlineFx, btn);
@@ -6199,9 +6311,12 @@
             c.classList.toggle('active', c.getAttribute('data-font') === fName);
           });
         }
-        if (s.headlineSize) {
+        if (s.headlineSize && parseFloat(s.headlineSize) > 3.8) {
           updateVar('--title-size', s.headlineSize + 'vw', 'valTitleSize');
           document.getElementById('rngTitleSize').value = s.headlineSize;
+        } else {
+          updateVar('--title-size', '4.0vw', 'valTitleSize');
+          document.getElementById('rngTitleSize').value = '4.0';
         }
         if (s.headlineWeight) {
           updateVar('--title-weight', s.headlineWeight, 'valTitleWeight');
@@ -6300,6 +6415,14 @@
     });
 
     loadSettings();
+
+    // Top navbar active state handling
+    document.querySelectorAll('.top-navbar .nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        document.querySelectorAll('.top-navbar .nav-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
   
     /* ============================================================
        ЕКРАН 3 — SCROLL SCRUB ENGINE (клон механіки alexvillasgroup)
