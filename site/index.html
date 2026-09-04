@@ -1180,9 +1180,10 @@
      ============================================================ */
   .section-scroll-showcase {
     position: relative;
-    background: var(--bg-dark);
+    z-index: 3;
+    background: transparent;
     margin-top: -1px;   /* без шва з маніфестом */
-    height: 240vh;                 /* довший трек під 3 фази: збірка → пауза → розліт */
+    height: 185vh;      /* динамічний трек: збірка → коротка пауза → розкриття */
   }
   .showcase-sticky {
     position: sticky;
@@ -1194,6 +1195,8 @@
     align-items: center;
     overflow: visible;
     padding: 9vh 3.6vw 2vh;
+    background: transparent;
+    pointer-events: none;
   }
 
   /* Заголовок прив'язаний до картки 01 і їде разом з нею */
@@ -1250,6 +1253,7 @@
     border-radius: 20px;
     border: none;
     will-change: left, top, width, height, transform, opacity;
+    pointer-events: auto;
     /* Liquid Glass */
     background: #0E1F0B;
     box-shadow: 0 22px 60px rgba(14, 31, 11, 0.22);
@@ -1558,12 +1562,14 @@
      Темно-зелений текст (#0E1F0B) та глибокі тіні
      ============================================================ */
   .section-stats-stack {
-    background: var(--bg-dark);
-    color: #FFFFFF;
     position: relative;
+    z-index: 1;
+    background: transparent;
+    color: #FFFFFF;
     padding: 70px 6vw 80px;
     overflow: visible;
     border-top: none;
+    margin-top: -65vh; /* Напливає ззаду під розсувні фотокартки без швів і смуг */
   }
   .stats-container {
     max-width: 1320px;
@@ -1767,7 +1773,7 @@
   }
 
   @media (max-width: 900px) {
-    .section-stats-stack { padding: 80px 5vw 100px; }
+    .section-stats-stack { padding: 80px 5vw 100px; margin-top: -20vh; }
     .stats-container { grid-template-columns: 1fr; gap: 40px; }
     .stats-col-info { position: relative; top: 0; padding-right: 0; }
     .stats-eyebrow { font-size: 3.2vw; }
@@ -4302,6 +4308,7 @@
           </div>
         </div>
       </div>
+    </div>
   </section>
 
   <!-- ============================================================
@@ -6465,15 +6472,15 @@
       const START = { l: 0, t: 0, w: 100, h: 100 };   /* усі під першим фото */
 
       function easeOutExpo(x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); }
-      function easeInCubic(x) { return x * x * x; }
+      function easeInOutQuad(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
       const lerp = (a, b, t) => a + (b - a) * t;
       const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
       /* Фази скролу (частка загального треку) */
-      const ASSEMBLE_END = 0.42;   /* 0 → 42%: збірка у сітку 2x2 */
-      const HOLD_END     = 0.62;   /* 42 → 62%: пауза, сітка зафіксована */
-      /* 62 → 100%: розліт карток у сторони за межі екрана */
-      const FLY_VW = 95;           /* дистанція вильоту, vw */
+      const ASSEMBLE_END = 0.38;   /* 0 → 38%: збірка у сітку 2x2 */
+      const HOLD_END     = 0.50;   /* 38 → 50%: пауза, сітка зафіксована */
+      /* 50 → 100%: розсування карток у сторони (залишаючи ~15% видимості по краях) */
+      const FLY_VW = 44;           /* дистанція розсування (залишає ~15% видимості по краях) */
 
       /* Заголовок на картці 01: спокійно тане, поки картка починає розкриватись */
       const TITLE_FADE_START = 0.02;
@@ -6491,10 +6498,10 @@
         if (Math.abs(p - lastP) < 0.0008) return;
         lastP = p;
 
-        /* Фаза 1: збірка у сітку (застигає під час паузи, бо a=1 при p>=42%) */
+        /* Фаза 1: збірка у сітку (застигає під час паузи, бо a=1 при p>=38%) */
         const a  = easeOutExpo(clamp01(p / ASSEMBLE_END));
-        /* Фаза 3: розліт у сторони після паузи (62%→100%) */
-        const fo = easeInCubic(clamp01((p - HOLD_END) / (1 - HOLD_END)));
+        /* Фаза 3: плавне розсування у сторони після паузи (50%→100%) */
+        const fo = easeInOutQuad(clamp01((p - HOLD_END) / (1 - HOLD_END)));
 
         /* Заголовок: статичний на старті, плавно зникає до початку розкриття */
         if (titleEl) {
@@ -6513,19 +6520,28 @@
           el.style.width  = lerp(START.w, f.w, a).toFixed(3) + '%';
           el.style.height = lerp(START.h, f.h, a).toFixed(3) + '%';
 
-          /* Розліт: ліві (tl,bl) — вліво, праві (tr,br) — вправо + розчинення */
+          /* Розсування: ліві (tl,bl) — вліво, праві (tr,br) — вправо (залишаються ~15% по краях екрана) */
           const dir = (q === 'tl' || q === 'bl') ? -1 : 1;
           const tx  = (dir * FLY_VW * fo).toFixed(2);
           el.style.transform = 'translate3d(' + tx + 'vw,0,0)';
-          el.style.opacity   = (1 - fo).toFixed(3);
+          /* Картки лишаються чіткими на фоні (не зникають до 0) */
+          el.style.opacity   = '1';
 
-          /* підпис першої картки видно завжди, решта проявляються при збірці */
+          /* підпис першої картки видно завжди, решта проявляються при збірці, тануть при розсуванні */
           const isLead = el.classList.contains('showcase-lead');
           const badge = el.querySelector('.card-badge');
           const num   = el.querySelector('.card-index');
           const vis   = isLead ? 1 : clamp01((a - 0.3) / 0.45);
-          if (badge) badge.style.opacity = vis.toFixed(3);
-          if (num)   num.style.opacity   = (isLead ? 1 : vis).toFixed(3);
+          const textOpacity = (vis * (1 - fo * 0.9)).toFixed(3);
+          if (badge) badge.style.opacity = textOpacity;
+          if (num)   num.style.opacity   = ((isLead ? 1 : vis) * (1 - fo * 0.9)).toFixed(3);
+        }
+
+        /* Наплив секції статистики: схована під час збірки 2x2, плавно проявляється при розсуванні */
+        const statsEl = document.getElementById('stats');
+        if (statsEl) {
+          const statsOpacity = p < HOLD_END ? 0 : clamp01((p - HOLD_END) / 0.15);
+          statsEl.style.opacity = statsOpacity.toFixed(3);
         }
       }
 
