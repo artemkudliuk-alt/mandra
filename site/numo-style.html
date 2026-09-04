@@ -791,7 +791,7 @@
     border-right: none;
     border-radius: 12px 0 0 12px;
     padding: 0.8vw 0.65vw;
-    display: flex;
+    display: none; /* design studio trigger hidden on production */
     flex-direction: column;
     align-items: center;
     gap: 0.6vw;
@@ -1351,7 +1351,7 @@
      Inline Image Capsules: фото вбудовані просто в рядок тексту
      ============================================================ */
   .section-manifesto {
-    background: #FFFFFF;
+    background: var(--bg-dark);
     min-height: 62vh;
     display: flex;
     align-items: center;
@@ -1373,27 +1373,31 @@
   }
   .manifesto-text {
     font-family: var(--title-font);
-    font-size: var(--s2m-text-size);
-    font-weight: 300;              /* базова вага — тонка */
-    line-height: 1.62;
+    font-weight: 300;
     letter-spacing: -0.01em;
-    color: #2D3740;
+    color: #FFFFFF;
     margin: 0;
   }
-  /* Перше речення — жирний акцент */
-  .manifesto-lead-bold,
-  .mf-bold {
+  /* Lead — крупна заява, повністю фірмовий зелений */
+  .manifesto-lead-bold {
+    display: block;
+    font-size: 2.5vw;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
     font-weight: 800;
-    color: #0E1F0B;
+    color: var(--accent-color);
+    margin-bottom: 1.6vw;
   }
-  /* Решта тексту — тонка */
+  .mf-bold { font-weight: 800; color: var(--accent-color); }
+  .mf-accent { color: var(--accent-color); }
+  /* Body — чистий білий, ширша смуга */
   .manifesto-body-light {
-    font-weight: 300;
-    color: #2D3740;
-  }
-  .manifesto-body-light {
-    font-weight: 300;
-    color: #2D3740;
+    display: block;
+    font-size: 1.5vw;
+    line-height: 1.66;
+    max-width: 100%;
+    font-weight: 400;
+    color: #FFFFFF;
   }
 
   /* --- Inline Image Capsule (Збільшено у 2 рази) --- */
@@ -1407,11 +1411,12 @@
     min-width: 74px;
     min-height: 36px;
     margin: 0 0.42vw;
-    transform: translateY(-0.25vw) scale(1);
+    transform: translateY(-0.15vw) scale(1);
     border-radius: 999px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
     opacity: 1;
     transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1),
                 opacity 0.62s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1423,12 +1428,14 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: saturate(1.05); /* світле яскраве фото */
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
   }
+  .inline-capsule:hover img { filter: saturate(1.12) brightness(1.04); }
   /* Поява: staggered pop-in при скролі */
   .section-manifesto.is-visible .inline-capsule {
     opacity: 1;
-    transform: translateY(-0.25vw) scale(1);
+    transform: translateY(0) scale(1);
   }
   .section-manifesto.is-visible .inline-capsule:nth-of-type(1) { transition-delay: 0.10s; }
   .section-manifesto.is-visible .inline-capsule:nth-of-type(2) { transition-delay: 0.22s; }
@@ -1438,7 +1445,7 @@
   /* Hover: капсула розширюється, фото зумиться */
   #mfCap2, #mfCap4 { margin-right: 0.1vw; }
   .inline-capsule:hover {
-    transform: translateY(-0.25vw) scale(1.08);
+    transform: translateY(0) scale(1.08);
     box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
   }
   .inline-capsule:hover img { transform: scale(1.15); }
@@ -1527,6 +1534,8 @@
   @media (max-width: 900px) {
     .section-manifesto { min-height: auto; padding: 14vw 6vw; }
     .manifesto-text { font-size: 5.4vw; line-height: 1.5; }
+    .manifesto-lead-bold { font-size: 6.6vw; line-height: 1.28; margin-bottom: 5vw; }
+    .manifesto-body-light { font-size: 4.6vw; line-height: 1.55; max-width: none; }
     .inline-capsule { width: 13vw; height: 7vw; margin: 0 1.2vw; }
     .inline-capsule::after { display: none; }
     .section-badge { font-size: 3vw; }
@@ -4232,8 +4241,8 @@
       <div class="section-badge" id="mfBadge">[ ПРО MANDRA INVEST ]</div>
 
       <h2 class="manifesto-text">
-        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span><span class="inline-capsule" data-tooltip="A-frame шале Mandra з чаном" id="mfCap1"><img src="assets/manifesto/cap1.webp" alt="A-frame шале Mandra" decoding="async" loading="lazy"></span><span class="mf-bold" id="mfPart1b">готельного продукту</span>.</span>
-        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span><span class="inline-capsule" data-tooltip="Засновники та партнери Ribas Hotels" id="mfCap2"><img src="assets/manifesto/cap2.webp" alt="Засновники та команда" decoding="async" loading="lazy"></span>. <span id="mfPart3">Ми представляємо інвестиційні проєкти у сфері гостинності</span><span class="inline-capsule" data-tooltip="Карпатські смереки та природа" id="mfCap3"><img src="assets/manifesto/cap3.webp" alt="Природа Карпат" decoding="async" loading="lazy"></span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span class="inline-capsule" data-tooltip="Супровід інвестора та дохідність" id="mfCap4"><img src="assets/manifesto/cap4.webp" alt="Інтер'єр та сервіс" decoding="async" loading="lazy"></span><span id="mfPart5">.</span></span>
+        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span><span class="inline-capsule" data-tooltip="A-frame шале Mandra з чаном" id="mfCap1"><img src="assets/manifesto/cap1.webp" alt="A-frame шале Mandra" decoding="async" loading="lazy"></span><span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
+        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми представляємо інвестиційні</span><span class="inline-capsule" data-tooltip="Інвестиційні проєкти Mandra" id="mfCap3"><img src="assets/manifesto/cap3.webp" alt="Інвестиційні проєкти" decoding="async" loading="lazy"></span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
       </h2>
 
     </div>
@@ -5706,12 +5715,13 @@
         mfPart1: 'Від ідеї — до працюючого',
         mfPart1b: 'готельного продукту',
         mfPart2: 'Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments',
-        mfPart3: 'Ми представляємо інвестиційні проєкти у сфері гостинності',
+        mfPart3: 'Ми представляємо інвестиційні',
+        mfPart3b: 'проєкти у сфері гостинності',
         mfPart4: "та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості",
         mfPart5: '.',
         mfCap1Tip: 'A-frame шале Mandra з чаном',
         mfCap2Tip: 'Засновники та партнери Ribas Hotels',
-        mfCap3Tip: 'Карпатські смереки та природа',
+        mfCap3Tip: 'Інвестиційні проєкти Mandra',
         mfCap4Tip: 'Супровід інвестора та дохідність',
         mfFooterTitle: 'Ми відповідаємо за:',
         mfP1Name: 'Аналіз',
@@ -5891,12 +5901,13 @@
         mfPart1: 'From vision to a thriving',
         mfPart1b: 'hospitality product',
         mfPart2: 'Mandra Invest is the official investment division of developer Mandra Moments',
-        mfPart3: 'We curate high-yield hospitality projects in the Carpathians',
+        mfPart3: 'We curate high-yield investment',
+        mfPart3b: 'hospitality projects in the Carpathians',
         mfPart4: 'and support investors through every milestone — from asset selection and financial modeling to final acquisition',
         mfPart5: '.',
         mfCap1Tip: 'Mandra A-frame chalet with hot tub',
         mfCap2Tip: 'Founders & Ribas Hotels partners',
-        mfCap3Tip: 'Carpathian spruce forest',
+        mfCap3Tip: 'Mandra investment projects',
         mfCap4Tip: 'Investor advisory & yield',
         mfFooterTitle: 'We are responsible for:',
         mfP1Name: 'Analysis',
@@ -6114,7 +6125,7 @@
                   /* ЕКРАН 2 — маніфест */
                   'mpPhaseNum','mpPhaseTitle','mpPhaseDesc','mpPhaseCount',
                   'mpPhL1','mpPhL2','mpPhL3','mpPhL4','mpPhL5',
-                  'mfBadge','mfPart1','mfPart1b','mfPart2','mfPart3','mfPart4','mfPart5',
+                  'mfBadge','mfPart1','mfPart1b','mfPart2','mfPart3','mfPart3b','mfPart4','mfPart5',
                   'mfFooterTitle','mfP1Name','mfP1Desc','mfP2Name','mfP2Desc',
                   'mfP3Name','mfP3Desc','mfP4Name','mfP4Desc',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
