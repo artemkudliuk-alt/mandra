@@ -1269,7 +1269,9 @@
     /* Liquid Glass */
     background: #0E1F0B;   /* не видно: фото перекриває картку повністю */
   }
-  .showcase-card img {
+  /* Відео в lead-картці живе за тими самими правилами, що й фото */
+  .showcase-card img,
+  .showcase-card video {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -4382,7 +4384,9 @@
           <div class="showcase-lead" data-q="tl">
             <h2 class="showcase-title" id="showcaseTitle">Ми відповідаємо за</h2>
             <div class="showcase-card showcase-card-lead">
-            <img src="assets/screen2/01_location.webp?v=2" alt="Локація та земля" loading="lazy" decoding="async">
+            <video class="lead-video" src="assets/screen2/01_location_loop.mp4?v=1"
+                   poster="assets/screen2/01_location.webp?v=3"
+                   autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
               <span class="card-index">01</span>
               <div class="card-badge">
                 <span class="card-badge-title" id="sc1Title">Аналіз</span>
@@ -6979,6 +6983,23 @@
       initInvestFlowScrollObserver();
       initFaqAccordion();
     }
+
+    /* Відео в картці 01 крутиться тільки коли воно в кадрі. Інакше декодер
+       даремно їсть той самий кадровий бюджет, за який ми билися у скролі. */
+    (function initLeadVideo() {
+      const v = document.querySelector('.lead-video');
+      if (!v) return;
+      if (!('IntersectionObserver' in window)) return;   // лишається autoplay
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            v.play().catch(function () {});   // автозапуск можуть заблокувати — не падаємо
+          } else {
+            v.pause();
+          }
+        });
+      }, { threshold: 0.01 }).observe(v);
+    })();
 
     /* ============================================================
        LENIS — плавний скрол на весь сайт
