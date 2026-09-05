@@ -1267,8 +1267,7 @@
     will-change: left, top, width, height, transform, opacity;
     pointer-events: auto;
     /* Liquid Glass */
-    background: #0E1F0B;
-    box-shadow: 0 22px 60px rgba(14, 31, 11, 0.22);
+    background: #0E1F0B;   /* не видно: фото перекриває картку повністю */
   }
   .showcase-card img {
     position: absolute;
@@ -1306,17 +1305,9 @@
   }
 
   /* Делікатна підкладка тільки під підписом (не на все фото) */
-  .showcase-card::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 52%;
-    background: linear-gradient(to top, rgba(6, 10, 8, 0.80) 0%, rgba(6, 10, 8, 0.38) 42%, transparent 100%);
-    z-index: 1;
-    pointer-events: none;
-  }
+  /* Градієнтна плашка на нижніх 52% кожної картки прибрана — вона темнила
+     фото і на роз'їханих картках читалась як сторонній фон по краях кадру.
+     Замість неї підписи тримає власна тінь тексту. */
 
   /* Расположение текста по углам с деликатным оформлением */
   .card-badge {
@@ -1414,7 +1405,10 @@
   /* Lead — крупна заява, повністю фірмовий зелений */
   .manifesto-lead-bold {
     display: block;
-    font-size: 2.5vw;
+    /* Контейнер .manifesto-text упирається в max-width: 1520px, а кегль у vw
+       далі ріс — на 1920 заголовок ламався на два рядки, хоча до 1680 стояв
+       в один. Стеля 41px тримає його однорядковим на будь-якій ширині. */
+    font-size: min(2.5vw, 41px);
     line-height: 1.32;
     letter-spacing: -0.02em;
     font-weight: 800;
@@ -1439,11 +1433,15 @@
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    width: var(--capsule-w);
-    height: var(--capsule-h);
+    /* Стеля така сама, як у кегля заголовка: контейнер не росте після 1520px,
+       тож і капсула не повинна — інакше на ultrawide вона сама виштовхує
+       заголовок у другий рядок. Значення = розмір на 1680px, до якого все
+       лишається як було. */
+    width: min(var(--capsule-w), 86px);
+    height: min(var(--capsule-h), 42px);
     min-width: 74px;
     min-height: 36px;
-    margin: 0 0.42vw;
+    margin: 0 min(0.42vw, 7px);
     transform: translateY(-0.15vw) scale(1);
     border-radius: 999px;
     overflow: hidden;
