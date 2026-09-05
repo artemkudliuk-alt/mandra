@@ -408,7 +408,11 @@
   .hero-main-content {
     position: relative;
     padding: 0 3.6vw;
-    padding-left: calc(3.6vw + 50px);
+    /* Зсув текстового блоку вправо. Був 50px — фікс не масштабувався, тому на
+       ширшому екрані блок відносно з'їжджав уліво (6.854% ширини на 1536,
+       6.204% на 1920). 50px від еталонних 1536 = 3.2552vw, і тепер композиція
+       однакова на будь-якій десктопній ширині. */
+    padding-left: calc(3.6vw + 3.2552vw);
     margin-bottom: 8vh;
     display: flex;
     flex-direction: column;
@@ -1587,7 +1591,10 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1.18fr;
-    gap: 6vw;
+    /* Контейнер має фіксовану ширину 1320px, тому гап у vw його розбалансовував:
+       він ріс із в'юпортом (92px на 1536, 115px на 1920), а ширина колонок —
+       ні, і стос карток відносно з'їжджав. 6vw від еталонних 1536 = 92px. */
+    gap: 92px;
     align-items: start;
     position: relative;
   }
@@ -1967,7 +1974,10 @@
      ============================================================ */
   .mp-phase-card {
     position: absolute;
-    left: calc(42% + 50px);
+    /* Той самий зсув на 50px від еталонних 1536 = 3.2552vw.
+       Лінія-коннектор поруч тягнеться разом із шириною секції
+       (preserveAspectRatio="none"), тож плашка тепер їде з нею синхронно. */
+    left: calc(42% + 3.2552vw);
     bottom: 3.5%;
     transform: translateX(-50%);
     width: 29vw;
