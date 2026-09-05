@@ -57,8 +57,8 @@
     /* ЕКРАН 3 — скрол-шоукейс */
     --s2-title-size: 3.8vw;
     --s2-sub-size: 1.15vw;
-    --s2-badge-size: 1.2vw;
-    --s2-badge-desc-size: 0.85vw;
+    --s2-badge-size: 1.45vw;
+    --s2-badge-desc-size: 1.0vw;
 
     /* 2. SUBTITLE / DESCRIPTION (БЛОК 2) */
     --sub-font: 'Manrope', sans-serif;
@@ -1199,7 +1199,7 @@
     pointer-events: none;
   }
 
-  /* Заголовок лежить ЗВЕРХУ НА картці 01, по центру; тане на старті розкриття */
+  /* Заголовок прив'язаний до картки 01 і їде разом з нею */
   .showcase-title {
     position: absolute;
     left: 50%;
@@ -1288,37 +1288,48 @@
   }
   .showcase-card[data-q="tr"] .card-index,
   .showcase-card[data-q="br"] .card-index {
-    top: 22px;
-    right: 28px;
-    left: auto;
+    top: 26px;
+    left: 34px;
+    right: auto;
   }
 
-  /* Градиенты полностью убраны по запросу пользователя */
+  /* Делікатна підкладка тільки під підписом (не на все фото) */
+  .showcase-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 52%;
+    background: linear-gradient(to top, rgba(6, 10, 8, 0.80) 0%, rgba(6, 10, 8, 0.38) 42%, transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
 
   /* Расположение текста по углам с деликатным оформлением */
   .card-badge {
     position: absolute;
-    left: 30px;
-    bottom: 28px;
+    left: 34px;
+    bottom: 32px;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 9px;
     padding: 0;
     background: none;
     border: none;
     text-shadow: 0 2px 18px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
-    max-width: 82%;
+    max-width: 84%;
     transition: opacity 0.25s ease;
   }
-  /* Правые карточки: прижимаем к нижнему правому углу */
+  /* Єдине вирівнювання по лівому краю для всіх карток */
   .showcase-card[data-q="tr"] .card-badge,
   .showcase-card[data-q="br"] .card-badge {
-    right: 30px;
-    bottom: 28px;
-    left: auto;
-    align-items: flex-end;
-    text-align: right;
+    left: 34px;
+    bottom: 32px;
+    right: auto;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .card-badge-title {
@@ -1594,6 +1605,9 @@
     flex-direction: column;
     gap: 20px;
     padding-right: 2vw;
+    /* Такий самий трейлінг, як у колонки зі стосом: інакше текст лишається
+       приклеєним ще довго після того, як картки поїхали */
+    margin-bottom: 520px;
   }
   .stats-eyebrow {
     font-family: var(--sub-font);
@@ -1671,47 +1685,103 @@
   /* Права колонка: Скрол-трек для колоди карток */
   .stats-col-deck {
     position: relative;
-    /* Трек для плавного послідовного стикування 4-х карток */
-    height: auto;
+    /* Трек для плавного послідовного стикування 4-х карток.
+       --card-span — скільки скролу з'їдає одна картка. Проліт картки — 410px,
+       тож передача виходить 410/1260 ≈ 1:3: та сама дистанція, але втричі
+       повільніше. Хочеш швидше або повільніше — це єдине число, яке треба
+       крутити (JS читає його звідси, нічого більше правити не доведеться). */
+    --card-span: 1260px;
+    --stack-height: 488px;   /* 384 картка + 4 × 26 сходинки */
+    height: calc(var(--stack-height) + 4 * var(--card-span) + 40vh);
   }
 
-  /* Зафіксований по центру контейнер колоди */
+  /* Запінений контейнер колоди: тримає стос на місці, поки JS веде картки */
   .stats-deck-sticky {
-    position: relative;
+    position: sticky;
+    top: 14vh;
     width: 100%;
+    height: var(--stack-height);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .stat-card {
+      background: rgba(16, 23, 18, 0.96);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
   }
 
   /* Базова картка в стеку: ТЕМНА ЗЕЛЕНО-ХВОЙНА ТА БЛАГОРОДНА */
   .stat-card {
-    position: sticky;
-    width: 100%;
+    /* Картки більше не sticky: sticky рухає їх рівно 1:1 зі скролом і гальмує
+       жорстким упором. Тепер позицію веде JS усередині запіненого контейнера —
+       звідси і втричі коротший проліт, і м'яке гальмування на підльоті. */
+    position: absolute;
+    left: 0;
+    right: 0;
     min-height: 384px;   /* вільне поле згори > 52px, щоб у стосі не просвічував текст */
-    margin-bottom: 26px;
     display: grid;
     grid-template-columns: 1fr;
-    background: rgba(20, 28, 22, 0.88);
-    backdrop-filter: blur(20px) saturate(125%);
-    -webkit-backdrop-filter: blur(20px) saturate(125%);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 20px; /* ВАРІАНТ А: м'які скруглення */
+    background: rgba(18, 26, 20, 0.58);
+    backdrop-filter: blur(26px) saturate(135%);
+    -webkit-backdrop-filter: blur(26px) saturate(135%);
+    border: none;
+    border-radius: 20px;
     overflow: hidden;
-    /* світлий контур + блік згори, щоб у стосі було видно межу кожної картки */
+    isolation: isolate;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
       0 -10px 24px rgba(0, 0, 0, 0.45),
-      0 20px 46px rgba(14, 31, 11, 0.26);
+      0 26px 60px rgba(0, 0, 0, 0.42);
     will-change: transform;
     transform-origin: top center;
     transition: box-shadow 0.3s ease;
   }
+  /* Жива кромка скла: яскравіша зверху-зліва, гасне донизу */
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Затемнення картки, яку накриває наступна.
+     Раніше це робив filter: brightness() зі скрол-обробника — він на кожному
+     кадрі змушував браузер перераховувати backdrop-filter: blur(26px) усіх
+     п'яти накладених карток. Оверлей з opacity композиториться на GPU і
+     блюр не чіпає. */
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #060a07;
+    opacity: var(--dim, 0);
+    pointer-events: none;
+    z-index: 2;
+  }
 
   /* Каскадне зміщення положення та глибина затінення карток у фінальній стопці (крок 18px) */
   /* Єдиний колір для всієї стопки */
-  .stat-card:nth-child(1) { top: calc(14vh + 0px);   z-index: 1; margin-bottom: 130px; }
-  .stat-card:nth-child(2) { top: calc(14vh + 26px);  z-index: 2; margin-bottom: 104px; }
-  .stat-card:nth-child(3) { top: calc(14vh + 52px);  z-index: 3; margin-bottom: 78px; }
-  .stat-card:nth-child(4) { top: calc(14vh + 78px);  z-index: 4; margin-bottom: 52px; }
-  .stat-card:nth-child(5) { top: calc(14vh + 104px); z-index: 5; margin-bottom: 26px; }
+  /* Позиції у пристикованому стосі. Тепер вони відлічуються від запіненого
+     контейнера, а не від в'юпорта — 14vh задає сам контейнер. */
+  .stat-card:nth-of-type(1) { top: 0;     z-index: 1; }
+  .stat-card:nth-of-type(2) { top: 26px;  z-index: 2; }
+  .stat-card:nth-of-type(3) { top: 52px;  z-index: 3; }
+  .stat-card:nth-of-type(4) { top: 78px;  z-index: 4; }
+  .stat-card:nth-of-type(5) { top: 104px; z-index: 5; }
 
   /* Фото зліва в картці */
   .stat-card-media {
@@ -1739,7 +1809,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: inherit;
+    background: transparent;   /* фон малює лише сама картка, інакше подвійна заливка */
   }
 
   .stat-card-tag {
@@ -1780,7 +1850,10 @@
     .stats-title { font-size: 7.5vw; }
     .stats-desc { font-size: 3.8vw; max-width: 100%; }
     .stats-cta-btn { font-size: 3.6vw; padding: 12px 24px; }
-    .stat-card { grid-template-columns: 1fr; min-height: auto; margin-bottom: 30px; position: relative; top: 0 !important; }
+    /* Мобільна версія — без піна і без скраба: картки йдуть простою стрічкою */
+    .stats-col-deck { height: auto; }
+    .stats-deck-sticky { position: static; height: auto; }
+    .stat-card { grid-template-columns: 1fr; min-height: auto; margin-bottom: 30px; position: relative; top: 0 !important; transform: none !important; }
     .stat-card-media { min-height: 220px; height: 220px; }
     .stat-card-media::after { background: linear-gradient(180deg, transparent 65%, rgba(20, 28, 22, 0.85) 100%); }
     .stat-card-body { padding: 26px 22px 30px; }
@@ -4117,7 +4190,19 @@
       text-align: center;
     }
   }
+
+  /* ============================================================
+     LENIS — плавний скрол на весь сайт
+     Lenis керує справжньою позицією скролу, тому position: sticky,
+     scrollY і всі наявні scroll-обробники працюють без змін.
+     ============================================================ */
+  html.lenis,
+  html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 </head>
 <body>
 
@@ -6582,59 +6667,57 @@
     (function initStatsStackScrub() {
       const section = document.getElementById('stats');
       if (!section) return;
-      const deck = section.querySelector('.stats-col-deck');
-      const sticky = section.querySelector('.stats-deck-sticky');
       const cards = Array.from(section.querySelectorAll('.stat-card'));
-      if (!deck || !sticky || cards.length === 0) return;
+      if (cards.length < 2) return;
 
       let ticking = false;
 
+      // smoothstep: нульова швидкість на обох кінцях — картка м'яко рушає і так
+      // само м'яко стає. Пік швидкості 1.5, тоді як у easeOutCubic він 3 і весь
+      // ривок припадає на старт вікна, тобто рух знову читався б як кидок.
+      const ease = (x) => x * x * (3 - 2 * x);
+
+      // Проліт картки: скільки пікселів вона реально пролітає до стикування.
+      // 410 = висота картки 384 + сходинка 26, тобто картка стартує рівно
+      // з-під попередньої — композиція в спокої така сама, як була.
+      const TRAVEL = 410;
+
+      const deck = section.querySelector('.stats-col-deck');
+      let span = 1260;   // скільки скролу з'їдає одна картка; читаємо з CSS
+
+      function measure() {
+        const css = parseFloat(getComputedStyle(deck).getPropertyValue('--card-span'));
+        if (css > 0) span = css;
+      }
+
       function renderStack() {
         ticking = false;
-        const vh = window.innerHeight;
-        const deckRect = deck.getBoundingClientRect();
-        const pinTop = vh * 0.15;
-        const scrollDistance = deck.offsetHeight - sticky.offsetHeight;
 
-        if (scrollDistance <= 0) return;
+        const pinTop = window.innerHeight * 0.14;         // top запіненого контейнера
+        const scrolled = pinTop - deck.getBoundingClientRect().top;
 
-        // Нормалізований прогрес від 0.0 (вхід у секцію) до 1.0
-        const progress = Math.max(0, Math.min(1, (pinTop - deckRect.top) / scrollDistance));
-
-        // Всі 4 картки повністю пристиковуються до 78% скролу секції,
-        // гарантуючи, що картка 130 доїжджає до кінця і має рівний відступ як у інших
-        const dockProgress = Math.min(1, progress / 0.78);
-
-        const numCardsToDock = cards.length - 1; // 4 картки прилітають по черзі
-
+        const progress = [1];   // перша картка вже у стосі
+        const waiting = [0];
         for (let i = 1; i < cards.length; i++) {
-          const segStart = (i - 1) / numCardsToDock;
-          const segEnd = i / numCardsToDock;
-          const segProgress = Math.max(0, Math.min(1, (dockProgress - segStart) / (segEnd - segStart)));
+          // Вікно картки: своя ділянка треку довжиною span
+          const raw = (scrolled - (i - 1) * span) / span;
+          progress.push(ease(Math.max(0, Math.min(1, raw))));
 
-          const card = cards[i];
-          // Картка плавно приїжджає знизу у своє пристиковане положення
-          const translateY = (1 - segProgress) * (vh * 0.95);
-          card.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0)`;
-
-          // Попередня картка злегка масштабується і затемнюється
-          const prevCard = cards[i - 1];
-          if (segProgress > 0) {
-            const scale = 1 - (segProgress * 0.025);
-            const brightness = 1 - (segProgress * 0.05);
-            prevCard.style.transform = `scale(${scale.toFixed(4)})`;
-            prevCard.style.filter = `brightness(${brightness.toFixed(3)})`;
-          } else if (dockProgress < segStart) {
-            // Ще не почала накриватися цією карткою
-            if (i === 1) {
-              prevCard.style.transform = 'scale(1)';
-              prevCard.style.filter = 'brightness(1)';
-            }
-          }
+          // Поки черга картки не підійшла, вона чекає нижче — і під'їжджає до
+          // старту свого вікна рівно в нуль, тому стику не видно
+          waiting.push(Math.max(0, -raw) * span * 0.35);
         }
 
-        // Фінальна картка 130 завжди 100% яскрава та чітка
-        cards[cards.length - 1].style.filter = 'brightness(1)';
+        for (let i = 0; i < cards.length; i++) {
+          const cover = i + 1 < cards.length ? progress[i + 1] : 0;
+
+          const y = (1 - progress[i]) * TRAVEL + waiting[i];
+          const scale = 1 - cover * 0.042;
+
+          cards[i].style.transform =
+            `translate3d(0, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+          cards[i].style.setProperty('--dim', (cover * 0.11).toFixed(3));
+        }
       }
 
       function onScroll() {
@@ -6644,8 +6727,14 @@
         }
       }
 
+      function onResize() {
+        measure();       // top карток заданий у vh — при зміні висоти вікна він їде
+        onScroll();
+      }
+
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
+      window.addEventListener('resize', onResize, { passive: true });
+      measure();
       renderStack();
     })();
   
@@ -6855,6 +6944,34 @@
       initInvestFlowScrollObserver();
       initFaqAccordion();
     }
+
+    /* ============================================================
+       LENIS — плавний скрол на весь сайт
+       ============================================================ */
+    (function initLenis() {
+      if (typeof Lenis === 'undefined') return;              // CDN не піднявся — лишається нативний скрол
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const lenis = new Lenis({
+        lerp: 0.09,          // менше — довший вибіг; 0.09 ≈ м'яко, але без «мила»
+        wheelMultiplier: 1,
+        smoothWheel: true    // syncTouch лишаємо вимкненим (дефолт):
+                             // на тачі рідна інерція системи краща за емуляцію
+      });
+
+      // Панелі інспектора мають скролитись самі, а не тягнути сторінку
+      document
+        .querySelectorAll('.drawer-scroll-body, .font-select-grid-30')
+        .forEach((el) => el.setAttribute('data-lenis-prevent', ''));
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      window.lenis = lenis;  // знадобиться, коли переводитимемо якорі меню
+    })();
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initAllScreens);
