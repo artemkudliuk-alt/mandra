@@ -145,7 +145,7 @@
      (різниця з кадром інтро 46.84 проти 1.81 у самого постера). Трансформ той
      самий, що в #heroIntro, щоб підкладка і відео стояли піксель у піксель. */
   body.intro-running .bg-photo {
-    background-image: url('assets/hero_intro_poster.webp?v=2');
+    background-image: url('assets/hero_intro_poster.webp?v=3');
     transform: translate(2px, -6px) scale(1.03);
   }
 
@@ -4520,7 +4520,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <!-- Постер інтро — це перший намальований піксель сторінки, тож тягнемо його
      найпершим. Без preload у кадр встигав фон героя, тобто зовсім інша сцена. -->
-<link rel="preload" as="image" href="assets/hero_intro_poster.webp?v=2">
+<link rel="preload" as="image" href="assets/hero_intro_poster.webp?v=3">
 <noscript><style>
   /* Без JS інтро не зіграє ніколи, тож інтерфейс має бути видимий одразу. */
   body.intro-running .ui-layer,
@@ -4542,7 +4542,7 @@
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
-           poster="assets/hero_intro_poster.webp?v=2" src="assets/hero_intro.mp4?v=3"></video>
+           poster="assets/hero_intro_poster.webp?v=3" src="assets/hero_intro.mp4?v=4"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
@@ -7645,7 +7645,7 @@
       /* Цикл тягнемо фоном, поки грає інтро: до передачі він має бути готовий,
          але змагатися з інтро за канал на першому екрані йому нічого. */
       function preloadCycle() {
-        cycle.src = 'assets/hero_cycle.mp4?v=3';
+        cycle.src = 'assets/hero_cycle.mp4?v=4';
         cycle.load();
       }
       if (document.readyState === 'complete') preloadCycle();
