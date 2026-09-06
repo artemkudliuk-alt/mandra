@@ -86,6 +86,7 @@
     font-family: 'Manrope', -apple-system, sans-serif;
     color: #FFFFFF;
     -webkit-font-smoothing: antialiased;
+    scroll-padding-top: clamp(64px, 5.5vw, 90px);
   }
 
   .hero-container {
@@ -154,18 +155,21 @@
      тим самим почерком, що підписи на картках. Власний клас, бо hide-ui вже
      зайнятий ручним перемикачем у панелі. */
   .ui-layer,
+  .top-navbar,
   .free-floating-cta,
   .scroll-indicator {
     transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
   body.intro-running .ui-layer,
+  body.intro-running .top-navbar,
   body.intro-running .free-floating-cta,
   body.intro-running .scroll-indicator {
     opacity: 0;
     transform: translate3d(0, 20px, 0);
     pointer-events: none;
   }
+  body.intro-done .top-navbar        { transition-delay: 0.1s; }
   body.intro-done .free-floating-cta { transition-delay: 0.18s; }
   body.intro-done .scroll-indicator  { transition-delay: 0.34s; }
 
@@ -198,6 +202,7 @@
 
   /* Hide UI mode */
   body.hide-ui .ui-layer,
+  body.hide-ui .top-navbar,
   body.hide-ui .free-floating-cta,
   body.hide-ui .scroll-indicator {
     opacity: 0;
@@ -265,9 +270,12 @@
   }
 
   /* -------------------------------------------------------------
-     TOP NAVBAR — ULTRA-SHEER LIGHT LIQUID GLASS (NO BORDERS)
+     TOP NAVBAR — ULTRA-SHEER LIGHT LIQUID GLASS (ALWAYS FIXED TO TOP)
      ------------------------------------------------------------- */
   .top-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     padding: 1.35vw 3.6vw;
     display: flex;
@@ -278,9 +286,19 @@
     -webkit-backdrop-filter: blur(20px);
     border-bottom: none; /* без рамок */
     box-shadow: none;
-    z-index: 100;
-    position: relative;
-    transition: background 0.3s ease;
+    z-index: 1000;
+    transition: background 0.3s ease, box-shadow 0.3s ease, opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .top-navbar.is-scrolled {
+    background: rgba(18, 18, 18, 0.72);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+  .top-navbar-spacer {
+    width: 100%;
+    height: 5.35vw;
+    min-height: 70px;
+    flex-shrink: 0;
+    pointer-events: none;
   }
 
   .brand-lockup {
@@ -332,23 +350,6 @@
   .nav-link:hover::after {
     transform: scaleX(1);
     opacity: 0.85;
-  }
-  .nav-link.active {
-    color: var(--accent-color, #81B873);
-    font-weight: 700;
-  }
-  .nav-link.active::after {
-    transform: scaleX(1);
-    opacity: 0.85;
-    display: block;
-  }
-  /* When hovering other links in nav-menu, active link temporarily yields its highlight */
-  .nav-menu:hover .nav-link.active:not(:hover) {
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .nav-menu:hover .nav-link.active:not(:hover)::after {
-    transform: scaleX(0);
-    opacity: 0;
   }
 
   /* RIGHT HEADER ACTIONS: PHONE + TOP BUTTON + LANGUAGE SWITCHER (+15% SCALE) */
@@ -4538,63 +4539,70 @@
      було, бо клас вішав сам скрипт. Сім секунд — із запасом до внутрішніх шести. -->
 <script>setTimeout(function(){document.body.classList.remove('intro-running');},7000);</script>
 
+  <!-- 1. Top Navbar: Logo + Liquid Glass Nav Capsule + Phone Capsule + Button (FIXED TO TOP) -->
+  <header class="top-navbar">
+    <a class="brand-lockup" href="/" aria-label="Mandra Invest">
+      <img class="brand-logo-img" src="assets/logo_m_invest_clean.webp" alt="M INVEST" decoding="async">
+    </a>
+
+    <!-- LIQUID GLASS MENU CAPSULE WITH PADDING -->
+    <nav class="nav-menu" aria-label="Основне меню навігації">
+      <a class="nav-link" href="#petrichor">MANDRA PETRICOR</a>
+      <a class="nav-link" href="#infrastructure">ІНФРАСТРУКТУРА</a>
+      <a class="nav-link" href="#map">ІНТЕРАКТИВНА МАПА</a>
+      <a class="nav-link" href="#construction">БУДІВНИЦТВО</a>
+      <a class="nav-link" href="#contacts">КОНТАКТИ</a>
+    </nav>
+
+    <!-- Right Header Actions: Minimalist Language Flag Toggle + Frameless Phone + Top Button -->
+    <div class="header-actions">
+      <!-- BILINGUAL LANGUAGE SWITCHER (RECTANGULAR FLAG RIGHT AFTER THE MENU) -->
+      <button class="lang-switch" id="langToggleBtn" role="switch" aria-checked="false"
+              onclick="toggleLanguage()" aria-label="Switch language to English" title="Switch language to English">
+        <span class="lang-switch-track">
+          <span class="lang-switch-label lang-label-ua">UA</span>
+          <span class="lang-switch-label lang-label-en">EN</span>
+          <span class="lang-flag-wrap" id="langFlagWrap">
+            <svg viewBox="0 0 60 40" preserveAspectRatio="xMidYMid slice">
+              <rect width="60" height="40" fill="#012169"/>
+              <path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>
+              <path d="M0 0l30 20M60 40L30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, -1)"/>
+              <path d="M60 0L30 20M0 40l30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, 1)"/>
+              <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>
+              <path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/>
+            </svg>
+          </span>
+        </span>
+      </button>
+      <!-- FRAMELESS PHONE LINK (NO CAPSULE BACKGROUND / NO BORDER) -->
+      <a class="phone-capsule phone-link-frameless" href="tel:+380501571311" aria-label="Номер телефону Mandra Invest">
+        <span class="phone-icon-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
+        </span>
+        <span>+380 50 157 13 11</span>
+      </a>
+
+      <a class="btn-top-accent" id="btnTopAction" href="#contacts">Онлайн заявка</a>
+
+    </div>
+  </header>
+
   <div class="hero-container">
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
            poster="assets/hero_intro_poster.webp?v=3" src="assets/hero_intro.mp4?v=4"></video>
-    <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <!-- Цикл крутять ДВА шари по черзі: останній кадр ролика і перший
+         розходяться, тож на стику потрібна розчинка, а не стик. Атрибута loop
+         навмисно нема — петлю веде скрипт. -->
+    <video class="bg-video" id="heroVideo" muted playsinline preload="none" aria-hidden="true"></video>
+    <video class="bg-video" id="heroVideo2" muted playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
 
     <div class="ui-layer">
-      <!-- 1. Top Navbar: Logo + Liquid Glass Nav Capsule + Phone Capsule + Button -->
-      <header class="top-navbar">
-        <a class="brand-lockup" href="/" aria-label="Mandra Invest">
-          <img class="brand-logo-img" src="assets/logo_m_invest_clean.webp" alt="M INVEST" decoding="async">
-        </a>
-
-        <!-- LIQUID GLASS MENU CAPSULE WITH PADDING -->
-        <nav class="nav-menu" aria-label="Основне меню навігації">
-          <a class="nav-link active" href="#petrichor">MANDRA PETRICOR</a>
-          <a class="nav-link" href="#infrastructure">ІНФРАСТРУКТУРА</a>
-          <a class="nav-link" href="#map">ІНТЕРАКТИВНА МАПА</a>
-          <a class="nav-link" href="#construction">БУДІВНИЦТВО</a>
-          <a class="nav-link" href="#contacts">КОНТАКТИ</a>
-        </nav>
-
-        <!-- Right Header Actions: Minimalist Language Flag Toggle + Frameless Phone + Top Button -->
-        <div class="header-actions">
-          <!-- BILINGUAL LANGUAGE SWITCHER (RECTANGULAR FLAG RIGHT AFTER THE MENU) -->
-          <button class="lang-switch" id="langToggleBtn" role="switch" aria-checked="false"
-                  onclick="toggleLanguage()" aria-label="Switch language to English" title="Switch language to English">
-            <span class="lang-switch-track">
-              <span class="lang-switch-label lang-label-ua">UA</span>
-              <span class="lang-switch-label lang-label-en">EN</span>
-              <span class="lang-flag-wrap" id="langFlagWrap">
-                <svg viewBox="0 0 60 40" preserveAspectRatio="xMidYMid slice">
-                  <rect width="60" height="40" fill="#012169"/>
-                  <path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>
-                  <path d="M0 0l30 20M60 40L30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, -1)"/>
-                  <path d="M60 0L30 20M0 40l30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, 1)"/>
-                  <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>
-                  <path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/>
-                </svg>
-              </span>
-            </span>
-          </button>
-          <!-- FRAMELESS PHONE LINK (NO CAPSULE BACKGROUND / NO BORDER) -->
-          <a class="phone-capsule phone-link-frameless" href="tel:+380501571311" aria-label="Номер телефону Mandra Invest">
-            <span class="phone-icon-badge">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
-            </span>
-            <span>+380 50 157 13 11</span>
-          </a>
-
-          <a class="btn-top-accent" id="btnTopAction" href="#contacts">Онлайн заявка</a>
-
-        </div>
-      </header>
+      <!-- Spacer keeping hero-main-content exactly at original vertical position -->
+      <div class="top-navbar-spacer" aria-hidden="true"></div>
 
       <!-- 2. Main Hero Content (EXACTLY TWO TEXT BLOCKS) -->
       <main class="hero-main-content">
@@ -6888,13 +6896,16 @@
 
     loadSettings();
 
-    // Top navbar active state handling
-    document.querySelectorAll('.top-navbar .nav-link').forEach(link => {
-      link.addEventListener('click', function() {
-        document.querySelectorAll('.top-navbar .nav-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
+    // Top navbar scroll styling (deepens glass background and shadow on scroll)
+    (function initTopNavbarScroll() {
+      const navbar = document.querySelector('.top-navbar');
+      if (!navbar) return;
+      function onScroll() {
+        navbar.classList.toggle('is-scrolled', window.scrollY > 30);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
   
     /* ============================================================
        ЕКРАН 3 — SCROLL SCRUB ENGINE (клон механіки alexvillasgroup)
@@ -7575,6 +7586,7 @@
     (function initHeroIntro() {
       const intro = document.getElementById('heroIntro');
       const cycle = document.getElementById('heroVideo');
+      const cycle2 = document.getElementById('heroVideo2');
       if (!intro || !cycle) return;
 
       const FADE = 0.5;         // секунди розчинки інтро в цикл
@@ -7614,12 +7626,57 @@
          би застиглий останній кадр інтро — це видно.
          Цикл вмикаємо на повну одразу: він лежить під інтро, тому невидимий,
          поки верхній шар не почне гаснути. */
+      /* ПЕТЛЯ ЦИКЛУ.
+         Останній кадр ролика і перший розходяться на 5.21, тоді як сусідні
+         кадри всередині ролика дають 0.06 — стрибок у 87 разів більший за
+         фон, його видно. Геометрія при цьому чиста: підгонка масштабом дає
+         рівно 1.0000 і зсув 0,0, тобто ріже саме зміст, і обрізанням кадрів
+         це не лікується. Тому два шари крутять один файл по черзі й
+         перетікають один в одного. Розчинка живе у вёрстці, а не запечена у
+         файл: у файлі вона з'їла б довжину ролика назавжди.
+         Момент рахуємо таймером від duration, а не rAF щокадру — вікно
+         завширшки майже пів секунди, зайвий цикл малювання тут ні до чого. */
+      const LOOP_FADE = 0.45;
+      let live = cycle, spare = cycle2, loopTimer = 0;
+
+      function armLoop() {
+        clearTimeout(loopTimer);
+        if (!spare) return;                    /* другого шару нема — крутимо як є */
+        if (!live.duration) {
+          live.addEventListener('loadedmetadata', armLoop, { once: true });
+          return;
+        }
+        const left = (live.duration - LOOP_FADE - live.currentTime) * 1000;
+        loopTimer = setTimeout(swapLoop, Math.max(0, left));
+      }
+
+      function swapLoop() {
+        /* Таймер зводиться від currentTime у мить запуску, а відео може
+           поїхати на десяту пізніше. Якщо прокинулись зарано — просто
+           переводимо будильник, бо інакше розчинка з'їла б живий кадр. */
+        const early = live.duration - LOOP_FADE - live.currentTime;
+        if (early > 0.12) { armLoop(); return; }
+        const out = live;
+        spare.currentTime = 0;
+        spare.play().catch(function () {});
+        spare.classList.add('is-ready');
+        out.classList.add('is-cycle-out');     /* гасне поверх наступного */
+        live = spare;
+        spare = out;
+        setTimeout(function () {
+          out.pause();
+          out.classList.remove('is-ready', 'is-cycle-out');
+        }, LOOP_FADE * 1000 + 80);
+        armLoop();
+      }
+
       function startCycle() {
         if (handed) return;
         handed = true;
         cycle.play().catch(function () {});
         cycle.classList.add('is-ready');
         intro.classList.remove('is-ready');
+        armLoop();
         setTimeout(function () { intro.pause(); }, FADE * 1000 + 80);
       }
 
@@ -7645,8 +7702,10 @@
       /* Цикл тягнемо фоном, поки грає інтро: до передачі він має бути готовий,
          але змагатися з інтро за канал на першому екрані йому нічого. */
       function preloadCycle() {
-        cycle.src = 'assets/hero_cycle.mp4?v=4';
+        const src = 'assets/hero_cycle.mp4?v=4';
+        cycle.src = src;
         cycle.load();
+        if (cycle2) { cycle2.src = src; cycle2.load(); }   /* той самий URL — з кешу */
       }
       if (document.readyState === 'complete') preloadCycle();
       else window.addEventListener('load', preloadCycle, { once: true });
