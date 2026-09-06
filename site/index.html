@@ -124,6 +124,27 @@
     pointer-events: none;
   }
   .bg-video.is-ready { opacity: 1; }
+  #heroIntro { z-index: 2; }        /* інтро лежить над циклом і гасне в нього */
+
+  /* ІНТРО: перші секунди на екрані лише відео — ні шапки, ні тексту, ні
+     кнопки, ні скролу. На 4.5с ролика вони піднімаються знизу одне за одним,
+     тим самим почерком, що підписи на картках. Власний клас, бо hide-ui вже
+     зайнятий ручним перемикачем у панелі. */
+  .ui-layer,
+  .free-floating-cta,
+  .scroll-indicator {
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  body.intro-running .ui-layer,
+  body.intro-running .free-floating-cta,
+  body.intro-running .scroll-indicator {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    pointer-events: none;
+  }
+  body.intro-done .free-floating-cta { transition-delay: 0.18s; }
+  body.intro-done .scroll-indicator  { transition-delay: 0.34s; }
 
   /* Clean Atmospheric Lighting — Lightened by 15% */
   .bg-scrim {
@@ -4272,6 +4293,7 @@
   <div class="hero-container">
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
+    <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true" src="assets/hero_intro.mp4?v=1"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
@@ -7056,26 +7078,78 @@
       initFaqAccordion();
     }
 
-    /* Цикл доби в герої. Файл — замкнена петля, тож звичайного loop досить.
-       Вантажимо його тільки після load, щоб він не змагався за канал із тим,
-       що потрібно намалювати перший екран. */
-    (function initHeroCycle() {
-      const v = document.getElementById('heroVideo');
-      if (!v) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    /* ІНТРО ГЕРОЯ І ЦИКЛ ДОБИ.
+       Заходимо — на екрані лише відео, весь інтерфейс схований. На 4.5с
+       ролика він піднімається знизу. Наприкінці інтро підхоплює добовий цикл
+       і далі крутиться сам.
 
-      function boot() {
-        v.src = 'assets/hero_cycle.mp4?v=1';
-        v.load();
-        v.addEventListener('canplay', function () {
-          v.play().then(function () {
-            v.classList.add('is-ready');
-          }).catch(function () {});      // автозапуск заблокували — лишається картинка
-        }, { once: true });
+       Момент появи прив'язаний до ЧАСУ ВІДЕО, а не до таймера від старту:
+       якщо ролик почне грати із затримкою через мережу, текст усе одно
+       з'явиться на потрібному кадрі, а не над порожнім екраном.
+
+       Стик інтро з циклом закривається кросфейдом: Seedance не приземляється
+       на кінцевий кадр точно, і встик було 24.66 проти 1.73 у звичайних
+       сусідніх кадрів. */
+    (function initHeroIntro() {
+      const intro = document.getElementById('heroIntro');
+      const cycle = document.getElementById('heroVideo');
+      if (!intro || !cycle) return;
+
+      const REVEAL_AT = 4.5;    // секунда ролика, коли з'являється інтерфейс
+      const HANDOVER  = 0.6;    // кросфейд інтро -> цикл
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let revealed = false, handed = false;
+
+      function revealUi() {
+        if (revealed) return;
+        revealed = true;
+        document.body.classList.remove('intro-running');
+        document.body.classList.add('intro-done');
       }
 
-      if (document.readyState === 'complete') boot();
-      else window.addEventListener('load', boot, { once: true });
+      if (reduced) { revealUi(); return; }   // без руху — просто картинка й інтерфейс
+
+      document.body.classList.add('intro-running');
+
+      function startCycle() {
+        if (handed) return;
+        handed = true;
+        cycle.classList.add('is-ready');
+        cycle.play().catch(function () {});
+        setTimeout(function () { intro.classList.remove('is-ready'); }, 40);
+      }
+
+      function tick() {
+        const d = intro.duration;
+        if (d && isFinite(d)) {
+          if (intro.currentTime >= REVEAL_AT) revealUi();
+          if (intro.currentTime >= d - HANDOVER) startCycle();
+        }
+        if (!intro.ended) requestAnimationFrame(tick);
+      }
+
+      intro.addEventListener('canplay', function () {
+        intro.play().then(function () {
+          intro.classList.add('is-ready');
+          requestAnimationFrame(tick);
+        }).catch(function () {});
+      }, { once: true });
+
+      intro.addEventListener('ended', function () {
+        revealUi();
+        startCycle();
+        intro.classList.remove('is-ready');
+      });
+
+      /* Цикл тягнемо фоном, поки грає інтро: до передачі він має бути готовий,
+         але змагатися з інтро за канал на першому екрані йому нічого. */
+      function preloadCycle() {
+        cycle.src = 'assets/hero_cycle.mp4?v=1';
+        cycle.load();
+      }
+      if (document.readyState === 'complete') preloadCycle();
+      else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
     /* ПЕТЛЯ ВІДЕО З КРОСФЕЙДОМ — у вёрстці, а не запечена у файл.
