@@ -1290,7 +1290,6 @@
     color: #FFFFFF;
     letter-spacing: 0.04em;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.75), 0 1px 4px rgba(0, 0, 0, 0.5);
-    transition: opacity 0.25s ease;
   }
   .showcase-lead[data-q="tl"] .card-index,
   .showcase-card[data-q="tl"] .card-index,
@@ -1325,7 +1324,6 @@
     border: none;
     text-shadow: 0 2px 18px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
     max-width: 84%;
-    transition: opacity 0.25s ease;
   }
   /* Єдине вирівнювання по лівому краю для всіх карток */
   .showcase-card[data-q="tr"] .card-badge,
@@ -1360,9 +1358,8 @@
   .showcase-card[data-q="bl"] { z-index: 2; }
   .showcase-card[data-q="br"] { z-index: 1; }
 
-  .card-badge, .card-index {
-    transition: opacity 0.25s ease;
-  }
+  /* Без CSS-переходів: прозорість і зсув підписів веде скрол, а перехід
+     на 0.25s тягнувся б за ним і розмазував рух на швидкій прокрутці. */
   @media (max-width: 900px) {
     .showcase-title { font-size: 7vw; }
     .showcase-sub { font-size: 3.4vw; max-width: 88vw; }
@@ -6659,14 +6656,35 @@
           /* Картки лишаються чіткими на фоні (не зникають до 0) */
           el.style.opacity   = '1';
 
-          /* підпис першої картки видно завжди, решта проявляються при збірці, тануть при розсуванні */
+          /* ПОЯВА ПІДПИСІВ — каскадом, а не плоским фейдом.
+             Було: усі три картки проявлялись ОДНОЧАСНО, самою лише
+             прозорістю, лінійно, ще й з a=0.3 — тобто просто крізь
+             перекомпоновку тексту, поки сітка ще складалась.
+             Стало: старт на a=0.52, коли рядки вже стали на місце; картки
+             прокидаються по черзі; всередині картки номер, заголовок і опис
+             приїжджають знизу з різних відстаней, тож прибувають шлейфом. */
           const isLead = el.classList.contains('showcase-lead');
-          const badge = el.querySelector('.card-badge');
-          const num   = el.querySelector('.card-index');
-          const vis   = isLead ? 1 : clamp01((a - 0.3) / 0.45);
-          const textOpacity = (vis * (1 - fo * 0.9)).toFixed(3);
-          if (badge) badge.style.opacity = textOpacity;
-          if (num)   num.style.opacity   = ((isLead ? 1 : vis) * (1 - fo * 0.9)).toFixed(3);
+          const badge  = el.querySelector('.card-badge');
+          const num    = el.querySelector('.card-index');
+          const title  = el.querySelector('.card-badge-title');
+          const desc   = el.querySelector('.card-badge-desc');
+
+          const exit  = 1 - fo * 0.9;               /* танення при розсуванні */
+          const start = 0.52 + (i - 1) * 0.11;      /* зсув між картками */
+
+          function reveal(offset) {
+            return isLead ? 1 : smoothstep(clamp01((a - start - offset) / 0.24));
+          }
+          function place(node, r, shift) {
+            if (!node) return;
+            node.style.opacity = (r * exit).toFixed(3);
+            node.style.transform = 'translate3d(0,' + ((1 - r) * shift).toFixed(1) + 'px,0)';
+          }
+
+          if (badge) badge.style.opacity = '1';
+          place(num,   reveal(0),    14);
+          place(title, reveal(0.03), 26);
+          place(desc,  reveal(0.06), 34);
         }
 
         /* Наплив секції статистики: схована під час збірки 2x2, плавно проявляється при розсуванні */
