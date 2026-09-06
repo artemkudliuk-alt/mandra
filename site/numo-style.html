@@ -2149,6 +2149,11 @@
   .section-masterplan-clean.is-visible .mp-connector circle {
     opacity: 1;
   }
+  /* Плашка черги та лінія-конектор тимчасово приховані — підписи тепер
+     живуть просто на плані. Розмітка, тексти й applyPhase() лишаються
+     робочими, щоб повернути плашку однією правкою. */
+  .mp-phase-card, .mp-connector { display: none; }
+
   /* Резервуємо місце під картинку — прибирає стрибок вёрстки */
   .mp-clean-img { aspect-ratio: 16 / 9; }
 
@@ -2181,6 +2186,126 @@
             drop-shadow(0 20px 38px rgba(0, 0, 0, 0.6));
   }
   .mp-plan.is-hot { cursor: pointer; }
+
+  /* ПІДПИСИ ЧЕРГ НА ПЛАНІ.
+     Композиція, а не текст із полоскою: величезна контурна римська цифра
+     працює тлом, назва перетинає її праву частину і збиває симетрію.
+     У спокої підпис приглушений; при наведенні на свою зону він виходить
+     на повну, сусідні гаснуть, а знизу випливає скляна кнопка. */
+  .mp-marker {
+    position: absolute;
+    z-index: 4;
+    width: 17vw;
+    min-width: 232px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;            /* влучання ловить альфа-карта плану */
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .section-masterplan-clean.is-visible .mp-marker { opacity: 1; }
+  .mp-marker:nth-of-type(1) { transition-delay: 0.10s; }
+  .mp-marker:nth-of-type(2) { transition-delay: 0.16s; }
+  .mp-marker:nth-of-type(3) { transition-delay: 0.22s; }
+
+  /* м'яка підкладка, щоб текст читався і над світлим дахом, і над лісом */
+  .mp-marker::before {
+    content: '';
+    position: absolute;
+    inset: -22% -24% -18% -20%;
+    z-index: 0;
+    background: radial-gradient(ellipse 62% 58% at 38% 52%,
+                rgba(6, 10, 7, 0.8) 0%, rgba(6, 10, 7, 0.55) 42%,
+                rgba(6, 10, 7, 0.22) 68%, rgba(6, 10, 7, 0) 100%);
+  }
+  .mp-marker > * { position: relative; z-index: 1; }
+
+  .mp-marker-inner {
+    opacity: 0.6;
+    transform: translateY(0);
+    transition: opacity 0.26s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.26s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .mp-marker.is-on .mp-marker-inner { opacity: 1; transform: translateY(-6px); }
+  .mp-plan.is-hot .mp-marker:not(.is-on) .mp-marker-inner { opacity: 0.18; }
+
+  .mp-mk-num {
+    font-family: var(--title-font);
+    font-size: 5.4vw;
+    font-weight: 800;
+    line-height: 0.8;
+    letter-spacing: 0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1.4px rgba(255, 255, 255, 0.55);
+    transition: -webkit-text-stroke-color 0.26s ease, color 0.26s ease;
+  }
+  .mp-marker.is-on .mp-mk-num {
+    -webkit-text-stroke-color: rgba(129, 184, 115, 0.9);
+    color: rgba(129, 184, 115, 0.1);
+  }
+
+  .mp-mk-title {
+    font-family: var(--title-font);
+    font-size: 1.24vw;
+    font-weight: 700;
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    color: #FFFFFF;
+    margin: -1.15vw 0 0 1.45vw;     /* назва заходить на нижню частину цифри */
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 3px 22px rgba(0, 0, 0, 0.92);
+  }
+  .mp-mk-desc {
+    font-family: var(--sub-font);
+    font-size: 0.79vw;
+    font-weight: 300;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.86);
+    max-width: 14.5vw;
+    margin: 0.6vw 0 0 1.45vw;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 16px rgba(0, 0, 0, 0.9);
+  }
+
+  .mp-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5vw;
+    margin: 1vw 0 0 1.45vw;
+    padding: 0.6vw 1.05vw;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    font-family: var(--sub-font);
+    font-size: 0.77vw;
+    font-weight: 500;
+    letter-spacing: 0.045em;
+    color: #FFFFFF;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(9px) scale(0.96);
+    transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .mp-marker.is-on .mp-cta {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.06s;
+  }
+  /* натиск ловимо на плані — кнопка навмисно прозора для курсора */
+  .mp-plan:active .mp-marker.is-on .mp-cta {
+    transform: scale(0.97);
+    transition-duration: 0.12s;
+  }
+  .mp-cta svg {
+    width: 0.8vw; height: 0.8vw; flex: 0 0 auto;
+    transition: transform 0.22s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .mp-marker.is-on .mp-cta svg { transform: translateX(2px); }
+
+  @media (max-width: 900px) { .mp-marker { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .mp-marker-inner, .mp-cta { transform: none !important; }
+  }
 
   /* ============================================================
      ЕКРАН 6 — ПАРТНЕРИ МАНДРА ІНВЕСТ
@@ -6924,15 +7049,18 @@
 
       /* ЗАГЛУШКИ для I та II черги за зразком третьої — замінити на реальні. */
       const PHASES = {
-        1: { num: 'I черга',   title: 'Серце комплексу',
+        1: { num: 'I черга',   roman: 'I',   title: 'Серце комплексу',
+             short: 'Родинне ядро території: великий басейн, відкриті тераси, дитячий клуб.',
              desc: 'Родинний відпочинок навколо великого басейну та відкритих терас.',
              count: '38 котеджів',
              list: ['басейн', 'тераси', 'дитячий клуб', 'лаунж-зона', 'прокат'] },
-        2: { num: 'II черга',  title: 'Простір для великих компаній',
+        2: { num: 'II черга',  roman: 'II',  title: 'Простір для великих компаній',
+             short: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
              desc: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
              count: '52 котеджі',
              list: ['приватні басейни', 'барбекю-зони', 'спортивний майданчик', 'тиха зона', 'паркінг'] },
-        3: { num: 'III черга', title: 'Місце для найкращих побачень',
+        3: { num: 'III черга', roman: 'III', title: 'Місце для найкращих побачень',
+             short: 'Adults Only: SPA, ресторан і вілли для двох у глибині лісу.',
              desc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
              count: '41 котедж',
              list: ['SPA-комплекс', 'ресторан', 'event hall', 'простори для побачень', 'вілли для двох'] }
@@ -6941,6 +7069,35 @@
       const MW = 384, MH = 216;
       let map = null, hot = 0;
       const centre = {};
+      const markers = {};
+
+      /* Підпис черги прямо на плані. Малюємо з PHASES, щоб тексти жили
+         в одному місці, і ставимо по тому ж центроїду, що рахує buildMap. */
+      const CTA = 'Дивитися ближче';
+      function buildMarkers() {
+        Object.keys(centre).forEach(function (n) {
+          const d = PHASES[n];
+          if (!d || markers[n]) return;
+          const el = document.createElement('div');
+          el.className = 'mp-marker';
+          el.style.left = (centre[n].x / 1920 * 100).toFixed(2) + '%';
+          el.style.top  = (centre[n].y / 1080 * 100).toFixed(2) + '%';
+          el.innerHTML =
+            '<div class="mp-marker-inner">' +
+              '<div class="mp-mk-num">' + d.roman + '</div>' +
+              '<div class="mp-mk-title">' + d.title + '</div>' +
+              '<p class="mp-mk-desc">' + d.short + '</p>' +
+              '<span class="mp-cta">' + CTA +
+                '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                  '<path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" ' +
+                  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+                '</svg>' +
+              '</span>' +
+            '</div>';
+          plan.appendChild(el);
+          markers[n] = el;
+        });
+      }
 
       function buildMap() {
         const c = document.createElement('canvas');
@@ -6962,6 +7119,7 @@
           if (n) centre[i + 1] = { x: sx / n / MW * 1920, y: sy / n / MH * 1080 };
         });
         map = m;
+        buildMarkers();
       }
 
       function setHot(v) {
@@ -6970,6 +7128,9 @@
         plan.classList.toggle('is-hot', v > 0);
         zones.forEach(function (z) {
           z.classList.toggle('is-on', +z.dataset.phase === v);
+        });
+        Object.keys(markers).forEach(function (n) {
+          markers[n].classList.toggle('is-on', +n === v);
         });
       }
 
@@ -7006,7 +7167,12 @@
       }, { passive: true });
 
       plan.addEventListener('pointerleave', function () { setHot(0); }, { passive: true });
-      plan.addEventListener('click', function () { if (hot) applyPhase(hot); });
+      plan.addEventListener('click', function () {
+        if (!hot) return;
+        applyPhase(hot);                       /* плашка прихована, дані живі */
+        /* Гачок під майбутній відео-проліт у чергу: window.onPhaseEnter(1|2|3). */
+        if (typeof window.onPhaseEnter === 'function') window.onPhaseEnter(hot);
+      });
 
       /* карту будуємо, коли всі шари реально завантажені */
       let left = zones.length;
