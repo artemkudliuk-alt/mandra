@@ -1598,9 +1598,22 @@
        картки вже розлетілись, а вона ще під згином — і в центрі кадру зяє
        порожнеча. Значення зняте з заміру: на 70% розсування верх секції
        має бути на ~307px від верху в'юпорта. */
-    margin-top: -94vh;
+    margin-top: -97vh;   /* пін стосу піднявся зі 127.5 на 100px — компенсуємо, щоб фото зривались синхронно з карткою 16% */
   }
   .stats-container {
+    /* ГЕОМЕТРІЯ СТОСУ. Джерело — висота картки: майже весь екран,
+       ~100px згори і знизу. Все інше рахується від неї, інакше при зміні
+       розміру роз'їдуться і швидкість, і шов з текстом. */
+    /* 100px згори + 104px сходинок стосу + запас знизу. «По 100 зверху і
+       знизу» одночасно для першої й останньої картки не буває: сходинки
+       додають 104px, тож або перша дихає, або остання зрізається. */
+    --card-h: calc(100vh - 240px);
+    --card-step: 26px;                                    /* видима кромка в стосі */
+    --stack-height: calc(var(--card-h) + 4 * var(--card-step));
+    /* Передача 0.569px руху картки на 1px скролу — рівно та сама, що в
+       showcase. Ділимо проліт на неї, щоб швидкість лишилась вирівняною. */
+    --card-span: calc((var(--card-h) + var(--card-step)) / 0.569);
+
     max-width: 1320px;
     margin: 0 auto;
     display: grid;
@@ -1626,12 +1639,12 @@
     flex-direction: column;
     gap: 20px;
     padding-right: 2vw;
-    /* Трейлінг вирівняний із колодою: хід прилипання = висота треку мінус
-       висота липкого блоку. У колоди це 5892-488=5404, тож і текст має мати
-       стільки ж: 5892 - 383 (висота колонки) - 105 = 5404.
-       Було 520px — підбиралось під стару, втричі коротшу колоду, і текст
-       відклеювався на 80px РАНІШЕ, ніж стикувалась остання картка. */
-    margin-bottom: 105px;
+    /* Хід прилипання тексту має дорівнювати ходу колоди. Раніше це був
+       підібраний margin (105px = 488 стосу мінус 383 висоти колонки), який
+       ламався при кожній зміні розмірів. Тепер колонка просто має ту саму
+       висоту, що й стос, — і ходи збігаються самі, за будь-яких розмірів. */
+    height: var(--stack-height);
+    margin-bottom: 0;
   }
   .stats-eyebrow {
     font-family: var(--sub-font);
@@ -1710,20 +1723,14 @@
   .stats-col-deck {
     position: relative;
     /* Трек для плавного послідовного стикування 4-х карток.
-       --card-span — скільки скролу з'їдає одна картка. Проліт картки — 410px,
-       тож передача виходить 410/720 = 0.569 — рівно та сама, що в showcase
-       (845px пролоту на 1486px вікна). Обидві секції рахують за однаковою
-       формулою зі smoothstep, тому швидкість на екрані збігається.
-       Крутити швидкість — це єдине число (JS читає його звідси). */
-    --card-span: 720px;
-    --stack-height: 488px;   /* 384 картка + 4 × 26 сходинки */
+       Розміри успадковуються від .stats-container — там єдине джерело. */
     height: calc(var(--stack-height) + 4 * var(--card-span) + 40vh);
   }
 
   /* Запінений контейнер колоди: тримає стос на місці, поки JS веде картки */
   .stats-deck-sticky {
     position: sticky;
-    top: 14vh;
+    top: 100px;          /* та сама сотня, що знизу */
     width: 100%;
     height: var(--stack-height);
   }
@@ -1743,7 +1750,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    min-height: 384px;   /* вільне поле згори > 52px, щоб у стосі не просвічував текст */
+    min-height: var(--card-h);
     display: grid;
     grid-template-columns: 1fr;
     background: rgba(18, 26, 20, 0.58);
@@ -1877,6 +1884,7 @@
     .stats-cta-btn { font-size: 3.6vw; padding: 12px 24px; }
     /* Мобільна версія — без піна і без скраба: картки йдуть простою стрічкою */
     .stats-col-deck { height: auto; }
+    .stats-col-info { height: auto; }
     .stats-deck-sticky { position: static; height: auto; }
     .stat-card { grid-template-columns: 1fr; min-height: auto; margin-bottom: 30px; position: relative; top: 0 !important; transform: none !important; }
     .stat-card-media { min-height: 220px; height: 220px; }
@@ -6716,23 +6724,30 @@
       // ривок припадає на старт вікна, тобто рух знову читався б як кидок.
       const ease = (x) => x * x * (3 - 2 * x);
 
-      // Проліт картки: скільки пікселів вона реально пролітає до стикування.
-      // 410 = висота картки 384 + сходинка 26, тобто картка стартує рівно
-      // з-під попередньої — композиція в спокої така сама, як була.
-      const TRAVEL = 410;
-
       const deck = section.querySelector('.stats-col-deck');
-      let span = 1260;   // скільки скролу з'їдає одна картка; читаємо з CSS
+      const sticky = section.querySelector('.stats-deck-sticky');
+
+      // Передача: скільки пікселів картка проходить на 1px скролу.
+      // Те саме число ділить --card-span у CSS (.stats-container) — міняти
+      // треба в обох місцях, інакше трек і рух розійдуться.
+      const GEAR = 0.569;
+
+      let span = 1260;    // скільки скролу з'їдає одна картка
+      let travel = 410;   // скільки картка реально пролітає до стикування
+      let pinTop = 100;   // де стос прилипає до верху екрана
 
       function measure() {
-        const css = parseFloat(getComputedStyle(deck).getPropertyValue('--card-span'));
-        if (css > 0) span = css;
+        // --card-span у CSS — це calc(), а кастомні властивості віддаються
+        // нерозв'язаними токенами, тому рахуємо за тією ж формулою тут.
+        const step = parseFloat(getComputedStyle(deck).getPropertyValue('--card-step')) || 26;
+        travel = (cards[0].offsetHeight || 384) + step;   // картка стартує з-під попередньої
+        span = travel / GEAR;
+        pinTop = parseFloat(getComputedStyle(sticky).top) || 0;
       }
 
       function renderStack() {
         ticking = false;
 
-        const pinTop = window.innerHeight * 0.14;         // top запіненого контейнера
         const scrolled = pinTop - deck.getBoundingClientRect().top;
 
         const progress = [1];   // перша картка вже у стосі
@@ -6750,7 +6765,7 @@
         for (let i = 0; i < cards.length; i++) {
           const cover = i + 1 < cards.length ? progress[i + 1] : 0;
 
-          const y = (1 - progress[i]) * TRAVEL + waiting[i];
+          const y = (1 - progress[i]) * travel + waiting[i];
           const scale = 1 - cover * 0.042;
 
           cards[i].style.transform =
