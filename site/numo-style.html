@@ -107,6 +107,24 @@
     transform: scale(1.02);
   }
 
+  /* Відео-цикл доби поверх фонової картинки. Картинка малюється миттєво і
+     лишається постером; відео підвантажується після load і проявляється,
+     коли реально готове грати. Герой — перший екран, він не має чекати
+     три мегабайти, щоб показати хоч щось. */
+  .bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 36%;   /* та сама точка кадрування, що в .bg-photo */
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1.1s ease;
+    pointer-events: none;
+  }
+  .bg-video.is-ready { opacity: 1; }
+
   /* Clean Atmospheric Lighting — Lightened by 15% */
   .bg-scrim {
     position: absolute;
@@ -4254,6 +4272,7 @@
   <div class="hero-container">
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
+    <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
 
@@ -7036,6 +7055,28 @@
       initInvestFlowScrollObserver();
       initFaqAccordion();
     }
+
+    /* Цикл доби в герої. Файл — замкнена петля, тож звичайного loop досить.
+       Вантажимо його тільки після load, щоб він не змагався за канал із тим,
+       що потрібно намалювати перший екран. */
+    (function initHeroCycle() {
+      const v = document.getElementById('heroVideo');
+      if (!v) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      function boot() {
+        v.src = 'assets/hero_cycle.mp4?v=1';
+        v.load();
+        v.addEventListener('canplay', function () {
+          v.play().then(function () {
+            v.classList.add('is-ready');
+          }).catch(function () {});      // автозапуск заблокували — лишається картинка
+        }, { once: true });
+      }
+
+      if (document.readyState === 'complete') boot();
+      else window.addEventListener('load', boot, { once: true });
+    })();
 
     /* ПЕТЛЯ ВІДЕО З КРОСФЕЙДОМ — у вёрстці, а не запечена у файл.
        Файл віддаємо цілим, усі 6 секунд: якщо зшивати кінець з початком
