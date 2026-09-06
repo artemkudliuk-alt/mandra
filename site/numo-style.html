@@ -2188,15 +2188,15 @@
   .mp-plan.is-hot { cursor: pointer; }
 
   /* ПІДПИСИ ЧЕРГ НА ПЛАНІ.
-     Композиція, а не текст із полоскою: величезна контурна римська цифра
-     працює тлом, назва перетинає її праву частину і збиває симетрію.
-     У спокої підпис приглушений; при наведенні на свою зону він виходить
-     на повну, сусідні гаснуть, а знизу випливає скляна кнопка. */
+     У спокої на плані лише три мітки: цифра і назва. Жодних підкладок —
+     тільки вузька тінь, щоб літери відбились від фону. При наведенні мітка
+     своєї зони гасне, сусідні теж, а курсор стає скляним кружком. */
   .mp-marker {
     position: absolute;
     z-index: 4;
-    width: 17vw;
-    min-width: 232px;
+    display: flex;
+    align-items: center;
+    gap: 1.15vw;
     transform: translate(-50%, -50%);
     pointer-events: none;            /* влучання ловить альфа-карта плану */
     opacity: 0;
@@ -2207,104 +2207,84 @@
   .mp-marker:nth-of-type(2) { transition-delay: 0.16s; }
   .mp-marker:nth-of-type(3) { transition-delay: 0.22s; }
 
-  /* м'яка підкладка, щоб текст читався і над світлим дахом, і над лісом */
-  .mp-marker::before {
-    content: '';
-    position: absolute;
-    inset: -22% -24% -18% -20%;
-    z-index: 0;
-    background: radial-gradient(ellipse 62% 58% at 38% 52%,
-                rgba(6, 10, 7, 0.8) 0%, rgba(6, 10, 7, 0.55) 42%,
-                rgba(6, 10, 7, 0.22) 68%, rgba(6, 10, 7, 0) 100%);
-  }
-  .mp-marker > * { position: relative; z-index: 1; }
-
   .mp-marker-inner {
-    opacity: 0.6;
-    transform: translateY(0);
-    transition: opacity 0.26s cubic-bezier(0.23, 1, 0.32, 1),
-                transform 0.26s cubic-bezier(0.23, 1, 0.32, 1);
+    display: flex;
+    align-items: center;
+    gap: 1.15vw;
+    opacity: 1;
+    transition: opacity 0.24s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .mp-marker.is-on .mp-marker-inner { opacity: 1; transform: translateY(-6px); }
-  .mp-plan.is-hot .mp-marker:not(.is-on) .mp-marker-inner { opacity: 0.18; }
+  /* під курсором мітки не потрібні — їхню роль бере кружок */
+  .mp-plan.is-hot .mp-marker .mp-marker-inner { opacity: 0.16; }
+  .mp-plan.is-hot .mp-marker.is-on .mp-marker-inner { opacity: 0; }
 
   .mp-mk-num {
     font-family: var(--title-font);
-    font-size: 5.4vw;
+    font-size: 3.9vw;
     font-weight: 800;
-    line-height: 0.8;
-    letter-spacing: 0.02em;
-    color: transparent;
-    -webkit-text-stroke: 1.4px rgba(255, 255, 255, 0.55);
-    transition: -webkit-text-stroke-color 0.26s ease, color 0.26s ease;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.09);
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.78);
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.8));
   }
-  .mp-marker.is-on .mp-mk-num {
-    -webkit-text-stroke-color: rgba(129, 184, 115, 0.9);
-    color: rgba(129, 184, 115, 0.1);
-  }
-
   .mp-mk-title {
     font-family: var(--title-font);
-    font-size: 1.24vw;
+    font-size: 1.22vw;
     font-weight: 700;
-    line-height: 1.16;
+    line-height: 1.18;
     letter-spacing: -0.01em;
     color: #FFFFFF;
-    margin: -1.15vw 0 0 1.45vw;     /* назва заходить на нижню частину цифри */
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 3px 22px rgba(0, 0, 0, 0.92);
-  }
-  .mp-mk-desc {
-    font-family: var(--sub-font);
-    font-size: 0.79vw;
-    font-weight: 300;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.86);
-    max-width: 14.5vw;
-    margin: 0.6vw 0 0 1.45vw;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 16px rgba(0, 0, 0, 0.9);
+    margin: 0;
+    max-width: 9.5vw;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 2px 12px rgba(0, 0, 0, 0.55);
   }
 
-  .mp-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5vw;
-    margin: 1vw 0 0 1.45vw;
-    padding: 0.6vw 1.05vw;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(14px) saturate(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    border: 1px solid rgba(255, 255, 255, 0.24);
+  /* Скляний кружок замість курсора над зоною. */
+  .mp-plan.is-hot { cursor: none; }
+  .mp-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 90;
+    width: 104px;
+    height: 104px;
+    margin: -52px 0 0 -52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 0 14px;
     font-family: var(--sub-font);
-    font-size: 0.77vw;
+    font-size: 12.5px;
     font-weight: 500;
-    letter-spacing: 0.045em;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
     color: #FFFFFF;
-    white-space: nowrap;
+    background: rgba(129, 184, 115, 0.3);
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.36);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.34),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    pointer-events: none;
     opacity: 0;
-    transform: translateY(9px) scale(0.96);
-    transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-                transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: opacity 0.22s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .mp-marker.is-on .mp-cta {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 0.06s;
+  .mp-cursor.is-on { opacity: 1; }
+  /* зсув живе в transform самого кружка, тому масштаб — на внутрішньому span */
+  .mp-cursor > span {
+    display: block;
+    transform: scale(0.72);
+    opacity: 0;
+    transition: transform 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+                opacity 0.22s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  /* натиск ловимо на плані — кнопка навмисно прозора для курсора */
-  .mp-plan:active .mp-marker.is-on .mp-cta {
-    transform: scale(0.97);
-    transition-duration: 0.12s;
-  }
-  .mp-cta svg {
-    width: 0.8vw; height: 0.8vw; flex: 0 0 auto;
-    transition: transform 0.22s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  .mp-marker.is-on .mp-cta svg { transform: translateX(2px); }
+  .mp-cursor.is-on > span { transform: scale(1); opacity: 1; }
+  .mp-cursor.is-press > span { transform: scale(0.92); transition-duration: 0.12s; }
 
-  @media (max-width: 900px) { .mp-marker { display: none; } }
-  @media (prefers-reduced-motion: reduce) {
-    .mp-marker-inner, .mp-cta { transform: none !important; }
+  @media (max-width: 900px) { .mp-marker, .mp-cursor { display: none; } }
+  @media (hover: none), (pointer: coarse) {
+    .mp-cursor { display: none; }
+    .mp-plan.is-hot { cursor: pointer; }
   }
 
   /* ============================================================
@@ -6111,6 +6091,7 @@
         mpPhaseTitle: 'Місце для найкращих побачень',
         mpPhaseDesc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
         mpPhaseCount: '41 котедж',
+        mpCursorLabel: 'Дивитись ближче',
         mpPhL1: 'SPA-комплекс', mpPhL2: 'ресторан', mpPhL3: 'event hall',
         mpPhL4: 'простори для побачень', mpPhL5: 'вілли для двох',
         mpM1Lbl: 'території комплексу',
@@ -6297,6 +6278,7 @@
         mpPhaseTitle: 'A place for the finest dates',
         mpPhaseDesc: 'An Adults Only concept for couples, private retreats and new shared experiences.',
         mpPhaseCount: '41 cottages',
+        mpCursorLabel: 'Take a closer look',
         mpPhL1: 'SPA complex', mpPhL2: 'restaurant', mpPhL3: 'event hall',
         mpPhL4: 'date spaces', mpPhL5: 'villas for two',
         mpM1Lbl: 'resort territory',
@@ -6483,6 +6465,7 @@
                   'sc3Title','sc3Desc','sc4Title','sc4Desc',
                   /* ЕКРАН 2 — маніфест */
                   'mpPhaseNum','mpPhaseTitle','mpPhaseDesc','mpPhaseCount',
+                  'mpCursorLabel',
                   'mpPhL1','mpPhL2','mpPhL3','mpPhL4','mpPhL5',
                   'mfBadge','mfPart1','mfPart1b','mfPart2','mfPart3','mfPart3b','mfPart4','mfPart5',
                   'mfFooterTitle','mfP1Name','mfP1Desc','mfP2Name','mfP2Desc',
@@ -7049,18 +7032,15 @@
 
       /* ЗАГЛУШКИ для I та II черги за зразком третьої — замінити на реальні. */
       const PHASES = {
-        1: { num: 'I черга',   roman: 'I',   title: 'Серце комплексу',
-             short: 'Родинне ядро території: великий басейн, відкриті тераси, дитячий клуб.',
+        1: { num: 'I черга',   no: '1', title: 'Серце комплексу',
              desc: 'Родинний відпочинок навколо великого басейну та відкритих терас.',
              count: '38 котеджів',
              list: ['басейн', 'тераси', 'дитячий клуб', 'лаунж-зона', 'прокат'] },
-        2: { num: 'II черга',  roman: 'II',  title: 'Простір для великих компаній',
-             short: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
+        2: { num: 'II черга',  no: '2', title: 'Простір для великих компаній',
              desc: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
              count: '52 котеджі',
              list: ['приватні басейни', 'барбекю-зони', 'спортивний майданчик', 'тиха зона', 'паркінг'] },
-        3: { num: 'III черга', roman: 'III', title: 'Місце для найкращих побачень',
-             short: 'Adults Only: SPA, ресторан і вілли для двох у глибині лісу.',
+        3: { num: 'III черга', no: '3', title: 'Місце для найкращих побачень',
              desc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
              count: '41 котедж',
              list: ['SPA-комплекс', 'ресторан', 'event hall', 'простори для побачень', 'вілли для двох'] }
@@ -7073,7 +7053,6 @@
 
       /* Підпис черги прямо на плані. Малюємо з PHASES, щоб тексти жили
          в одному місці, і ставимо по тому ж центроїду, що рахує buildMap. */
-      const CTA = 'Дивитися ближче';
       function buildMarkers() {
         Object.keys(centre).forEach(function (n) {
           const d = PHASES[n];
@@ -7084,15 +7063,8 @@
           el.style.top  = (centre[n].y / 1080 * 100).toFixed(2) + '%';
           el.innerHTML =
             '<div class="mp-marker-inner">' +
-              '<div class="mp-mk-num">' + d.roman + '</div>' +
+              '<div class="mp-mk-num">' + d.no + '</div>' +
               '<div class="mp-mk-title">' + d.title + '</div>' +
-              '<p class="mp-mk-desc">' + d.short + '</p>' +
-              '<span class="mp-cta">' + CTA +
-                '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-                  '<path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" ' +
-                  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
-                '</svg>' +
-              '</span>' +
             '</div>';
           plan.appendChild(el);
           markers[n] = el;
@@ -7126,6 +7098,7 @@
         if (v === hot) return;
         hot = v;
         plan.classList.toggle('is-hot', v > 0);
+        cursor.classList.toggle('is-on', v > 0);
         zones.forEach(function (z) {
           z.classList.toggle('is-on', +z.dataset.phase === v);
         });
@@ -7159,12 +7132,40 @@
       }
 
       plan.addEventListener('pointermove', function (e) {
+        aimCursor(e);
         if (!map) return;
         const r = plan.getBoundingClientRect();
         const x = Math.floor((e.clientX - r.left) / r.width * MW);
         const y = Math.floor((e.clientY - r.top) / r.height * MH);
         setHot(x >= 0 && y >= 0 && x < MW && y < MH ? map[y * MW + x] : 0);
       }, { passive: true });
+
+      /* Скляний кружок їде за мишею з відставанням: точна позиція виглядає
+         мертво, лерп дає інерцію. rAF крутиться, лише поки є що доганяти. */
+      const cursor = document.createElement('div');
+      cursor.className = 'mp-cursor';
+      cursor.innerHTML = '<span id="mpCursorLabel">Дивитись ближче</span>';
+      document.body.appendChild(cursor);
+
+      const stiff = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let cx = 0, cy = 0, tx = 0, ty = 0, raf = 0;
+      function follow() {
+        const k = stiff ? 1 : 0.2;
+        cx += (tx - cx) * k;
+        cy += (ty - cy) * k;
+        cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+        raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.3)
+              ? requestAnimationFrame(follow) : 0;
+      }
+      function aimCursor(e) {
+        const snap = !hot;                     /* заходимо в зону — без стрибка */
+        tx = e.clientX; ty = e.clientY;
+        if (snap) { cx = tx; cy = ty; }
+        if (!raf) raf = requestAnimationFrame(follow);
+      }
+
+      plan.addEventListener('pointerdown', function () { cursor.classList.add('is-press'); }, { passive: true });
+      window.addEventListener('pointerup', function () { cursor.classList.remove('is-press'); }, { passive: true });
 
       plan.addEventListener('pointerleave', function () { setHot(0); }, { passive: true });
       plan.addEventListener('click', function () {
