@@ -120,8 +120,7 @@
     object-position: center 36%;   /* та сама точка кадрування, що в .bg-photo */
     z-index: 1;
     opacity: 0;
-    transition: opacity 1.1s ease;
-    pointer-events: none;
+    pointer-events: none;          /* без transition: перемикання шарів встик */
   }
   .bg-video.is-ready { opacity: 1; }
   #heroIntro { z-index: 2; }        /* інтро лежить над циклом і гасне в нього */
@@ -4293,7 +4292,8 @@
   <div class="hero-container">
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
-    <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true" src="assets/hero_intro.mp4?v=1"></video>
+    <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
+           poster="assets/hero_intro_poster.webp?v=1" src="assets/hero_intro.mp4?v=2"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
@@ -7095,8 +7095,8 @@
       const cycle = document.getElementById('heroVideo');
       if (!intro || !cycle) return;
 
-      const REVEAL_AT = 4.5;    // секунда ролика, коли з'являється інтерфейс
-      const HANDOVER  = 0.6;    // кросфейд інтро -> цикл
+      /* Інтро тепер 4.04с, тож поява о 4.5 не спрацювала б узагалі. */
+      const REVEAL_AT = 3.4;    // секунда ролика, коли з'являється інтерфейс
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let revealed = false, handed = false;
@@ -7112,20 +7112,19 @@
 
       document.body.classList.add('intro-running');
 
+      /* Перемикання встик, без кросфейду: інтро гасне і цикл з'являється в
+         одному кадрі. Замір показує стик 26.06 проти 11.48 у звичайних
+         сусідніх кадрів, тобто перехід помітний — так і задумано. */
       function startCycle() {
         if (handed) return;
         handed = true;
-        cycle.classList.add('is-ready');
         cycle.play().catch(function () {});
-        setTimeout(function () { intro.classList.remove('is-ready'); }, 40);
+        cycle.classList.add('is-ready');
+        intro.classList.remove('is-ready');
       }
 
       function tick() {
-        const d = intro.duration;
-        if (d && isFinite(d)) {
-          if (intro.currentTime >= REVEAL_AT) revealUi();
-          if (intro.currentTime >= d - HANDOVER) startCycle();
-        }
+        if (intro.currentTime >= REVEAL_AT) revealUi();
         if (!intro.ended) requestAnimationFrame(tick);
       }
 
