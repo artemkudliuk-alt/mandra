@@ -1269,9 +1269,10 @@
     /* Liquid Glass */
     background: #0E1F0B;   /* не видно: фото перекриває картку повністю */
   }
-  /* Відео в lead-картці живе за тими самими правилами, що й фото */
+  /* Відео та контейнер пари живуть за тими самими правилами, що й фото */
   .showcase-card img,
-  .showcase-card video {
+  .showcase-card video,
+  .showcase-card .card-video-pair {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -4400,9 +4401,12 @@
           <div class="showcase-lead" data-q="tl">
             <h2 class="showcase-title" id="showcaseTitle">Ми відповідаємо за</h2>
             <div class="showcase-card showcase-card-lead">
-            <video class="lead-video" src="assets/screen2/01_location_loop.mp4?v=2"
-                   poster="assets/screen2/01_location.webp?v=4"
-                   autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+            <div class="card-video-pair" data-fade="1.2">
+              <video src="assets/screen2/01_location_loop.mp4?v=3" poster="assets/screen2/01_location.webp?v=5"
+                     muted playsinline preload="metadata" aria-hidden="true"></video>
+              <video src="assets/screen2/01_location_loop.mp4?v=3"
+                     muted playsinline preload="metadata" aria-hidden="true"></video>
+            </div>
               <span class="card-index">01</span>
               <div class="card-badge">
                 <span class="card-badge-title" id="sc1Title">Аналіз</span>
@@ -4412,7 +4416,12 @@
           </div>
 
           <div class="showcase-card" data-q="tr">
-            <img src="assets/screen2/02_architecture.webp" alt="Авторська архітектура" loading="lazy" decoding="async">
+            <div class="card-video-pair" data-fade="1.2">
+              <video src="assets/screen2/02_architecture_loop.mp4?v=1" poster="assets/screen2/02_architecture.webp?v=2"
+                     muted playsinline preload="metadata" aria-hidden="true"></video>
+              <video src="assets/screen2/02_architecture_loop.mp4?v=1"
+                     muted playsinline preload="metadata" aria-hidden="true"></video>
+            </div>
             <span class="card-index">02</span>
             <div class="card-badge">
               <span class="card-badge-title" id="sc2Title">Концепція та девелопмент</span>
@@ -7028,21 +7037,82 @@
       initFaqAccordion();
     }
 
-    /* Відео в картці 01 крутиться тільки коли воно в кадрі. Інакше декодер
-       даремно їсть той самий кадровий бюджет, за який ми билися у скролі. */
-    (function initLeadVideo() {
-      const v = document.querySelector('.lead-video');
-      if (!v) return;
-      if (!('IntersectionObserver' in window)) return;   // лишається autoplay
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) {
-            v.play().catch(function () {});   // автозапуск можуть заблокувати — не падаємо
-          } else {
-            v.pause();
+    /* ПЕТЛЯ ВІДЕО З КРОСФЕЙДОМ — у вёрстці, а не запечена у файл.
+       Файл віддаємо цілим, усі 6 секунд: якщо зшивати кінець з початком
+       усередині файлу, півтори секунди матеріалу видно лише в суміші, а сам
+       файл коротшає. Тут замикання робить пара накладених <video> з одним
+       джерелом: другий стартує за --fade до кінця першого, і вони перехресно
+       міняються прозорістю, після чого міняються ролями.
+
+       Період повтору при будь-якому кросфейді коротший за клип на довжину
+       переходу — перекриття рахується один раз. 6.04с клипу і 1.2с фейду
+       дають цикл 4.84с. Щоб цикл був рівно 6с, потрібен клип на 7.2с.
+
+       Крутити м'якість переходу — це data-fade у розмітці, файл не чіпаємо. */
+    (function initCardVideoLoops() {
+      Array.prototype.forEach.call(document.querySelectorAll('.card-video-pair'), function (pair) {
+        const vids = Array.prototype.slice.call(pair.querySelectorAll('video'));
+        if (vids.length < 2) return;
+
+        const fade = parseFloat(pair.dataset.fade) || 1.2;
+        let front = 0, armed = false, raf = 0, live = false;
+
+        vids[0].style.opacity = '1';
+        vids[1].style.opacity = '0';
+
+        function tick() {
+          const a = vids[front], b = vids[1 - front];
+          const d = a.duration;
+
+          if (d && isFinite(d)) {
+            const left = d - a.currentTime;
+
+            if (left <= fade) {
+              if (!armed) {                     // піднімаємо другий шар
+                armed = true;
+                b.currentTime = 0;
+                b.play().catch(function () {});
+              }
+              const t = Math.min(1, Math.max(0, (fade - left) / fade));
+              a.style.opacity = (1 - t).toFixed(3);
+              b.style.opacity = t.toFixed(3);
+            }
+
+            if (a.ended || a.currentTime >= d - 0.04) {
+              a.pause();
+              a.currentTime = 0;
+              a.style.opacity = '0';
+              b.style.opacity = '1';
+              front = 1 - front;
+              armed = false;
+            }
           }
-        });
-      }, { threshold: 0.01 }).observe(v);
+
+          if (live) raf = requestAnimationFrame(tick);
+        }
+
+        function start() {
+          if (live) return;
+          live = true;
+          vids[front].play().catch(function () {});
+          raf = requestAnimationFrame(tick);
+        }
+        function stop() {
+          live = false;
+          cancelAnimationFrame(raf);
+          vids.forEach(function (v) { v.pause(); });
+        }
+
+        /* Поза кадром не крутимо: секція і так веде скрол-скраб, і віддавати
+           декодеру кадровий бюджет, поки ніхто не дивиться, ні до чого. */
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) { en.isIntersecting ? start() : stop(); });
+          }, { threshold: 0.01 }).observe(pair);
+        } else {
+          start();
+        }
+      });
     })();
 
     /* ============================================================
