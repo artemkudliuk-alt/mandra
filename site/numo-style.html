@@ -2130,6 +2130,9 @@
     transform: translateY(-0.22vw);
   }
   /* Лінія від плашки до маркера 03 */
+  .mp-connector line, .mp-connector circle {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
   .mp-connector {
     position: absolute;
     inset: 0;
@@ -2148,6 +2151,36 @@
   }
   /* Резервуємо місце під картинку — прибирає стрибок вёрстки */
   .mp-clean-img { aspect-ratio: 16 / 9; }
+
+  /* ІНТЕРАКТИВНИЙ ГЕНПЛАН.
+     Підкладка суцільна, три шари черг лежать поверх неї піксель у піксель —
+     тому в спокої їх не видно. При наведенні активний шар проявляється
+     яскравішим і трохи піднімається, а підкладка гасне. */
+  .mp-plan { position: relative; display: block; }
+  .mp-plan .mp-clean-img {
+    transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mp-zone {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;          /* курсор ловить контейнер, а не прямокутник */
+    transform-origin: center;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mp-plan.is-hot .mp-clean-img { filter: brightness(0.5) saturate(0.75); }
+  .mp-zone.is-on {
+    opacity: 1;
+    transform: scale(1.014);
+    filter: brightness(1.1) saturate(1.08)
+            drop-shadow(0 20px 38px rgba(0, 0, 0, 0.6));
+  }
+  .mp-plan.is-hot { cursor: pointer; }
 
   /* ============================================================
      ЕКРАН 6 — ПАРТНЕРИ МАНДРА ІНВЕСТ
@@ -4590,7 +4623,14 @@
        ============================================================ -->
   <section class="section-masterplan-clean" id="petrichor">
     <div class="mp-clean-media">
-      <img class="mp-clean-img" src="assets/masterplan_16_9.webp" alt="Генеральний план Mandra Petrichor — Активна III черга" loading="lazy" decoding="async">
+      <!-- Генплан: суцільна підкладка + три шари черг поверх неї.
+           Шари лежать точно у своїх місцях, тому за замовчуванням невидимі. -->
+      <div class="mp-plan" id="mpPlan">
+        <img class="mp-clean-img" src="assets/mp_plan_base.webp" alt="Генеральний план Mandra Petrichor" loading="lazy" decoding="async">
+        <img class="mp-zone" data-phase="1" src="assets/mp_plan_zone1.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="mp-zone" data-phase="2" src="assets/mp_plan_zone2.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="mp-zone" data-phase="3" src="assets/mp_plan_zone3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      </div>
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
@@ -6871,6 +6911,111 @@
       renderStack();
     })();
   
+    /* ІНТЕРАКТИВНИЙ ГЕНПЛАН — вибір черги.
+       Шари черг — прямокутні PNG з прозорістю, тож ловити :hover по самій
+       картинці не можна: спрацьовувало б на весь кадр. Тому один раз будуємо
+       альфа-карту 384x216, де кожен піксель зберігає номер черги, і на русі
+       миші дивимось у неї. Потрапляння точно по контуру, пам'яті 83 КБ. */
+    (function initMasterplanZones() {
+      const plan = document.getElementById('mpPlan');
+      if (!plan) return;
+      const zones = Array.prototype.slice.call(plan.querySelectorAll('.mp-zone'));
+      if (!zones.length) return;
+
+      /* ЗАГЛУШКИ для I та II черги за зразком третьої — замінити на реальні. */
+      const PHASES = {
+        1: { num: 'I черга',   title: 'Серце комплексу',
+             desc: 'Родинний відпочинок навколо великого басейну та відкритих терас.',
+             count: '38 котеджів',
+             list: ['басейн', 'тераси', 'дитячий клуб', 'лаунж-зона', 'прокат'] },
+        2: { num: 'II черга',  title: 'Простір для великих компаній',
+             desc: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
+             count: '52 котеджі',
+             list: ['приватні басейни', 'барбекю-зони', 'спортивний майданчик', 'тиха зона', 'паркінг'] },
+        3: { num: 'III черга', title: 'Місце для найкращих побачень',
+             desc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
+             count: '41 котедж',
+             list: ['SPA-комплекс', 'ресторан', 'event hall', 'простори для побачень', 'вілли для двох'] }
+      };
+
+      const MW = 384, MH = 216;
+      let map = null, hot = 0;
+      const centre = {};
+
+      function buildMap() {
+        const c = document.createElement('canvas');
+        c.width = MW; c.height = MH;
+        const ctx = c.getContext('2d', { willReadFrequently: true });
+        const m = new Uint8Array(MW * MH);
+        zones.forEach(function (img, i) {
+          ctx.clearRect(0, 0, MW, MH);
+          try { ctx.drawImage(img, 0, 0, MW, MH); } catch (e) { return; }
+          const d = ctx.getImageData(0, 0, MW, MH).data;
+          let sx = 0, sy = 0, n = 0;
+          for (let p = 0; p < m.length; p++) {
+            if (d[p * 4 + 3] > 24) {
+              m[p] = i + 1;                        /* пізніший шар перекриває на швах */
+              sx += p % MW; sy += (p / MW) | 0; n++;
+            }
+          }
+          /* центр зони у координатах viewBox конектора (1920x1080) */
+          if (n) centre[i + 1] = { x: sx / n / MW * 1920, y: sy / n / MH * 1080 };
+        });
+        map = m;
+      }
+
+      function setHot(v) {
+        if (v === hot) return;
+        hot = v;
+        plan.classList.toggle('is-hot', v > 0);
+        zones.forEach(function (z) {
+          z.classList.toggle('is-on', +z.dataset.phase === v);
+        });
+      }
+
+      function applyPhase(n) {
+        const d = PHASES[n];
+        if (!d) return;
+        const put = function (id, txt) {
+          const el = document.getElementById(id);
+          if (el) el.textContent = txt;
+        };
+        put('mpPhaseNum', d.num);
+        put('mpPhaseTitle', d.title);
+        put('mpPhaseDesc', d.desc);
+        put('mpPhaseCount', d.count);
+        d.list.forEach(function (t, i) { put('mpPhL' + (i + 1), t); });
+
+        /* Лінія-конектор була намальована під стару картинку і вказувала в одну
+           точку назавжди. Тепер її кінець їде в центр вибраної черги. */
+        const c = centre[n];
+        const svg = document.querySelector('.mp-connector');
+        if (c && svg) {
+          const line = svg.querySelector('line'), dot = svg.querySelector('circle');
+          if (line) { line.setAttribute('x2', c.x.toFixed(0)); line.setAttribute('y2', c.y.toFixed(0)); }
+          if (dot)  { dot.setAttribute('cx', c.x.toFixed(0)); dot.setAttribute('cy', c.y.toFixed(0)); }
+        }
+      }
+
+      plan.addEventListener('pointermove', function (e) {
+        if (!map) return;
+        const r = plan.getBoundingClientRect();
+        const x = Math.floor((e.clientX - r.left) / r.width * MW);
+        const y = Math.floor((e.clientY - r.top) / r.height * MH);
+        setHot(x >= 0 && y >= 0 && x < MW && y < MH ? map[y * MW + x] : 0);
+      }, { passive: true });
+
+      plan.addEventListener('pointerleave', function () { setHot(0); }, { passive: true });
+      plan.addEventListener('click', function () { if (hot) applyPhase(hot); });
+
+      /* карту будуємо, коли всі шари реально завантажені */
+      let left = zones.length;
+      zones.forEach(function (img) {
+        if (img.complete && img.naturalWidth) { if (!--left) buildMap(); }
+        else img.addEventListener('load', function () { if (!--left) buildMap(); }, { once: true });
+      });
+    })();
+
     /* ЕКРАН 5 — поява плашки III черги та лінії до маркера */
     (function initMasterplanReveal() {
       const sec = document.querySelector('.section-masterplan-clean');
