@@ -4805,7 +4805,67 @@
     mask-repeat: no-repeat, no-repeat;
     z-index: 2;
   }
-  .site-footer > *:not(.footer-veg) { position: relative; z-index: 4; }
+  .site-footer > *:not(.footer-veg):not(.footer-watermark-wrap) { position: relative; z-index: 4; }
+
+  /* Фоновий монументальний водяний знак: плавна безкінечна стрічка MANDRA INVEST (60 FPS) */
+  .footer-watermark-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: clamp(200px, 28vw, 380px);
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-watermark-track {
+    display: flex;
+    flex-shrink: 0;
+    width: max-content;
+    will-change: transform;
+    animation: footerWatermarkScroll 60s linear infinite;
+  }
+
+  .footer-watermark-group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .footer-watermark-item {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(96px, 14vw, 210px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
+    line-height: 1;
+    padding-right: clamp(48px, 6vw, 100px);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @keyframes footerWatermarkScroll {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-watermark-track {
+      animation: none;
+      transform: translate3d(0, 0, 0);
+    }
+  }
   @media (max-width: 900px) {
     .site-footer { padding-top: clamp(270px, 72vw, 380px); }
     .footer-veg[data-veg="far"] {
@@ -6160,6 +6220,22 @@
   <footer class="site-footer" id="siteFooter">
     <div class="footer-veg" data-veg="far" aria-hidden="true"></div>
     <div class="footer-veg" data-veg="near" aria-hidden="true"></div>
+
+    <!-- Фоновий водяний знак: нескінченна плавна стрічка MANDRA INVEST (60 FPS) -->
+    <div class="footer-watermark-wrap" aria-hidden="true">
+      <div class="footer-watermark-track">
+        <span class="footer-watermark-group">
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+        </span>
+        <span class="footer-watermark-group">
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">MANDRA INVEST</span>
+        </span>
+      </div>
+    </div>
 
     <div class="footer-container">
       
