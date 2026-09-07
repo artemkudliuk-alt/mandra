@@ -4757,9 +4757,9 @@
      фон переведено в зелену гаму листків, а зверху заходить ліс у три плани. */
   .site-footer {
     position: relative;
-    background: linear-gradient(180deg, #0A0F0C 0%, #16301D 14%, #1A3521 40%, #142819 70%, #0E1B12 100%);
+    background: #0A0F0C;
     color: #FFFFFF;
-    padding: clamp(420px, 34vw, 540px) 5vw 36px;
+    padding: clamp(580px, 47vw, 760px) 5vw 48px;
     z-index: 10;
     overflow: hidden;
     border-top: none;
@@ -4767,11 +4767,9 @@
     box-sizing: border-box;
   }
 
-  /* ЛІС НА СТИКУ: Багатошаровий карпатський силует (долина, 3 плани глибини + 2 світлі акцентні ялини).
-     Маски на основі оптимізованих WebP:
-     - far: дальній гірський хребет та задній масив смерек (#2F5D3A)
-     - accent: дві світлі акцентні ялини з м'яким неоновим свіченням (#C3F0B3)
-     - near: передній план смерек (#142819) із суцільним заповненням до низу футера */
+  /* ЛІС НА СТИКУ: 2 чисті векторні плани смерек (Mandra Brand Palette).
+     - far: дальній план смерек (#1F3D29)
+     - near: передній план смерек (#0E1C12) із суцільним перекриттям до низу футера */
   .footer-veg {
     position: absolute;
     left: 0;
@@ -4781,68 +4779,49 @@
   }
   .footer-veg[data-veg="far"] {
     top: 0;
-    height: clamp(320px, 32vw, 500px);
-    background-color: #2F5D3A;
-    -webkit-mask-image: url('assets/footer/lay_far.webp');
-    mask-image: url('assets/footer/lay_far.webp');
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center top;
-    mask-position: center top;
-    z-index: 1;
-  }
-  .footer-veg[data-veg="accent"] {
-    top: clamp(110px, 11vw, 190px);
-    height: clamp(200px, 20vw, 320px);
-    background-color: #C3F0B3;
-    -webkit-mask-image: url('assets/footer/lay_accent.webp');
-    mask-image: url('assets/footer/lay_accent.webp');
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center top;
-    mask-position: center top;
-    filter: drop-shadow(0 0 18px rgba(195, 240, 179, 0.65));
-    z-index: 2;
-  }
-  .footer-veg[data-veg="near"] {
-    top: clamp(25px, 2.5vw, 45px);
-    bottom: 0;
-    background-color: #142819;
-    -webkit-mask-image: url('assets/footer/lay_near.webp'), linear-gradient(#000, #000);
-    mask-image: url('assets/footer/lay_near.webp'), linear-gradient(#000, #000);
-    -webkit-mask-size: 100% clamp(300px, 30vw, 460px), 100% calc(100% - clamp(298px, 30vw - 2px, 458px));
-    mask-size: 100% clamp(300px, 30vw, 460px), 100% calc(100% - clamp(298px, 30vw - 2px, 458px));
-    -webkit-mask-position: center top, center clamp(298px, 30vw - 2px, 458px);
-    mask-position: center top, center clamp(298px, 30vw - 2px, 458px);
+    bottom: -150px;
+    background-color: #2D5D3B;
+    -webkit-mask-image: url('assets/footer/lay_far_solid.webp?v=clean3'), linear-gradient(#000, #000);
+    mask-image: url('assets/footer/lay_far_solid.webp?v=clean3'), linear-gradient(#000, #000);
+    -webkit-mask-size: 100% clamp(420px, 42vw, 640px), 100% calc(100% - clamp(418px, 42vw - 2px, 638px));
+    mask-size: 100% clamp(420px, 42vw, 640px), 100% calc(100% - clamp(418px, 42vw - 2px, 638px));
+    -webkit-mask-position: center top, center clamp(418px, 42vw - 2px, 638px);
+    mask-position: center top, center clamp(418px, 42vw - 2px, 638px);
     -webkit-mask-repeat: no-repeat, no-repeat;
     mask-repeat: no-repeat, no-repeat;
-    z-index: 3;
+    z-index: 1;
+  }
+  .footer-veg[data-veg="near"] {
+    top: clamp(-12px, -0.5vw, 5px);
+    bottom: -500px;
+    background-color: #0E1C12;
+    -webkit-mask-image: url('assets/footer/lay_near_solid.webp?v=clean3'), linear-gradient(#000, #000);
+    mask-image: url('assets/footer/lay_near_solid.webp?v=clean3'), linear-gradient(#000, #000);
+    -webkit-mask-size: 100% clamp(400px, 40vw, 620px), 100% calc(100% - clamp(398px, 40vw - 2px, 618px));
+    mask-size: 100% clamp(400px, 40vw, 620px), 100% calc(100% - clamp(398px, 40vw - 2px, 618px));
+    -webkit-mask-position: center top, center clamp(398px, 40vw - 2px, 618px);
+    mask-position: center top, center clamp(398px, 40vw - 2px, 618px);
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat;
+    z-index: 2;
   }
   .site-footer > *:not(.footer-veg) { position: relative; z-index: 4; }
   @media (max-width: 900px) {
-    .site-footer { padding-top: clamp(260px, 66vw, 340px); }
+    .site-footer { padding-top: clamp(360px, 92vw, 480px); }
     .footer-veg[data-veg="far"] {
-      height: 240px;
-      -webkit-mask-size: auto 100%;
-      mask-size: auto 100%;
-    }
-    .footer-veg[data-veg="accent"] {
-      top: 80px;
-      height: 150px;
-      -webkit-mask-size: auto 100%;
-      mask-size: auto 100%;
-      filter: drop-shadow(0 0 12px rgba(195, 240, 179, 0.65));
+      bottom: -100px;
+      -webkit-mask-size: auto 320px, 100% calc(100% - 318px);
+      mask-size: auto 320px, 100% calc(100% - 318px);
+      -webkit-mask-position: center top, center 318px;
+      mask-position: center top, center 318px;
     }
     .footer-veg[data-veg="near"] {
-      top: 20px;
-      -webkit-mask-size: auto 210px, 100% calc(100% - 208px);
-      mask-size: auto 210px, 100% calc(100% - 208px);
-      -webkit-mask-position: center top, center 208px;
-      mask-position: center top, center 208px;
+      top: -8px;
+      bottom: -350px;
+      -webkit-mask-size: auto 290px, 100% calc(100% - 288px);
+      mask-size: auto 290px, 100% calc(100% - 288px);
+      -webkit-mask-position: center top, center 288px;
+      mask-position: center top, center 288px;
     }
   }
 
@@ -5059,7 +5038,7 @@
       min-height: 380px;
     }
     .site-footer {
-      padding: clamp(230px, 58vw, 300px) 5vw 28px;
+      padding: clamp(320px, 81vw, 420px) 5vw 36px;
     }
     .footer-top-row {
       flex-direction: column;
@@ -6171,7 +6150,6 @@
        ============================================================ -->
   <footer class="site-footer" id="siteFooter">
     <div class="footer-veg" data-veg="far" aria-hidden="true"></div>
-    <div class="footer-veg" data-veg="accent" aria-hidden="true"></div>
     <div class="footer-veg" data-veg="near" aria-hidden="true"></div>
 
     <div class="footer-container">
@@ -7963,7 +7941,12 @@
       const layers = Array.prototype.slice.call(footer.querySelectorAll('.footer-veg'));
       if (!layers.length) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const SPEED = { far: 0.16, accent: 0.28, near: 0.44 };
+      /* Двошаровий паралакс лісу з посиленим 2.5x об'ємним рухом:
+         - far (дальній план): плавний рух світлішого фону
+         - near (ближній план): глибока 2.5x амплітуда темного лісу,
+           який при вході в футер піднімається вгору і майже повністю перекриває дальній шар */
+      const far = footer.querySelector('.footer-veg[data-veg="far"]');
+      const near = footer.querySelector('.footer-veg[data-veg="near"]');
       let ticking = false;
 
       function apply() {
@@ -7972,10 +7955,17 @@
         if (r.top > window.innerHeight || r.bottom < 0) return;
         /* 0 — футер тільки визирнув знизу, 1 — повністю в кадрі */
         const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height * 0.5)));
-        layers.forEach(function (el) {
-          const k = SPEED[el.dataset.veg] || 0.3;
-          el.style.transform = 'translate3d(0,' + ((1 - p) * 120 * k).toFixed(1) + 'px,0)';
-        });
+        const isMobile = window.innerWidth <= 900;
+        const farTravel = isMobile ? 30 : 60;
+        const nearTravel = isMobile ? 260 : 510;
+        const nearFinal = isMobile ? -65 : -130;
+
+        if (far) {
+          far.style.transform = 'translate3d(0,' + ((1 - p) * farTravel).toFixed(1) + 'px,0)';
+        }
+        if (near) {
+          near.style.transform = 'translate3d(0,' + ((1 - p) * nearTravel + nearFinal).toFixed(1) + 'px,0)';
+        }
       }
       function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(apply); } }
       window.addEventListener('scroll', onScroll, { passive: true });
