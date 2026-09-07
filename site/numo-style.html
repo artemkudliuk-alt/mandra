@@ -4033,359 +4033,165 @@
      арочні фото праворуч, кнопка знизу, фоновий напис RIBAS із 4-го кроку
      ============================================================ */
   .section-invest-flow {
+    background: #0B0F0C;
+    padding: clamp(80px, 8vw, 130px) 5vw clamp(30px, 3vw, 50px);
+    width: 100%;
     position: relative;
-    background-color: #121212;
-    background-image: 
-      radial-gradient(circle at 85% 65%, rgba(129, 184, 115, 0.05) 0%, transparent 55%);
-    padding: 110px 5vw 120px;
-    overflow: hidden;
-    color: #FFFFFF;
-    border-top: none;
     box-sizing: border-box;
+    overflow: hidden;
   }
-
-  /* Фоновий водяний знак MANDRA на рівні 1-2 кроків (на всю ширину) */
-  .invest-flow-watermark-top {
-    position: absolute;
-    top: 380px;
-    left: -2vw;
-    width: 104vw;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(7.5rem, 19vw, 24rem);
-    font-weight: 900;
-    line-height: 0.82;
-    letter-spacing: -0.04em;
-    color: rgba(255, 255, 255, 0.038);
-    pointer-events: none;
-    user-select: none;
-    z-index: 1;
-    white-space: nowrap;
-    text-transform: uppercase;
-  }
-
-  /* Фоновий водяний знак INVEST на рівні 5-6 кроків (праворуч) */
-  .invest-flow-watermark-bottom {
-    position: absolute;
-    bottom: 260px;
-    right: -2vw;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(7.5rem, 19vw, 24rem);
-    font-weight: 900;
-    line-height: 0.82;
-    letter-spacing: -0.04em;
-    color: rgba(255, 255, 255, 0.038);
-    pointer-events: none;
-    user-select: none;
-    z-index: 1;
-    white-space: nowrap;
-    text-transform: uppercase;
-    text-align: right;
-  }
-
   .invest-flow-container {
-    position: relative;
-    z-index: 2;
     max-width: 1520px;
     margin: 0 auto;
-    padding: 0;
+    width: 100%;
     box-sizing: border-box;
   }
 
-  /* Мінімальний заголовок зверху */
-  .invest-flow-header {
-    margin-bottom: 56px;
-    max-width: 980px;
-  }
-
+  /* Шапка: заголовок більше не тягнеться на всю сітку */
+  .flow-head { max-width: 900px; margin: 0 auto clamp(48px, 5vw, 82px); text-align: center; }
   .invest-flow-title {
     font-family: var(--title-font);
-    font-size: clamp(2rem, 3.2vw, 3.8rem);
+    font-size: clamp(2.1rem, 3.4vw, 4rem);
     font-weight: 800;
-    line-height: 1.15;
+    line-height: 1.06;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    margin: 0 0 16px;
+    margin: 0 0 22px;
   }
-
-  .invest-flow-title .title-accent {
-    display: block;
-    color: #DEF7D7;
-    margin-bottom: 4px;
-  }
-
-  .invest-flow-title .title-white {
-    display: block;
-    color: #FFFFFF;
-  }
-
+  .invest-flow-title .title-accent { display: block; color: #81B873; }
+  .invest-flow-title .title-white  { display: block; color: #FFFFFF; }
   .invest-flow-lead {
-    font-family: var(--font-body);
-    font-size: clamp(1.02rem, 1.15vw, 1.25rem);
+    font-family: var(--sub-font);
+    font-size: clamp(0.95rem, 1.05vw, 1.12rem);
+    font-weight: 500;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.72);
-    margin: 0;
-  }
-
-  /* Список 6 кроків без рамок */
-  .invest-flow-steps-list {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    width: 100%;
-  }
-
-  /* Рядок кроку — ТОЧНИЙ КЛОН МАКЕТА (media_1788489293047.png) */
-  .invest-step-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: clamp(24px, 4vw, 64px);
-    padding: clamp(28px, 3.2vw, 42px) 0 0 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: transparent;
-    cursor: pointer;
-    text-decoration: none;
-    position: relative;
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  .invest-step-row:last-child {
-    border-bottom: none;
-  }
-
-  .invest-step-row:hover,
-  .invest-step-row.is-active {
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  /* Ліва колонка: Прапорець-таб [Крок X] + вертикальна біла лінія + Текстовий блок */
-  .step-timeline-block {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    flex: 1;
-    max-width: 760px;
-    min-height: 100%;
-  }
-
-  /* Білий горизонтальний прапорець [Крок X] — збільшений та чіткий */
-  .step-krok-flag {
-    display: inline-flex;
-    align-items: center;
-    background: #FFFFFF;
-    color: #111111;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(1.02rem, 1.15vw, 1.25rem);
-    font-weight: 700;
-    padding: 8px 24px 8px 18px;
-    border-radius: 0 999px 999px 0;
-    width: fit-content;
-    line-height: 1.25;
-    margin-left: 0;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-  }
-
-  /* Вертикальна біла лінія по всій висоті плашки від прапорця до нижньої лінії */
-  .step-details-body {
-    border-left: 2px solid #FFFFFF;
-    margin-left: 0;
-    padding-left: clamp(22px, 2.2vw, 32px);
-    padding-top: 18px;
-    padding-bottom: clamp(28px, 3.2vw, 42px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
-    flex: 1;
-  }
-
-  /* Заголовок кроку — чистий білий шрифт, як у макеті (media_1788489293047.png) */
-  .step-row-title {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: clamp(1.25rem, 1.5vw, 1.7rem);
-    font-weight: 600;
-    line-height: 1.32;
-    color: #FFFFFF;
-    margin: 0;
-    letter-spacing: -0.02em;
-    transition: color 0.3s ease;
-  }
-
-  /* Опис кроку — приглушений світло-сірий */
-  .step-row-desc {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: clamp(0.92rem, 0.98vw, 1.05rem);
-    line-height: 1.58;
     color: rgba(255, 255, 255, 0.62);
-    margin: 0;
-    max-width: 620px;
-    letter-spacing: -0.01em;
-    transition: color 0.3s ease;
+    margin: 0 auto;
+    max-width: 680px;
   }
 
-  /* Ховер та активний стан — чистий архітектурний, без зайвого перефарбовування ліній */
-  .invest-step-row:hover,
-  .invest-step-row.is-active {
-    background: rgba(255, 255, 255, 0.025);
-  }
-
-  .invest-step-row:hover .step-row-desc,
-  .invest-step-row.is-active .step-row-desc {
-    color: rgba(255, 255, 255, 0.88);
-  }
-
-  /* Права колонка: арочне фото (прямий зріз зліва, плавна арка справа) */
-  .step-photo-col {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-shrink: 0;
-    padding-bottom: clamp(28px, 3.2vw, 42px);
-  }
-
-  .step-arch-media {
-    width: clamp(280px, 24vw, 390px);
-    aspect-ratio: 2 / 1;
-    border-radius: 0 999px 999px 0;
-    overflow: hidden;
-    position: relative;
-    border: none;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-    box-sizing: border-box;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-  }
-
-  .invest-step-row:hover .step-arch-media,
-  .invest-step-row.is-active .step-arch-media {
-    transform: scale(1.02);
-    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6);
-  }
-
-  .step-arch-img {
+  /* ---------- Дерево ---------- */
+  .flow-tree { position: relative; width: 100%; }
+  .flow-vine {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    overflow: visible;
+    /* Знизу лоза впиралась у межу секції різаним торцем. Тепер останні 9%
+       висоти йдуть у прозорість, і гілка розчиняється, а не обрубується. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 91%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 91%, transparent 100%);
+  }
+  /* Три лози йдуть одним пучком і переплітаються між собою. Товщина кожної
+     вдвічі більша за початкову — одна тонка лінія губилась в анімації. */
+  /* Спочатку гілка просто коричнева. У міру спуску вона наливається тим самим
+     коричневим, але з легким зеленим підтоном — не зеленим. Зеленіють лише
+     листочки, коли ріст до них доходить. */
+  .flow-vine-base { fill: none; stroke-width: 5; stroke-linecap: round; }
+  .flow-vine-base[data-v="0"] { stroke: #4A3B29; }
+  .flow-vine-base[data-v="1"] { stroke: #5C4A33; stroke-width: 4; }
+  .flow-vine-base[data-v="2"] { stroke: #3A2E20; stroke-width: 4.4; }
+  /* Жива частина лози дорисовується у міру скролу */
+  .flow-vine-live { fill: none; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(129, 184, 115, 0.18)); }
+  .flow-vine-live[data-v="0"] { stroke: #6E6A3C; stroke-width: 5; }
+  .flow-vine-live[data-v="1"] { stroke: #7D7745; stroke-width: 4; }
+  .flow-vine-live[data-v="2"] { stroke: #5A5730; stroke-width: 4.4; opacity: 0.9; }
+  /* Листочки лежать НАД лозою і загоряються, коли до них доходить ріст */
+  .flow-sprig {
+    fill: #5C4A33;
+    opacity: 0.8;
+    transition: fill 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+  }
+  .flow-sprig.is-lit {
+    fill: #8FC97F;
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(129, 184, 115, 0.55));
   }
 
-  .invest-step-row:hover .step-arch-img,
-  .invest-step-row.is-active .step-arch-img {
-    transform: scale(1.04);
-  }
-
-  /* Кнопка в самому низу */
-  .invest-flow-bottom-cta {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 64px;
+  .flow-leaves { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .flow-leaf {
     position: relative;
-    z-index: 3;
-  }
-
-  .btn-invest-flow-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    background: #81B873;
-    color: #0E1F0B;
-    border-radius: 999px;
-    padding: 16px 36px;
-    font-family: var(--title-font);
-    font-size: 0.98rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-    box-shadow: 0 12px 28px rgba(129, 184, 115, 0.32);
-    transition: background 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-  }
-
-  .btn-invest-flow-cta:hover {
-    background: #DEF7D7;
-    transform: translateY(-2px);
-    box-shadow: 0 16px 36px rgba(129, 184, 115, 0.45);
-  }
-
-  .btn-invest-flow-cta .btn-cta-arrow {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #0E1F0B;
-    color: #81B873;
+    width: 43%;
+    min-height: clamp(250px, 21vw, 320px);
     display: flex;
     align-items: center;
+    margin-bottom: clamp(-30px, -1.6vw, -10px);
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flow-leaf.is-in { opacity: 1; transform: none; }
+  /* Номер, заголовок і опис проявляються по черзі, а не разом із листком */
+  .flow-leaf-num, .flow-leaf-title, .flow-leaf-desc {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .flow-leaf.is-in .flow-leaf-num   { opacity: 1; transform: none; transition-delay: 0.18s; }
+  .flow-leaf.is-in .flow-leaf-title { opacity: 1; transform: none; transition-delay: 0.30s; }
+  .flow-leaf.is-in .flow-leaf-desc  { opacity: 1; transform: none; transition-delay: 0.42s; }
+  .flow-leaf[data-side="l"] { align-self: flex-start; }
+  .flow-leaf[data-side="l"] .flow-leaf-body { transform: rotate(-3.5deg); }
+  .flow-leaf[data-side="l"] .flow-leaf-body:hover { transform: rotate(-3.5deg) translateY(-5px); }
+  .flow-leaf[data-side="r"] { align-self: flex-end; }
+  .flow-leaf[data-side="r"] .flow-leaf-body { transform: rotate(3.5deg); }
+  .flow-leaf[data-side="r"] .flow-leaf-body:hover { transform: rotate(3.5deg) translateY(-5px); }
+
+  /* Форма листка — два протилежні кути майже круглі, один гострий.
+     Саме той силует, що на обраному ескізі, але тягнеться під обсяг тексту. */
+  .flow-leaf-body {
+    width: 100%;
+    height: 100%;
+    padding: clamp(34px, 3.2vw, 52px) clamp(52px, 4.4vw, 78px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.35s ease, color 0.35s ease, background 0.35s ease;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, background 0.45s ease;
   }
+  .flow-leaf[data-side="l"] .flow-leaf-body { border-radius: 999px 14px 999px 999px; }
+  .flow-leaf[data-side="r"] .flow-leaf-body { border-radius: 14px 999px 999px 999px; }
+  .flow-leaf[data-tone="light"] .flow-leaf-body { background: #81B873; }
+  .flow-leaf[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; }
 
-  .btn-invest-flow-cta:hover .btn-cta-arrow {
-    transform: translate(3px, -3px);
-    background: #0E1F0B;
-    color: #DEF7D7;
+  .flow-leaf[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
+  .flow-leaf[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
+
+  .flow-leaf-num {
+    font-family: var(--title-font);
+    font-size: clamp(0.84rem, 1vw, 1.05rem);
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: rgba(11, 15, 12, 0.5);
+    margin-bottom: 10px;
   }
-
-  .btn-invest-flow-cta .btn-cta-arrow svg {
-    width: 16px;
-    height: 16px;
-    stroke: currentColor;
-    stroke-width: 2.5;
-    fill: none;
+  .flow-leaf[data-tone="dark"] .flow-leaf-num { color: rgba(255, 255, 255, 0.45); }
+  .flow-leaf-title {
+    font-family: var(--title-font);
+    font-size: clamp(1.2rem, 1.6vw, 1.78rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: #0B0F0C;
   }
-
-  /* Адаптивність */
-  @media (max-width: 1024px) {
-    .section-invest-flow {
-      padding: 90px 5vw 100px;
-    }
-    .invest-step-row {
-      gap: 32px;
-      padding: 26px 0 0 0;
-    }
-    .step-arch-media {
-      width: clamp(220px, 26vw, 300px);
-    }
+  .flow-leaf[data-tone="dark"] .flow-leaf-title { color: #FFFFFF; }
+  .flow-leaf-desc {
+    font-family: var(--sub-font);
+    font-size: clamp(0.95rem, 1.1vw, 1.16rem);
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+    color: rgba(11, 15, 12, 0.72);
   }
+  .flow-leaf[data-tone="dark"] .flow-leaf-desc { color: rgba(255, 255, 255, 0.78); }
 
-  @media (max-width: 768px) {
-    .section-invest-flow {
-      padding: 70px 5vw 85px;
-    }
-    .invest-step-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 22px;
-      padding: 24px 0 0 0;
-    }
-    .step-timeline-block {
-      width: 100%;
-      max-width: 100%;
-    }
-    .step-details-body {
-      padding-bottom: 18px;
-    }
-    .step-photo-col {
-      width: 100%;
-      justify-content: flex-start;
-      padding-bottom: 24px;
-    }
-    .step-arch-media {
-      width: 100%;
-      max-width: 340px;
-      aspect-ratio: 2 / 1;
-    }
-    .btn-invest-flow-cta {
-      width: 100%;
-      justify-content: space-between;
-      box-sizing: border-box;
-      font-size: 0.88rem;
-      padding: 14px 20px;
-    }
+  @media (max-width: 900px) {
+    .flow-leaf { width: 100%; align-self: stretch !important; min-height: 0; }
+    .flow-leaf .flow-leaf-body { border-radius: 999px 14px 999px 999px !important; }
+    .flow-vine { display: none; }
   }
 
   /* ============================================================
@@ -4393,8 +4199,8 @@
      ============================================================ */
   .section-faq {
     position: relative;
-    background: #FFFFFF;
-    color: #0E1F0B;
+    background: #0B0F0C;
+    color: #FFFFFF;
     padding: 120px 5vw 140px;
     z-index: 10;
     overflow: hidden;
@@ -4417,7 +4223,7 @@
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.02em;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0 0 16px;
   }
   .faq-title-accent-bar {
@@ -4430,18 +4236,42 @@
   .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1520px;
   }
+  /* Те саме скло, що в картках статистики, партнерах і плашці інвестора */
   .faq-item {
-    background: #FFFFFF;
-    border: 1.5px solid rgba(14, 31, 11, 0.09);
-    border-radius: 11px;
-    box-shadow: 0 4px 20px rgba(14, 31, 11, 0.03);
+    position: relative;
+    background: rgba(255, 255, 255, 0.045);
+    border: none;
+    border-radius: 10px;
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 18px 44px rgba(0, 0, 0, 0.34);
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.35s ease, transform 0.3s ease;
+    transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  .faq-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .faq-item.is-open { background: rgba(255, 255, 255, 0.07); }
   .faq-item:not(.is-open):hover {
     border-color: rgba(129, 184, 115, 0.45);
     box-shadow: 0 8px 28px rgba(14, 31, 11, 0.07);
@@ -4456,46 +4286,47 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 24px 32px;
+    padding: 28px 40px;
     cursor: pointer;
     user-select: none;
     transition: background-color 0.2s ease;
   }
   .faq-item-header:hover {
-    background-color: rgba(222, 247, 215, 0.18);
+    background-color: rgba(255, 255, 255, 0.03);
   }
+  .faq-item:not(.is-open):hover { transform: translateY(-2px); }
   .faq-question {
     font-family: var(--title-font, 'Unbounded', sans-serif);
     font-size: clamp(1.05rem, 1.3vw, 1.25rem);
     font-weight: 700;
     line-height: 1.35;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0;
     flex: 1;
     transition: color 0.2s ease;
   }
   .faq-item.is-open .faq-question {
-    color: #0E1F0B;
+    color: #DEF7D7;
   }
   .faq-chevron {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(14, 31, 11, 0.04);
+    background: rgba(255, 255, 255, 0.07);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0E1F0B;
+    color: #FFFFFF;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, color 0.3s ease;
   }
   .faq-item:hover .faq-chevron {
-    background: #DEF7D7;
+    background: rgba(129, 184, 115, 0.28);
   }
   .faq-item.is-open .faq-chevron {
     transform: rotate(180deg);
-    background: #DEF7D7;
-    color: #0E1F0B;
+    background: #81B873;
+    color: #0B0F0C;
   }
   .faq-chevron svg {
     width: 20px;
@@ -4518,16 +4349,16 @@
   }
   .faq-divider {
     height: 1px;
-    background: rgba(14, 31, 11, 0.08);
-    margin: 0 32px;
+    background: rgba(255, 255, 255, 0.10);
+    margin: 0 40px;
   }
   .faq-answer {
-    padding: 22px 32px 32px;
+    padding: 24px 40px 34px;
     font-family: 'Manrope', -apple-system, sans-serif;
     font-size: clamp(0.96rem, 1.05vw, 1.08rem);
     font-weight: 400;
     line-height: 1.72;
-    color: rgba(14, 31, 11, 0.82);
+    color: rgba(255, 255, 255, 0.72);
     margin: 0;
   }
 
@@ -4586,9 +4417,10 @@
     padding: 0;
     box-sizing: border-box;
   }
+  /* Заголовок і картка по центру секції */
   .contacts-header-block {
-    margin-bottom: 36px;
-    text-align: left;
+    margin-bottom: 40px;
+    text-align: center;
   }
   .contacts-header-block .contacts-title {
     font-family: var(--title-font, 'Unbounded', sans-serif);
@@ -4605,103 +4437,167 @@
     font-weight: 500;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.72);
-    margin: 0;
+    margin: 0 auto;
+    max-width: 620px;
   }
+
+  /* Скляна картка — той самий рецепт, що в решті блоків сайту */
   .contacts-card {
-    background: #FFFFFF;
-    border-radius: 18px;
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    background: rgba(255, 255, 255, 0.045);
+    border: none;
+    border-radius: 16px;
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 26px 64px rgba(0, 0, 0, 0.46);
     overflow: hidden;
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 1240px;
+    grid-template-columns: 1.05fr 0.95fr;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  /* Кут для променя по кромці. Якщо браузер не знає @property — конічний
+     градієнт просто стоїть на місці, кромка лишається як була. */
+  @property --sheen-ang {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .contacts-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background:
+      conic-gradient(from var(--sheen-ang),
+        transparent 0deg,
+        rgba(129, 184, 115, 0.75) 26deg,
+        rgba(222, 247, 215, 0.95) 40deg,
+        rgba(129, 184, 115, 0.55) 54deg,
+        transparent 96deg,
+        transparent 360deg),
+      linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    animation: cardSheenSpin 9s linear infinite;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+  }
+  @keyframes cardSheenSpin { to { --sheen-ang: 360deg; } }
+
+  /* Скло ловить світло за курсором: відблиск їде слідом, як по справжній панелі */
+  .contacts-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(222, 247, 215, 0.10) 0%,
+      rgba(129, 184, 115, 0.06) 34%,
+      transparent 62%);
+  }
+  .contacts-card:hover .contacts-sheen { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .contacts-card::before { animation: none; }
+  }
+
+  /* Тепле зелене світло за карткою — блок має чіплятись за око */
+  .contacts-card::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -40%;
+    width: 70%;
+    height: 120%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(129, 184, 115, 0.16) 0%, transparent 62%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   /* ЛІВА КОЛОНКА: ФОРМА */
   .contacts-form-side {
-    padding: 56px 52px;
+    position: relative;
+    z-index: 2;
+    padding: clamp(38px, 3.6vw, 58px) clamp(30px, 3.2vw, 54px);
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  .contacts-logo-wrap {
-    margin-bottom: 24px;
-  }
-  .contacts-brand-logo {
-    height: 40px;
-    width: auto;
-    object-fit: contain;
-    display: block;
-  }
-  .contacts-title {
+  .contacts-form-side .contacts-title {
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(1.8rem, 2.3vw, 2.45rem);
+    font-size: clamp(1.6rem, 2.1vw, 2.2rem);
     font-weight: 800;
     line-height: 1.2;
     letter-spacing: -0.02em;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0 0 10px;
   }
-  .contacts-subtitle {
+  .contacts-form-side .contacts-subtitle {
     font-family: 'Manrope', -apple-system, sans-serif;
     font-size: clamp(0.95rem, 1.05vw, 1.08rem);
     font-weight: 500;
     line-height: 1.5;
-    color: rgba(14, 31, 11, 0.68);
-    margin: 0 0 28px;
+    color: rgba(255, 255, 255, 0.62);
+    margin: 0 0 26px;
   }
   .contacts-form-divider {
     height: 1px;
-    background: rgba(14, 31, 11, 0.08);
-    margin-bottom: 28px;
+    background: linear-gradient(90deg, rgba(129, 184, 115, 0.55), rgba(255, 255, 255, 0.10) 60%, transparent);
+    margin-bottom: 26px;
   }
-  .contacts-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .contacts-field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
-  }
+  .contacts-form { display: flex; flex-direction: column; gap: 16px; }
+  .contacts-field-group { display: flex; flex-direction: column; gap: 8px; text-align: left; }
   .contacts-label {
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    color: #0E1F0B;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.3s ease;
   }
+  .contacts-field-group:focus-within .contacts-label { color: #81B873; }
   .contacts-input {
     width: 100%;
     box-sizing: border-box;
-    background: #F8FAF7;
-    border: 1.5px solid rgba(14, 31, 11, 0.12);
-    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
     padding: 16px 20px;
     font-family: 'Manrope', sans-serif;
     font-size: 1.02rem;
-    color: #0E1F0B;
-    transition: all 0.25s ease;
+    color: #FFFFFF;
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     outline: none;
   }
   .contacts-input:focus {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
     border-color: #81B873;
     box-shadow: 0 0 0 4px rgba(129, 184, 115, 0.16);
   }
-  .contacts-input::placeholder {
-    color: rgba(14, 31, 11, 0.35);
-  }
+  .contacts-input::placeholder { color: rgba(255, 255, 255, 0.32); }
+
   .btn-contacts-submit {
-    margin-top: 6px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
     width: 100%;
     background: #81B873;
-    color: #0E1F0B;
+    color: #0B0F0C;
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 18px 28px;
     font-family: var(--title-font, 'Unbounded', sans-serif);
     font-size: clamp(0.92rem, 1.05vw, 1.05rem);
@@ -4713,24 +4609,35 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    box-shadow: 0 8px 24px rgba(129, 184, 115, 0.25);
+    box-shadow: 0 10px 30px rgba(129, 184, 115, 0.28);
+  }
+  /* Блік раз на кілька секунд пробігає по кнопці */
+  .btn-contacts-submit::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 45%;
+    height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-18deg);
+    animation: btnSheen 4.5s ease-in-out infinite;
+  }
+  @keyframes btnSheen {
+    0%, 62% { left: -60%; }
+    88%, 100% { left: 130%; }
   }
   .btn-contacts-submit:hover {
     background: #DEF7D7;
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(129, 184, 115, 0.35);
+    box-shadow: 0 14px 38px rgba(129, 184, 115, 0.40);
   }
   .btn-contacts-submit svg {
-    width: 18px;
-    height: 18px;
-    stroke: currentColor;
-    stroke-width: 2.2;
-    fill: none;
+    width: 18px; height: 18px;
+    stroke: currentColor; stroke-width: 2.2; fill: none;
     transition: transform 0.3s ease;
   }
-  .btn-contacts-submit:hover svg {
-    transform: translateX(4px);
-  }
+  .btn-contacts-submit:hover svg { transform: translateX(4px); }
   .contacts-guarantee {
     margin-top: 18px;
     display: flex;
@@ -4738,49 +4645,48 @@
     gap: 10px;
     font-family: 'Manrope', sans-serif;
     font-size: 0.82rem;
-    color: rgba(14, 31, 11, 0.55);
+    color: rgba(255, 255, 255, 0.48);
     line-height: 1.4;
   }
-  .contacts-guarantee-icon {
-    flex-shrink: 0;
-    color: #81B873;
-    width: 16px;
-    height: 16px;
-  }
+  .contacts-guarantee-icon { flex-shrink: 0; color: #81B873; width: 16px; height: 16px; }
 
-  /* ПРАВА КОЛОНКА: ФОТО МЕНЕДЖЕРА ТА ІНФОРМАЦІЯ НА БІЛОМУ ФОНІ */
+  /* ПРАВА КОЛОНКА: ФОТО МЕНЕДЖЕРА */
   .contacts-media-side {
     position: relative;
-    background: #FFFFFF;
-    padding: 52px 48px 52px 36px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.03);
+    /* Поля однакові з усіх боків: раніше ліве було 36px проти 48px правого,
+       і фото стояло не по центру колонки. */
+    padding: clamp(34px, 3.2vw, 50px);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    border-left: 1px solid rgba(14, 31, 11, 0.08);
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
   }
   .contacts-media-wrap {
     position: relative;
     width: 100%;
-    height: 360px;
+    max-width: 420px;
+    height: clamp(320px, 26vw, 400px);
+    margin: 0 auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(14, 31, 11, 0.07);
-    background: #F4F6F2;
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.42);
+    background: #141A16;
   }
   .contacts-person-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 15%;
+    /* Вікно кадру зсунуто вниз по вихідному фото — тому обличчя піднімається
+       вгору всередині рамки. 6% лишали її в нижній половині. */
+    object-position: center 34%;
     transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
   }
-  .contacts-card:hover .contacts-person-img {
-    transform: scale(1.03);
-  }
-  .contacts-person-overlay {
-    display: none;
-  }
+  .contacts-card:hover .contacts-person-img { transform: scale(1.04); }
+  .contacts-person-overlay { display: none; }
   .contacts-person-info {
     position: relative;
     margin-top: 20px;
@@ -4788,9 +4694,7 @@
     background: transparent;
     border: none;
     box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    text-align: left;
+    text-align: center;
   }
   .contacts-status-inline {
     display: inline-flex;
@@ -4799,16 +4703,15 @@
     font-family: 'Manrope', -apple-system, sans-serif;
     font-size: 0.84rem;
     font-weight: 600;
-    color: #2F6827;
+    color: #9FD98E;
     margin-bottom: 6px;
     letter-spacing: 0.01em;
   }
   .pulse-dot {
-    width: 7px;
-    height: 7px;
-    background: #398E2A;
+    width: 7px; height: 7px;
+    background: #81B873;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(57, 142, 42, 0.7);
+    box-shadow: 0 0 0 0 rgba(129, 184, 115, 0.7);
     animation: statusPulse 2s infinite;
   }
   @keyframes statusPulse {
@@ -4821,7 +4724,7 @@
     font-size: clamp(1.2rem, 1.4vw, 1.5rem);
     font-weight: 800;
     line-height: 1.25;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0 0 4px;
     letter-spacing: -0.01em;
   }
@@ -4829,24 +4732,118 @@
     font-family: 'Manrope', -apple-system, sans-serif;
     font-size: clamp(0.88rem, 0.95vw, 0.98rem);
     font-weight: 500;
-    color: rgba(14, 31, 11, 0.62);
+    color: rgba(255, 255, 255, 0.58);
     margin: 0;
+  }
+
+  /* Поява блоку при скролі */
+  .contacts-header-block, .contacts-card {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .section-contacts.is-in .contacts-header-block { opacity: 1; transform: none; }
+  .section-contacts.is-in .contacts-card { opacity: 1; transform: none; transition-delay: 0.12s; }
+  @media (prefers-reduced-motion: reduce) {
+    .contacts-header-block, .contacts-card { opacity: 1; transform: none; }
+    .btn-contacts-submit::after { animation: none; }
   }
 
   /* ============================================================
      ФУТЕР: ЧИСТИЙ МАКЕТ ЗА ЕСКІЗОМ (media_1788489382560.png)
      З ФОНОВИМ ВОДЯНИМ ЗНАКОМ MANDRA INVEST (ЯК RIBAS НА ФОНІ)
      ============================================================ */
+  /* Футер — не окрема плита, а перехідна зона: лінію на стику прибрано,
+     фон переведено в зелену гаму листків, а зверху заходить ліс у три плани. */
   .site-footer {
     position: relative;
-    background: #141414; /* Чистий нейтральний архітектурний темно-сірий, без синього відтінку */
+    background: linear-gradient(180deg, #0A0F0C 0%, #16301D 14%, #1A3521 40%, #142819 70%, #0E1B12 100%);
     color: #FFFFFF;
-    padding: clamp(70px, 7vw, 110px) 5vw 36px;
+    padding: clamp(190px, 17vw, 300px) 5vw 36px;
     z-index: 10;
     overflow: hidden;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  /* ЛІС НА СТИКУ: Багатошаровий карпатський силует (долина, 3 плани глибини + 2 світлі акцентні ялини).
+     Маски на основі оптимізованих WebP:
+     - far: дальній гірський хребет та задній масив смерек (#2F5D3A)
+     - accent: дві світлі акцентні ялини з м'яким неоновим свіченням (#C3F0B3)
+     - near: передній план смерек (#142819) із суцільним заповненням до низу футера */
+  .footer-veg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .footer-veg[data-veg="far"] {
+    top: 0;
+    height: clamp(320px, 32vw, 500px);
+    background-color: #2F5D3A;
+    -webkit-mask-image: url('assets/footer/lay_far.webp');
+    mask-image: url('assets/footer/lay_far.webp');
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center top;
+    mask-position: center top;
+    z-index: 1;
+  }
+  .footer-veg[data-veg="accent"] {
+    top: clamp(110px, 11vw, 190px);
+    height: clamp(200px, 20vw, 320px);
+    background-color: #C3F0B3;
+    -webkit-mask-image: url('assets/footer/lay_accent.webp');
+    mask-image: url('assets/footer/lay_accent.webp');
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center top;
+    mask-position: center top;
+    filter: drop-shadow(0 0 18px rgba(195, 240, 179, 0.65));
+    z-index: 2;
+  }
+  .footer-veg[data-veg="near"] {
+    top: clamp(25px, 2.5vw, 45px);
+    bottom: 0;
+    background-color: #142819;
+    -webkit-mask-image: url('assets/footer/lay_near.webp'), linear-gradient(#000, #000);
+    mask-image: url('assets/footer/lay_near.webp'), linear-gradient(#000, #000);
+    -webkit-mask-size: 100% clamp(300px, 30vw, 460px), 100% calc(100% - clamp(298px, 30vw - 2px, 458px));
+    mask-size: 100% clamp(300px, 30vw, 460px), 100% calc(100% - clamp(298px, 30vw - 2px, 458px));
+    -webkit-mask-position: center top, center clamp(298px, 30vw - 2px, 458px);
+    mask-position: center top, center clamp(298px, 30vw - 2px, 458px);
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat;
+    z-index: 3;
+  }
+  .site-footer > *:not(.footer-veg) { position: relative; z-index: 4; }
+  @media (max-width: 900px) {
+    .site-footer { padding-top: clamp(150px, 32vw, 220px); }
+    .footer-veg[data-veg="far"] {
+      height: 240px;
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+    }
+    .footer-veg[data-veg="accent"] {
+      top: 80px;
+      height: 150px;
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+      filter: drop-shadow(0 0 12px rgba(195, 240, 179, 0.65));
+    }
+    .footer-veg[data-veg="near"] {
+      top: 20px;
+      -webkit-mask-size: auto 210px, 100% calc(100% - 208px);
+      mask-size: auto 210px, 100% calc(100% - 208px);
+      -webkit-mask-position: center top, center 208px;
+      mask-position: center top, center 208px;
+    }
   }
 
   /* Фоновий масивний водяний знак MANDRA INVEST (як RIBAS у кроках) */
@@ -5398,26 +5395,26 @@
       <div class="stats-col-deck">
         <div class="stats-deck-sticky">
 
-          <!-- 01. Заповідна територія -->
+          <!-- 01. Номерний фонд -->
           <article class="stat-card" data-card="0">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">42+</h3>
+              <h3 class="stat-card-num">101</h3>
               <p class="stat-card-text" id="st1Text">
-                Гектари власної заповідної території в Карпатах з термальним SPA та басейнами
+                Апартаментів різних категорій в номерному фонді
               </p>
             </div>
           </article>
 
-          <!-- 02. Прогнозована дохідність -->
+          <!-- 02. Досвід на ринку -->
           <article class="stat-card" data-card="1">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">16%</h3>
+              <h3 class="stat-card-num">7</h3>
               <p class="stat-card-text" id="st2Text">
-                Середня прогнозована річна дохідність в USD з щоквартальними виплатами
+                Років досвіду на ринку девелопменту та інвестицій
               </p>
             </div>
           </article>
@@ -5434,14 +5431,14 @@
             </div>
           </article>
 
-          <!-- 04. Дотримання графіків -->
+          <!-- 04. Залучені інвестиції -->
           <article class="stat-card" data-card="3">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">100%</h3>
+              <h3 class="stat-card-num">5.5</h3>
               <p class="stat-card-text" id="st4Text">
-                Введення всіх черг та інфраструктури в експлуатацію точно за узгодженим графіком
+                Млн залучених інвестицій
               </p>
             </div>
           </article>
@@ -5945,144 +5942,76 @@
        арочні фото праворуч, кнопка знизу, фоновий напис RIBAS із 4-го кроку
        ============================================================ -->
   <section class="section-invest-flow" id="invest-flow">
-    <!-- Фоновий водяний знак MANDRA на рівні 1-2 кроків (на всю ширину) -->
-    <div class="invest-flow-watermark-top">MANDRA</div>
-
-    <!-- Фоновий водяний знак INVEST на рівні 5-6 кроків (праворуч) -->
-    <div class="invest-flow-watermark-bottom">INVEST</div>
-
     <div class="invest-flow-container">
-      <!-- Лаконічний заголовок зверху -->
-      <div class="invest-flow-header">
+
+      <div class="flow-head">
         <h2 class="invest-flow-title">
           <span class="title-accent" id="investFlowTitleLine1">ВАШ ШЛЯХ ІНВЕСТОРА:</span>
           <span class="title-white" id="investFlowTitleLine2">ВІД ПРИДБАННЯ ДО ДОХОДУ</span>
         </h2>
-        <p class="invest-flow-lead" id="investFlowLead">
-          Як працює інвестування з Mandra: від вибору нерухомості до стабільного отримання щоквартального доходу.
-        </p>
+        <p class="invest-flow-lead" id="investFlowLead">Як працює інвестування з Mandra: від вибору нерухомості до стабільного отримання щоквартального доходу.</p>
       </div>
 
-      <!-- Список 6 кроків без рамок -->
-      <div class="invest-flow-steps-list" id="investStepsList">
-        <!-- Крок 1 -->
-        <div class="invest-step-row is-active" id="investStep1" data-step="1">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge1">Крок 1</span>
-            </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle1">Вибираєте об'єкт і підписуєте договір.</h3>
-              <p class="step-row-desc" id="stepDesc1">Усе максимально просто: ви обираєте найкращий об'єкт, а ми забезпечуємо надійне оформлення.</p>
-            </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_1.webp" alt="Вибираєте об'єкт і підписуєте договір" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
+      <!-- Дерево кроків: лоза по центру, вісім листків почергово ліворуч і праворуч,
+           читання згори вниз. Форму листка тримає border-radius, тому вона тягнеться
+           під будь-який обсяг тексту й лишається різкою на будь-якому екрані. -->
+      <div class="flow-tree" id="flowTree">
+        <svg class="flow-vine" preserveAspectRatio="none" aria-hidden="true">
+          <path class="flow-vine-base" data-v="0" fill="none"/>
+          <path class="flow-vine-base" data-v="1" fill="none"/>
+          <path class="flow-vine-base" data-v="2" fill="none"/>
+          <path class="flow-vine-live" data-v="0" fill="none"/>
+          <path class="flow-vine-live" data-v="1" fill="none"/>
+          <path class="flow-vine-live" data-v="2" fill="none"/>
+          <g class="flow-sprigs"></g>
+        </svg>
 
-        <!-- Крок 2 -->
-        <div class="invest-step-row" id="investStep2" data-step="2">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge2">Крок 2</span>
+        <ol class="flow-leaves">
+          <li class="flow-leaf" data-side="l" data-tone="light">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">01</span>
+              <h3 class="flow-leaf-title" id="stepTitle1">Вибираєте об'єкт і підписуєте договір.</h3>
+              <p class="flow-leaf-desc" id="stepDesc1">Усе максимально просто: ви обираєте найкращий об'єкт, а ми забезпечуємо надійне оформлення.</p>
             </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle2">Оплачуєте — одразу або в розтермінування.</h3>
-              <p class="step-row-desc" id="stepDesc2">Комфорт на ваших умовах завдяки гнучкому інвестуванню та прозорим графікам оплати.</p>
+          </li>
+          <li class="flow-leaf" data-side="r" data-tone="dark">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">02</span>
+              <h3 class="flow-leaf-title" id="stepTitle2">Оплачуєте — одразу або в розтермінування.</h3>
+              <p class="flow-leaf-desc" id="stepDesc2">Комфорт на ваших умовах завдяки гнучкому інвестуванню та прозорим графікам оплати.</p>
             </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_2.webp" alt="Оплачуєте — одразу або в розтермінування" loading="lazy" decoding="async">
+          </li>
+          <li class="flow-leaf" data-side="l" data-tone="light">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">03</span>
+              <h3 class="flow-leaf-title" id="stepTitle3">Реалізація проєкту та комплектація.</h3>
+              <p class="flow-leaf-desc" id="stepDesc3">Девелопер відповідає за будівництво, комплектацію та підготовку об'єкта до введення в експлуатацію.</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Крок 3 -->
-        <div class="invest-step-row" id="investStep3" data-step="3">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge3">Крок 3</span>
+          </li>
+          <li class="flow-leaf" data-side="r" data-tone="dark">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">04</span>
+              <h3 class="flow-leaf-title" id="stepTitle4">Готельне управління комплексом.</h3>
+              <p class="flow-leaf-desc" id="stepDesc4">Котедж стає частиною єдиного готельного курорту та працює за спільними стандартами мережі Ribas Hotels Group.</p>
             </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle3">Реалізація проєкту та комплектація.</h3>
-              <p class="step-row-desc" id="stepDesc3">Девелопер відповідає за будівництво, комплектацію та підготовку об'єкта до введення в експлуатацію.</p>
+          </li>
+          <li class="flow-leaf" data-side="l" data-tone="light">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">05</span>
+              <h3 class="flow-leaf-title" id="stepTitle5">Отримання стабільного доходу та контроль через застосунок.</h3>
+              <p class="flow-leaf-desc" id="stepDesc5">Власник отримує прогнозований валютний дохід, а фінансова звітність та аналітика доступні у смартфоні 24/7.</p>
             </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_3.webp" alt="Реалізація проєкту та комплектація" loading="lazy" decoding="async">
+          </li>
+          <li class="flow-leaf" data-side="r" data-tone="dark">
+            <div class="flow-leaf-body">
+              <span class="flow-leaf-num">06</span>
+              <h3 class="flow-leaf-title" id="stepTitle6">Відпочинок у власному шале з паруючим чаном.</h3>
+              <p class="flow-leaf-desc" id="stepDesc6">Ви можете приїжджати на приватний відпочинок у своє шале, насолоджуватися природою Карпат і користуватися всіма сервісами курорту.</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Крок 4 -->
-        <div class="invest-step-row" id="investStep4" data-step="4">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge4">Крок 4</span>
-            </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle4">Готельне управління комплексом.</h3>
-              <p class="step-row-desc" id="stepDesc4">Котедж стає частиною єдиного готельного курорту та працює за спільними стандартами мережі Ribas Hotels Group.</p>
-            </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_4.webp" alt="Готельне управління комплексом" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
-
-        <!-- Крок 5 -->
-        <div class="invest-step-row" id="investStep5" data-step="5">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge5">Крок 5</span>
-            </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle5">Отримання стабільного доходу та контроль через застосунок.</h3>
-              <p class="step-row-desc" id="stepDesc5">Власник отримує прогнозований валютний дохід, а фінансова звітність та аналітика доступні у смартфоні 24/7.</p>
-            </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_5.webp" alt="Отримання стабільного доходу та контроль через застосунок Ribas" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
-
-        <!-- Крок 6 -->
-        <div class="invest-step-row" id="investStep6" data-step="6">
-          <div class="step-timeline-block">
-            <div class="step-krok-flag">
-              <span id="stepBadge6">Крок 6</span>
-            </div>
-            <div class="step-details-body">
-              <h3 class="step-row-title" id="stepTitle6">Відпочинок у власному шале з паруючим чаном.</h3>
-              <p class="step-row-desc" id="stepDesc6">Ви можете приїжджати на приватний відпочинок у своє шале, насолоджуватися природою Карпат і користуватися всіма сервісами курорту.</p>
-            </div>
-          </div>
-          <div class="step-photo-col">
-            <div class="step-arch-media">
-              <img class="step-arch-img" src="assets/invest_path/step_6.webp" alt="Відпочинок у власному шале з паруючим чаном" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
+          </li>
+        </ol>
       </div>
 
-      <!-- Кнопка в самому низу -->
-      <div class="invest-flow-bottom-cta">
-        <a href="#contacts" class="btn-invest-flow-cta" id="btnInvestFlowCta">
-          <span id="investFlowCtaText">Дізнатися більше про умови інвестування</span>
-          <span class="btn-cta-arrow">
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </span>
-        </a>
-      </div>
     </div>
   </section>
 
@@ -6207,13 +6136,10 @@
         <p class="contacts-subtitle" id="contactsSubtitle">Наш консультант надасть вам безкоштовну допомогу</p>
       </div>
       <div class="contacts-card">
+          <span class="contacts-sheen" aria-hidden="true"></span>
         
         <!-- ЛІВА КОЛОНКА: ФОРМА З ЛОГОТИПОМ -->
         <div class="contacts-form-side">
-          <div class="contacts-logo-wrap">
-            <img class="contacts-brand-logo" src="assets/logo_m_invest_dark.webp" alt="Mandra Invest" decoding="async">
-          </div>
-          <div class="contacts-form-divider"></div>
 
           <form class="contacts-form" id="consultationForm" onsubmit="handleContactSubmit(event)">
             <div class="contacts-field-group">
@@ -6263,6 +6189,9 @@
        З ФОНОВИМ ВОДЯНИМ ЗНАКОМ MANDRA INVEST (ЯК RIBAS НА ФОНІ)
        ============================================================ -->
   <footer class="site-footer" id="siteFooter">
+    <div class="footer-veg" data-veg="far" aria-hidden="true"></div>
+    <div class="footer-veg" data-veg="accent" aria-hidden="true"></div>
+    <div class="footer-veg" data-veg="near" aria-hidden="true"></div>
     <div class="footer-bg-watermark">MANDRA INVEST</div>
     <div class="footer-container">
       
@@ -6906,10 +6835,10 @@
         stTitle: 'Mandra Invest в цифрах',
         stDesc: 'Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. Показники поруч демонструють реальну динаміку розвитку компанії та стабільний попит на наші проєкти.',
         stCtaText: 'Дізнатися більше',
-        st1Text: 'Гектари власної заповідної території в Карпатах з термальним SPA та басейнами',
-        st2Text: 'Середня прогнозована річна дохідність в USD з щоквартальними виплатами',
+        st1Text: 'Апартаментів різних категорій в номерному фонді',
+        st2Text: 'Років досвіду на ринку девелопменту та інвестицій',
         st3Text: 'Черги будівництва флагманського гірського комплексу Mandra Petrichor',
-        st4Text: 'Введення всіх черг та інфраструктури в експлуатацію точно за узгодженим графіком',
+        st4Text: 'Млн залучених інвестицій',
         st5Text: 'Інвесторів що стали власниками дольової участі або цілого юніту',
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
@@ -7093,10 +7022,10 @@
         stTitle: 'Mandra Invest in Numbers',
         stDesc: 'Our work embodies transparency, high implementation pace, and guaranteed returns for investors. The adjacent metrics demonstrate the dynamic company growth and steady demand for our developments.',
         stCtaText: 'Learn More',
-        st1Text: 'Hectares of private nature reserve territory with thermal SPA and infinity pools',
-        st2Text: 'Average projected annual ROI in USD with quarterly dividend distributions',
+        st1Text: 'Apartments of various categories in the room stock',
+        st2Text: 'Years of experience in development and investment',
         st3Text: 'Construction phases of the flagship Mandra Petrichor mountain resort',
-        st4Text: 'Commissioning of all phases and resort infrastructure strictly on schedule',
+        st4Text: 'Million of raised investment',
         st5Text: 'Investors who acquired fractional ownership or full residential units',
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
@@ -8035,6 +7964,200 @@
     /* ============================================================
        ЕКРАН 9 — ЛІЧИЛЬНИКИ МЕТРИК І СЛАЙДЕР ВІДГУКІВ
        ============================================================ */
+    /* ============================================================
+       ЕКРАН 10 — ДЕРЕВО КРОКІВ
+       Лоза будується з фактичних позицій листків, тому вигини завжди
+       потрапляють у їхні кінчики на будь-якій ширині. Жива частина
+       дорисовується у міру скролу, листки проявляються по черзі.
+       ============================================================ */
+    /* Поява блоку контактів при вході в кадр + відблиск за курсором */
+    /* Паралакс лісу на стику з футером: плани їдуть з різною швидкістю,
+       дальній повільніше за ближній — звідси глибина. Рахуємо в rAF, бо
+       на кожній події скролу це давало б зайві перерахунки макета. */
+    (function initFooterParallax() {
+      const footer = document.getElementById('siteFooter');
+      if (!footer) return;
+      const layers = Array.prototype.slice.call(footer.querySelectorAll('.footer-veg'));
+      if (!layers.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const SPEED = { far: 0.16, accent: 0.28, near: 0.44 };
+      let ticking = false;
+
+      function apply() {
+        ticking = false;
+        const r = footer.getBoundingClientRect();
+        if (r.top > window.innerHeight || r.bottom < 0) return;
+        /* 0 — футер тільки визирнув знизу, 1 — повністю в кадрі */
+        const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height * 0.5)));
+        layers.forEach(function (el) {
+          const k = SPEED[el.dataset.veg] || 0.3;
+          el.style.transform = 'translate3d(0,' + ((1 - p) * 120 * k).toFixed(1) + 'px,0)';
+        });
+      }
+      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(apply); } }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      apply();
+    })();
+
+    (function initContactsReveal() {
+      const sec = document.querySelector('.section-contacts');
+      if (!sec) return;
+      if (!('IntersectionObserver' in window)) { sec.classList.add('is-in'); }
+      else {
+        const io = new IntersectionObserver(function (en) {
+          if (en.some(function (e) { return e.isIntersecting; })) { sec.classList.add('is-in'); io.disconnect(); }
+        }, { threshold: 0.15 });
+        io.observe(sec);
+      }
+
+      const card = sec.querySelector('.contacts-card');
+      if (!card || window.matchMedia('(hover: none)').matches) return;
+      let raf = 0, mx = 50, my = 50;
+      card.addEventListener('mousemove', function (e) {
+        const r = card.getBoundingClientRect();
+        mx = ((e.clientX - r.left) / r.width) * 100;
+        my = ((e.clientY - r.top) / r.height) * 100;
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          card.style.setProperty('--mx', mx.toFixed(1) + '%');
+          card.style.setProperty('--my', my.toFixed(1) + '%');
+        });
+      });
+    })();
+
+    (function initFlowTree() {
+      const tree = document.getElementById('flowTree');
+      if (!tree) return;
+      const svg = tree.querySelector('.flow-vine');
+      const bases = Array.prototype.slice.call(svg.querySelectorAll('.flow-vine-base'));
+      const lives = Array.prototype.slice.call(svg.querySelectorAll('.flow-vine-live'));
+      const leaves = Array.prototype.slice.call(tree.querySelectorAll('.flow-leaf'));
+      if (!leaves.length) return;
+
+      const NSVG = 'http://www.w3.org/2000/svg';
+      let len = 1, sprigEls = null;
+
+      /* Маршрут один на всі три лози. Будуємо його по кінчиках листків, далі
+         щільно семплюємо і розводимо три копії синусом у різній фазі — так
+         вони переплітаються, а не йдуть трьома паралельними палками. */
+      function build() {
+        const box = tree.getBoundingClientRect();
+        if (!box.width || !box.height) return;
+        svg.setAttribute('viewBox', '0 0 ' + box.width.toFixed(1) + ' ' + box.height.toFixed(1));
+        const cx = box.width / 2;
+
+        /* Гострий кут листка лежить ПРЯМО НА маршруті: раніше він був
+           контрольною точкою, тож крива до нього не доходила і лози висіли
+           окремим джгутом посеред екрана. */
+        let d = 'M ' + cx.toFixed(1) + ' 0';
+        leaves.forEach(function (li) {
+          const r = li.getBoundingClientRect();
+          const left = li.dataset.side === 'l';
+          const tipX = (left ? r.right : r.left) - box.left + (left ? -14 : 14);
+          const tipY = r.top - box.top + r.height * 0.20;
+          const outY = r.top - box.top + r.height + 26;
+          d += ' Q ' + cx.toFixed(1) + ' ' + (tipY - r.height * 0.30).toFixed(1) +
+               ' ' + tipX.toFixed(1) + ' ' + tipY.toFixed(1);
+          d += ' Q ' + tipX.toFixed(1) + ' ' + (tipY + r.height * 0.45).toFixed(1) +
+               ' ' + cx.toFixed(1) + ' ' + outY.toFixed(1);
+        });
+        /* Хвіст: тягнемо строго вниз від останнього виходу. Раніше тут стояла
+           лінія в низ контейнера, але останній вигин закінчувався НИЖЧЕ за нього,
+           тож відрізок ішов угору — паросток загинався назад. */
+        const lastR = leaves[leaves.length - 1].getBoundingClientRect();
+        const tailFrom = lastR.top - box.top + lastR.height + 26;
+        d += ' L ' + cx.toFixed(1) + ' ' + Math.max(tailFrom + 40, box.height).toFixed(1);
+
+        const probe = document.createElementNS(NSVG, 'path');
+        probe.setAttribute('d', d);
+        svg.appendChild(probe);
+        const total = probe.getTotalLength() || 1;
+
+        const STEP = 9, AMP = 11, TURNS = 9;
+        const pts = [];
+        for (let l = 0; l <= total; l += STEP) pts.push(probe.getPointAtLength(l));
+        svg.removeChild(probe);
+
+        [0, 1, 2].forEach(function (v) {
+          const phase = v * (Math.PI * 2 / 3);
+          let s2 = '';
+          for (let i = 0; i < pts.length; i++) {
+            const t = i / (pts.length - 1);
+            const off = Math.sin(t * Math.PI * 2 * TURNS + phase) * AMP;
+            s2 += (i ? ' L ' : 'M ') + (pts[i].x + off).toFixed(1) + ' ' + pts[i].y.toFixed(1);
+          }
+          bases[v].setAttribute('d', s2);
+          lives[v].setAttribute('d', s2);
+        });
+
+        /* Дрібні листочки на лозі: садимо їх уздовж маршруту, розвертаючи по
+           дотичній, щоб вони росли з гілки, а не лежали навскіс. */
+        const sprigs = svg.querySelector('.flow-sprigs');
+        while (sprigs.firstChild) sprigs.removeChild(sprigs.firstChild);
+        const mid = lives[1];
+        const mlen = mid.getTotalLength();
+        const N = Math.max(8, Math.round(mlen / 120));
+        for (let i = 1; i < N; i++) {
+          const at = (i / N) * mlen;
+          const pt = mid.getPointAtLength(at);
+          const nx = mid.getPointAtLength(Math.min(mlen, at + 6));
+          const ang = Math.atan2(nx.y - pt.y, nx.x - pt.x) * 180 / Math.PI;
+          const side = i % 2 ? 1 : -1;
+          const sc = 0.55 + ((i * 37) % 13) / 11;   /* від 0.55 до ~1.65 */
+          const el = document.createElementNS(NSVG, 'ellipse');
+          el.setAttribute('class', 'flow-sprig');
+          el.dataset.at = (i / N).toFixed(4);
+          el.setAttribute('rx', (15 * sc).toFixed(1));
+          el.setAttribute('ry', (6.5 * sc).toFixed(1));
+          el.setAttribute('transform',
+            'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ') rotate(' +
+            (ang + side * 52).toFixed(1) + ') translate(' + (15 * sc).toFixed(1) + ' 0)');
+          sprigs.appendChild(el);
+        }
+        sprigEls = sprigs.querySelectorAll('.flow-sprig');
+
+        len = lives[0].getTotalLength() || 1;
+        lives.forEach(function (el) {
+          const L = el.getTotalLength() || len;
+          el.style.strokeDasharray = L;
+          el.style.strokeDashoffset = L;
+          el._len = L;
+        });
+      }
+
+      function draw() {
+        const box = tree.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const p = Math.max(0, Math.min(1, (vh * 0.75 - box.top) / (box.height + vh * 0.2)));
+        lives.forEach(function (el) {
+          el.style.strokeDashoffset = ((el._len || len) * (1 - p)).toFixed(1);
+        });
+        if (sprigEls) {
+          for (let i = 0; i < sprigEls.length; i++) {
+            const at = parseFloat(sprigEls[i].dataset.at);
+            sprigEls[i].classList.toggle('is-lit', p >= at);
+          }
+        }
+      }
+
+      build();
+      draw();
+      let t = 0;
+      window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { build(); draw(); }, 140); });
+      window.addEventListener('scroll', draw, { passive: true });
+
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(function (en) {
+          en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+        }, { threshold: 0.2 });
+        leaves.forEach(function (li) { io.observe(li); });
+      } else {
+        leaves.forEach(function (li) { li.classList.add('is-in'); });
+      }
+    })();
+
     (function initPhase1Extras() {
       /* Лічильники: число з розмітки лишається в HTML (щоб без JS теж читалось),
          а звідти ж і беремо ціль — префікси на кшталт "%" та нерозривні пробіли
