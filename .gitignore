@@ -12,6 +12,8 @@ site/assets/video_backup/
 # Робочі скріншоти
 /_*.png
 /*.png
+site/assets/Screen3*.png
+site/assets/готове*.png
 serve.py
 
 # Службове
@@ -19,5 +21,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 .vercel
+scratch/
 
 .vercel

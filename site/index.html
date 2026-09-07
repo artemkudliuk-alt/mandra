@@ -89,14 +89,22 @@
     scroll-padding-top: clamp(64px, 5.5vw, 90px);
   }
 
-  .hero-container {
+  .hero-stage {
     position: relative;
+    width: 100%;
+  }
+
+  .hero-container {
+    position: sticky;
+    top: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+    z-index: 1;
   }
 
   /* 4K Original Reference Background */
@@ -173,6 +181,15 @@
   body.intro-done .free-floating-cta { transition-delay: 0.18s; }
   body.intro-done .scroll-indicator  { transition-delay: 0.34s; }
 
+  /* Повне блокування скролу сторінки під час програвання інтро-відео */
+  html.intro-running,
+  body.intro-running {
+    overflow: hidden !important;
+    height: 100vh !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+  }
+
   /* Clean Atmospheric Lighting — Lightened by 15% */
   .bg-scrim {
     position: absolute;
@@ -217,6 +234,9 @@
     flex-direction: column;
     justify-content: space-between;
     transition: opacity 0.3s ease;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    box-sizing: border-box;
   }
 
   /* -------------------------------------------------------------
@@ -525,13 +545,11 @@
      ------------------------------------------------------------- */
   .hero-main-content {
     position: relative;
-    padding: 0 3.6vw;
-    /* Зсув текстового блоку вправо. Був 50px — фікс не масштабувався, тому на
-       ширшому екрані блок відносно з'їжджав уліво (6.854% ширини на 1536,
-       6.204% на 1920). 50px від еталонних 1536 = 3.2552vw, і тепер композиція
-       однакова на будь-якій десктопній ширині. */
-    padding-left: calc(3.6vw + 3.2552vw);
-    margin-bottom: 8vh;
+    width: 100%;
+    max-width: 1520px;
+    margin: 0 auto 8vh;
+    padding: 0;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 1.4vw;
@@ -1304,7 +1322,10 @@
     position: relative;
     z-index: 3;
     background: transparent;
-    margin-top: -1px;   /* без шва з маніфестом */
+    margin-top: 100px;  /* буфер: картка 01 лишається за кадром внизу при стоянці на маніфесті */
+    padding-left: 5vw;
+    padding-right: 5vw;
+    box-sizing: border-box;
     /* Трек: збірка → коротка пауза → розкриття.
        Було 185vh — на всю послідовність лишалось 774px скролу, і картка
        пролітала до 360px за один щиглик колеса.
@@ -1317,19 +1338,21 @@
   }
   .showcase-sticky {
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: clamp(64px, 5.5vw, 84px);
+    height: calc(100vh - clamp(64px, 5.5vw, 84px));
+    height: calc(100dvh - clamp(64px, 5.5vw, 84px));
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     overflow: visible;
-    padding: 9vh 3.6vw 2vh;
+    padding: 0 0 2vh;
+    box-sizing: border-box;
     background: transparent;
     pointer-events: none;
   }
 
-  /* Заголовок прив'язаний до картки 01 і їде разом з нею */
+  /* Заголовок прив'язаний до картки 01 і центрований по горизонталі */
   .showcase-title {
     position: absolute;
     left: 50%;
@@ -1357,18 +1380,21 @@
     height: 100%;
     z-index: 4;            /* перше фото завжди зверху */
     will-change: left, top, width, height, transform, opacity;
+    cursor: pointer;
   }
   .showcase-card-lead {
     position: absolute;
     left: 0; top: 0;
     width: 100%; height: 100%;
+    cursor: pointer;
   }
   /* Рабочее окно ~2/3 экрана */
   .showcase-stage {
     position: relative;
     width: 100%;
-    max-width: 1240px;
-    height: 105vh;      /* +50% до висоти карток: сітка навмисно виходить за верх і низ екрана */
+    max-width: 1520px;
+    height: calc(100vh - clamp(64px, 5.5vw, 84px) - 2.5vh);
+    height: calc(100dvh - clamp(64px, 5.5vw, 84px) - 2.5vh);
     flex-shrink: 0;     /* без цього flex стискав сцену до 100vh і картки виглядали приплюснутими */
     margin: 0 auto;
   }
@@ -1380,12 +1406,83 @@
   .showcase-card {
     position: absolute;
     overflow: hidden;
-    border-radius: 20px;
-    border: none;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
     will-change: left, top, width, height, transform, opacity;
     pointer-events: auto;
+    cursor: pointer;
     /* Liquid Glass */
-    background: #0E1F0B;   /* не видно: фото перекриває картку повністю */
+    background: #0E1F0B;   /* основа під медіа */
+    transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Внутрішні контури в центрі сітки: наполовину прозоріші (0.11 замість 0.22)
+     із ніжним прозорим скляним контурним світінням на шарі ::after */
+  /* Top-Left (01): внутрішні краї — правий та нижній */
+  .showcase-lead[data-q="tl"] .showcase-card,
+  .showcase-card[data-q="tl"] {
+    border-right-color: rgba(255, 255, 255, 0.11);
+    border-bottom-color: rgba(255, 255, 255, 0.11);
+  }
+  .showcase-lead[data-q="tl"] .showcase-card::after,
+  .showcase-card[data-q="tl"]::after {
+    box-shadow:
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.40),
+      inset -1px -1px 12px 0 rgba(255, 255, 255, 0.14),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  /* Top-Right (02): внутрішні краї — лівий та нижній */
+  .showcase-card[data-q="tr"] {
+    border-left-color: rgba(255, 255, 255, 0.11);
+    border-bottom-color: rgba(255, 255, 255, 0.11);
+  }
+  .showcase-card[data-q="tr"]::after {
+    box-shadow:
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.40),
+      inset 1px -1px 12px 0 rgba(255, 255, 255, 0.14),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  /* Bottom-Left (03): внутрішні краї — верхній та правий */
+  .showcase-card[data-q="bl"] {
+    border-top-color: rgba(255, 255, 255, 0.11);
+    border-right-color: rgba(255, 255, 255, 0.11);
+  }
+  .showcase-card[data-q="bl"]::after {
+    box-shadow:
+      inset -1px 1px 12px 0 rgba(255, 255, 255, 0.14),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  /* Bottom-Right (04): внутрішні краї — верхній та лівий */
+  .showcase-card[data-q="br"] {
+    border-top-color: rgba(255, 255, 255, 0.11);
+    border-left-color: rgba(255, 255, 255, 0.11);
+  }
+  .showcase-card[data-q="br"]::after {
+    box-shadow:
+      inset 1px 1px 12px 0 rgba(255, 255, 255, 0.14),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  /* Напівпрозорий шар скла поверх фото/відео (glass form) */
+  .showcase-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    transition: background 0.35s ease, box-shadow 0.35s ease;
   }
   /* Відео та контейнер пари живуть за тими самими правилами, що й фото */
   .showcase-card img,
@@ -1411,15 +1508,23 @@
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.75), 0 1px 4px rgba(0, 0, 0, 0.5);
   }
   .showcase-lead[data-q="tl"] .card-index,
-  .showcase-card[data-q="tl"] .card-index,
-  .showcase-card[data-q="bl"] .card-index {
-    top: 22px;
+  .showcase-card[data-q="tl"] .card-index {
+    top: clamp(70px, calc(7vw - 10px), 94px);
     left: 28px;
     right: auto;
   }
-  .showcase-card[data-q="tr"] .card-index,
+  .showcase-card[data-q="tr"] .card-index {
+    top: clamp(70px, calc(7vw - 10px), 94px);
+    left: 34px;
+    right: auto;
+  }
+  .showcase-card[data-q="bl"] .card-index {
+    top: 24px;
+    left: 28px;
+    right: auto;
+  }
   .showcase-card[data-q="br"] .card-index {
-    top: 26px;
+    top: 24px;
     left: 34px;
     right: auto;
   }
@@ -1433,7 +1538,7 @@
   .card-badge {
     position: absolute;
     left: 34px;
-    bottom: 32px;
+    bottom: clamp(58px, 6.5vh, 78px);
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -1441,6 +1546,7 @@
     padding: 0;
     background: none;
     border: none;
+    pointer-events: none;
     text-shadow: 0 2px 18px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
     /* Ширина підпису зафіксована по ФІНАЛЬНІЙ ширині картки в сітці, а не
        тягнеться за анімованою. Інакше на широкій картці заголовок стояв в
@@ -1454,7 +1560,7 @@
   .showcase-card[data-q="tr"] .card-badge,
   .showcase-card[data-q="br"] .card-badge {
     left: 34px;
-    bottom: 32px;
+    bottom: clamp(58px, 6.5vh, 78px);
     right: auto;
     align-items: flex-start;
     text-align: left;
@@ -1469,6 +1575,9 @@
     color: #FFFFFF;
     white-space: normal;
     line-height: 1.22;
+    transform: translate3d(0, calc(var(--desc-h, 24px) + 9px), 0);
+    transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
   .card-badge-desc {
     font-family: var(--sub-font);
@@ -1476,19 +1585,83 @@
     font-weight: 400;
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.88);
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    transition: opacity 0.28s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+    pointer-events: none;
   }
+
+  /* Підйом заголовка і поява підзаголовка при ховері на картку */
+  .showcase-card:hover .card-badge-title,
+  .showcase-lead:hover .card-badge-title,
+  .showcase-card.is-hovered .card-badge-title,
+  .showcase-lead.is-hovered .card-badge-title {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .showcase-card:hover .card-badge-desc,
+  .showcase-lead:hover .card-badge-desc,
+  .showcase-card.is-hovered .card-badge-desc,
+  .showcase-lead.is-hovered .card-badge-desc {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.04s,
+                transform 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.04s;
+  }
+
+  /* Глянцевий відблиск кромки та поверхні скла при ховері */
+  .showcase-card:hover,
+  .showcase-lead:hover .showcase-card-lead,
+  .showcase-card.is-hovered,
+  .showcase-lead.is-hovered .showcase-card-lead {
+    border-color: rgba(255, 255, 255, 0.36);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+  }
+  .showcase-lead[data-q="tl"]:hover .showcase-card-lead,
+  .showcase-lead[data-q="tl"].is-hovered .showcase-card-lead,
+  .showcase-card[data-q="tl"]:hover,
+  .showcase-card[data-q="tl"].is-hovered {
+    border-right-color: rgba(255, 255, 255, 0.18);
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+  }
+  .showcase-card[data-q="tr"]:hover,
+  .showcase-card[data-q="tr"].is-hovered {
+    border-left-color: rgba(255, 255, 255, 0.18);
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+  }
+  .showcase-card[data-q="bl"]:hover,
+  .showcase-card[data-q="bl"].is-hovered {
+    border-top-color: rgba(255, 255, 255, 0.18);
+    border-right-color: rgba(255, 255, 255, 0.18);
+  }
+  .showcase-card[data-q="br"]:hover,
+  .showcase-card[data-q="br"].is-hovered {
+    border-top-color: rgba(255, 255, 255, 0.18);
+    border-left-color: rgba(255, 255, 255, 0.18);
+  }
+  .showcase-card:hover::after,
+  .showcase-lead:hover .showcase-card-lead::after,
+  .showcase-card.is-hovered::after,
+  .showcase-lead.is-hovered .showcase-card-lead::after {
+    background: linear-gradient(
+      140deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 40%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+  }
+
   /* Порядок накладання на старті: 01 зверху, 04 знизу */
   .showcase-card[data-q="tl"] { z-index: 4; }
   .showcase-card[data-q="tr"] { z-index: 3; }
   .showcase-card[data-q="bl"] { z-index: 2; }
   .showcase-card[data-q="br"] { z-index: 1; }
 
-  /* Без CSS-переходів: прозорість і зсув підписів веде скрол, а перехід
-     на 0.25s тягнувся б за ним і розмазував рух на швидкій прокрутці. */
   @media (max-width: 900px) {
     .showcase-title { font-size: 7vw; }
     .showcase-sub { font-size: 3.4vw; max-width: 88vw; }
-    .card-badge-title { font-size: 2.4vw; }
+    .card-badge-title { font-size: 2.4vw; transform: none !important; }
     .card-badge-desc { display: none; }
     .card-index { font-size: 3vw; }
     /* На мобільному сцена вузька, і фіксована ширина задушила б підпис —
@@ -1502,16 +1675,23 @@
      Inline Image Capsules: фото вбудовані просто в рядок тексту
      ============================================================ */
   .section-manifesto {
+    position: relative;
+    z-index: 2;
     background: var(--bg-dark);
-    min-height: 62vh;
     display: flex;
-    align-items: center;
-    padding: 5vw 5vw 4vw;
+    flex-direction: column;
+    min-height: auto;
+    padding: clamp(48px, 5.5vh, 68px) 5vw clamp(48px, 5.5vh, 68px) 5vw;
+    box-shadow: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-sizing: border-box;
   }
   .manifesto-container {
     width: 100%;
     max-width: 1520px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
   .section-badge {
     font-family: var(--sub-font);
@@ -1519,7 +1699,7 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent-color);
+    color: #FFFFFF;
     margin-bottom: 2.2vw;
   }
   .manifesto-text {
@@ -1534,8 +1714,8 @@
     display: block;
     /* Контейнер .manifesto-text упирається в max-width: 1520px, а кегль у vw
        далі ріс — на 1920 заголовок ламався на два рядки, хоча до 1680 стояв
-       в один. Стеля 41px тримає його однорядковим на будь-якій ширині. */
-    font-size: min(2.5vw, 41px);
+       в один. Стеля 36px тримає його витонченим і компактним */
+    font-size: min(2.2vw, 36px);
     line-height: 1.32;
     letter-spacing: -0.02em;
     font-weight: 800;
@@ -1544,10 +1724,10 @@
   }
   .mf-bold { font-weight: 800; color: var(--accent-color); }
   .mf-accent { color: var(--accent-color); }
-  /* Body — чистий білий, ширша смуга */
+  /* Body — чистий білий, збалансований кегль */
   .manifesto-body-light {
     display: block;
-    font-size: 1.5vw;
+    font-size: clamp(16px, 1.35vw, 22px);
     line-height: 1.66;
     max-width: 100%;
     font-weight: 400;
@@ -1714,64 +1894,44 @@
     z-index: 1;
     background: transparent;
     color: #FFFFFF;
-    padding: 70px 6vw 80px;
+    padding: 100px 5vw 80px;
+    box-sizing: border-box;
     overflow: visible;
     border-top: none;
-    /* Напливає ззаду під розсувні фотокартки без швів і смуг.
-       Було -65vh під трек 185vh. Трек виріс до 500vh, фаза розсування —
-       з 387px до 1486px, тож статистика має рушати вгору раніше, інакше
-       картки вже розлетілись, а вона ще під згином — і в центрі кадру зяє
-       порожнеча. Значення зняте з заміру: на 70% розсування верх секції
-       має бути на ~307px від верху в'юпорта. */
-    /* -97vh тримає наплив під розсувні картки; -70px компенсує підняття
-       піна стосу, інакше картка 16% рушала б на 70px пізніше за фото. */
-    margin-top: calc(-97vh - 70px);   /* пін стосу піднявся зі 127.5 на 100px — компенсуємо, щоб фото зривались синхронно з карткою 16% */
+    /* Напливає ззаду під розсувні фотокартки: опускаємо секцію для комфортного повітря під шапкою */
+    margin-top: calc(-97vh - 40px);
   }
   .stats-container {
-    /* ГЕОМЕТРІЯ СТОСУ. Джерело — висота картки: майже весь екран,
-       ~100px згори і знизу. Все інше рахується від неї, інакше при зміні
-       розміру роз'їдуться і швидкість, і шов з текстом. */
-    /* 100px згори + 104px сходинок стосу + запас знизу. «По 100 зверху і
-       знизу» одночасно для першої й останньої картки не буває: сходинки
-       додають 104px, тож або перша дихає, або остання зрізається. */
-    --card-h: calc(100vh - 240px);
-    --card-step: 26px;                                    /* видима кромка в стосі */
+    /* ГЕОМЕТРІЯ СТОСУ: висота картки зменшена на ~20% (680px замість 840px на 1080p),
+       більше вільного повітря зверху та знизу */
+    --card-h: calc(100vh - 400px);
+    --card-step: 24px;                                    /* видима кромка в стосі */
     --stack-height: calc(var(--card-h) + 4 * var(--card-step));
-    /* Передача 0.569px руху картки на 1px скролу — рівно та сама, що в
-       showcase. Ділимо проліт на неї, щоб швидкість лишилась вирівняною. */
+    /* Передача 0.569px руху картки на 1px скролу */
     --card-span: calc((var(--card-h) + var(--card-step)) / 0.569);
 
-    max-width: 1320px;
+    max-width: 1520px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1.18fr;
-    /* Контейнер має фіксовану ширину 1320px, тому гап у vw його розбалансовував:
-       він ріс із в'юпортом (92px на 1536, 115px на 1920), а ширина колонок —
-       ні, і стос карток відносно з'їжджав. 6vw від еталонних 1536 = 92px. */
     gap: 92px;
     align-items: start;
     position: relative;
-  }
-  .stats-col-info {
-    position: sticky;
-    top: 16vh;
-    align-self: start;
+    box-sizing: border-box;
   }
 
-  /* Ліва колонка: Sticky блок інформації */
+  /* Ліва колонка: Sticky блок інформації — синхронне прилипання та відкріплення з колодою карток */
   .stats-col-info {
     position: sticky;
-    top: 18vh;
+    top: 176px;
+    align-self: start;
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding-right: 2vw;
-    /* Хід прилипання тексту має дорівнювати ходу колоди. Раніше це був
-       підібраний margin (105px = 488 стосу мінус 383 висоти колонки), який
-       ламався при кожній зміні розмірів. Тепер колонка просто має ту саму
-       висоту, що й стос, — і ходи збігаються самі, за будь-яких розмірів. */
     height: var(--stack-height);
     margin-bottom: 0;
+    box-sizing: border-box;
   }
   .stats-eyebrow {
     font-family: var(--sub-font);
@@ -1850,14 +2010,17 @@
   .stats-col-deck {
     position: relative;
     /* Трек для плавного послідовного стикування 4-х карток.
-       Розміри успадковуються від .stats-container — там єдине джерело. */
-    height: calc(var(--stack-height) + 4 * var(--card-span) + 40vh);
+       Розміри успадковуються від .stats-container — там єдине джерело.
+       Буфер 20px після стикування останньої картки (130) забезпечує плавний і миттєвий
+       перехід на Екран 5: лівий текст і фінальний стос карток відкріплюються встик
+       і разом скроляться нагору. */
+    height: calc(var(--stack-height) + 4 * var(--card-span) + 20px);
   }
 
   /* Запінений контейнер колоди: тримає стос на місці, поки JS веде картки */
   .stats-deck-sticky {
     position: sticky;
-    top: 30px;           /* стос піднято на 70px від початкової сотні */
+    top: 176px;          /* безпечний відступ під шапкою, точно відповідає точці прильоту */
     width: 100%;
     height: var(--stack-height);
   }
@@ -1869,7 +2032,7 @@
     }
   }
 
-  /* Базова картка в стеку: ТЕМНА ЗЕЛЕНО-ХВОЙНА ТА БЛАГОРОДНА */
+  /* Базова картка в стеку: ТЕМНА ЗЕЛЕНО-ХВОЙНА ТА БЛАГОРОДНА (зменшена на 20%) */
   .stat-card {
     /* Картки більше не sticky: sticky рухає їх рівно 1:1 зі скролом і гальмує
        жорстким упором. Тепер позицію веде JS усередині запіненого контейнера —
@@ -1877,6 +2040,8 @@
     position: absolute;
     left: 0;
     right: 0;
+    max-width: 620px;    /* розмір зменшено на 20% (було 773px) */
+    margin-left: auto;   /* вирівнювання по правому краю контейнера */
     min-height: var(--card-h);
     display: grid;
     grid-template-columns: 1fr;
@@ -1884,7 +2049,7 @@
     backdrop-filter: blur(26px) saturate(135%);
     -webkit-backdrop-filter: blur(26px) saturate(135%);
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     isolation: isolate;
     box-shadow:
@@ -1937,10 +2102,10 @@
   /* Позиції у пристикованому стосі. Тепер вони відлічуються від запіненого
      контейнера, а не від в'юпорта — 14vh задає сам контейнер. */
   .stat-card:nth-of-type(1) { top: 0;     z-index: 1; }
-  .stat-card:nth-of-type(2) { top: 26px;  z-index: 2; }
-  .stat-card:nth-of-type(3) { top: 52px;  z-index: 3; }
-  .stat-card:nth-of-type(4) { top: 78px;  z-index: 4; }
-  .stat-card:nth-of-type(5) { top: 104px; z-index: 5; }
+  .stat-card:nth-of-type(2) { top: 24px;  z-index: 2; }
+  .stat-card:nth-of-type(3) { top: 48px;  z-index: 3; }
+  .stat-card:nth-of-type(4) { top: 72px;  z-index: 4; }
+  .stat-card:nth-of-type(5) { top: 96px;  z-index: 5; }
 
   /* Фото зліва в картці */
   .stat-card-media {
@@ -1960,9 +2125,9 @@
     object-position: 82% center;
   }
 
-  /* Текстова частина справа: БІЛІ ЦИФРИ ТА СВІТЛИЙ ТЕКСТ */
+  /* Текстова частина справа: БІЛІ ЦИФРИ ТА СВІТЛИЙ ТЕКСТ (пропорційно адаптовані) */
   .stat-card-body {
-    padding: 44px 40px;
+    padding: 38px 36px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1982,18 +2147,21 @@
     display: block;
   }
   .stat-card-num {
-    font-family: var(--title-font);
-    font-size: clamp(3.4rem, 5.2vw, 6.2rem);
+    font-family: 'Rubik', sans-serif;           /* Чисті рівні геометричні контури без ліній перетину */
+    font-size: clamp(3.2rem, 4.8vw, 5.4rem);
     font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: #FFFFFF; /* БІЛІ ЦИФРИ */
-    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    color: transparent;                          /* Контурна цифра: всередині порожнеча */
+    -webkit-text-fill-color: transparent;        /* Прозоре тіло шрифту */
+    -webkit-text-stroke: 2px #FFFFFF;           /* Білий контур тільки у цифри */
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);  /* М'яка глибина на темному фоні */
     margin: 0 0 18px 0;
+    font-variant-numeric: tabular-nums;
   }
   .stat-card-text {
     font-family: var(--sub-font);
-    font-size: clamp(1.3rem, 1.68vw, 1.9rem);
+    font-size: clamp(1.15rem, 1.4vw, 1.65rem);
     font-weight: 500;
     line-height: 1.5;
     color: #FFFFFF;
@@ -2013,12 +2181,12 @@
     .stats-col-deck { height: auto; }
     .stats-col-info { height: auto; }
     .stats-deck-sticky { position: static; height: auto; }
-    .stat-card { grid-template-columns: 1fr; min-height: auto; margin-bottom: 30px; position: relative; top: 0 !important; transform: none !important; }
+    .stat-card { grid-template-columns: 1fr; min-height: auto; max-width: 100%; margin-left: 0; margin-bottom: 30px; position: relative; top: 0 !important; transform: none !important; }
     .stat-card-media { min-height: 220px; height: 220px; }
     .stat-card-media::after { background: linear-gradient(180deg, transparent 65%, rgba(20, 28, 22, 0.85) 100%); }
     .stat-card-body { padding: 26px 22px 30px; }
     .stat-card-tag { font-size: 3vw; }
-    .stat-card-num { font-size: 11vw; }
+    .stat-card-num { font-size: 11vw; -webkit-text-stroke: 1.5px #FFFFFF; }
     .stat-card-text { font-size: 4vw; }
   }
 
@@ -2056,11 +2224,11 @@
     object-fit: cover;
   }
 
-  /* Текстовий блок у лівій верхній частині */
+  /* Текстовий блок у лівій верхній частині — вирівняний по вертикальній осі контейнера */
   .mp-floating-content {
     position: absolute;
     top: 10%;
-    left: calc(6vw + 20px);
+    left: calc(5vw + max(0px, (90vw - 1520px) / 2));
     max-width: 667px;
     z-index: 5;
     pointer-events: auto;
@@ -2137,7 +2305,7 @@
     width: 29vw;
     min-width: 410px;
     padding: 2.1vw 2.3vw;
-    border-radius: 20px;
+    border-radius: 10px;
     background: rgba(18, 18, 18, 0.42);
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
@@ -2389,7 +2557,7 @@
   .section-partners {
     background: #FFFFFF;
     color: #0B110D;
-    padding: 140px 0 160px;
+    padding: 140px 5vw 160px;
     min-height: 65vh;
     display: flex;
     flex-direction: column;
@@ -2397,14 +2565,16 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    box-sizing: border-box;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
   }
   .partners-top-container {
     width: 100%;
-    max-width: 1440px;
+    max-width: 1520px;
     margin: 0 auto;
-    padding: 0 6vw 50px;
-    text-align: center;
+    padding: 0 0 50px;
+    text-align: left;
+    box-sizing: border-box;
   }
   .partners-title {
     font-family: var(--title-font);
@@ -2413,8 +2583,8 @@
     line-height: 1.15;
     letter-spacing: -0.02em;
     color: #0E1611;
-    margin: 0 auto;
-    text-align: center;
+    margin: 0;
+    text-align: left;
   }
 
   /* Стрічка біжучого рядка логотипів */
@@ -2534,7 +2704,7 @@
   /* Ліва картка з фоном хвої та текстом */
   .founders-hero-card {
     position: relative;
-    border-radius: 22px;
+    border-radius: 11px;
     overflow: hidden;
     background-color: #121A15;
     background-image: url('assets/founders/pine_card_bg_ultra.webp'), url('assets/founders/pine_card_bg_hq.webp');
@@ -2578,7 +2748,7 @@
   .founder-img-wrap {
     width: 100%;
     aspect-ratio: 1.04 / 1;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     background: #F4F6F4;
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -2622,7 +2792,7 @@
   }
   .founder-thumb-box {
     aspect-ratio: 1.15 / 1;
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
     background: #F4F6F4;
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -2672,17 +2842,17 @@
      ============================================================ */
   .section-synergy {
     background: #FFFFFF;
-    padding: 85px 0 68px;
+    padding: 85px 5vw 68px;
     width: 100%;
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
   }
   .synergy-container {
-    max-width: 1720px;
+    max-width: 1520px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 3.5vw;
+    padding: 0;
     box-sizing: border-box;
   }
 
@@ -2705,6 +2875,9 @@
     box-shadow: none;
     position: relative;
     z-index: 2;
+  }
+  .synergy-side-col.developer-col {
+    padding-left: 0;
   }
 
   .synergy-col-title {
@@ -2909,7 +3082,7 @@
     background-color: #121212;
     background-image: 
       radial-gradient(circle at 82% 18%, rgba(129, 184, 115, 0.06) 0%, transparent 55%);
-    padding: 96px 0 70px;
+    padding: 96px 5vw 70px;
     width: 100%;
     position: relative;
     box-sizing: border-box;
@@ -2918,10 +3091,10 @@
     overflow: hidden;
   }
   .phase1-container {
-    max-width: 1720px;
+    max-width: 1520px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 3.5vw;
+    padding: 0;
     box-sizing: border-box;
     position: relative;
     z-index: 2;
@@ -2978,7 +3151,7 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(129, 184, 115, 0.22);
-    border-radius: 18px;
+    border-radius: 9px;
     padding: 32px 28px;
     box-sizing: border-box;
     display: flex;
@@ -3048,7 +3221,7 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(129, 184, 115, 0.22);
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 22px 20px;
     box-sizing: border-box;
     display: flex;
@@ -3096,7 +3269,7 @@
   /* Права колонка: 16:9 Відеоплеєр */
   .phase1-video-card {
     position: relative;
-    border-radius: 22px;
+    border-radius: 11px;
     overflow: hidden;
     background: #0E1410;
     border: 1px solid rgba(129, 184, 115, 0.28);
@@ -3225,7 +3398,7 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     background: #000;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid rgba(129, 184, 115, 0.35);
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(129, 184, 115, 0.2);
@@ -3386,7 +3559,7 @@
   }
 
   @media (max-width: 1100px) {
-    .section-phase1-live { padding: 74px 0 90px; }
+    .section-phase1-live { padding: 74px 5vw 90px; }
     .phase1-metrics-grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
@@ -3475,10 +3648,11 @@
     background-color: #121212;
     background-image: 
       radial-gradient(circle at 85% 65%, rgba(129, 184, 115, 0.05) 0%, transparent 55%);
-    padding: 70px 0 130px;
+    padding: 110px 5vw 120px;
     overflow: hidden;
     color: #FFFFFF;
     border-top: none;
+    box-sizing: border-box;
   }
 
   /* Фоновий водяний знак MANDRA на рівні 1-2 кроків (на всю ширину) */
@@ -3522,9 +3696,9 @@
   .invest-flow-container {
     position: relative;
     z-index: 2;
-    max-width: 1440px;
+    max-width: 1520px;
     margin: 0 auto;
-    padding: 0 4vw;
+    padding: 0;
     box-sizing: border-box;
   }
 
@@ -3778,7 +3952,7 @@
   /* Адаптивність */
   @media (max-width: 1024px) {
     .section-invest-flow {
-      padding: 90px 0 100px;
+      padding: 90px 5vw 100px;
     }
     .invest-step-row {
       gap: 32px;
@@ -3791,7 +3965,7 @@
 
   @media (max-width: 768px) {
     .section-invest-flow {
-      padding: 70px 0 85px;
+      padding: 70px 5vw 85px;
     }
     .invest-step-row {
       flex-direction: column;
@@ -3832,14 +4006,16 @@
     position: relative;
     background: #FFFFFF;
     color: #0E1F0B;
-    padding: 120px 6vw 140px;
+    padding: 120px 5vw 140px;
     z-index: 10;
     overflow: hidden;
+    box-sizing: border-box;
   }
   .faq-container {
-    max-width: 1080px;
+    max-width: 1520px;
     margin: 0 auto;
     width: 100%;
+    padding: 0;
     box-sizing: border-box;
   }
   .faq-header-block {
@@ -3867,11 +4043,12 @@
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    max-width: 1100px;
   }
   .faq-item {
     background: #FFFFFF;
     border: 1.5px solid rgba(14, 31, 11, 0.09);
-    border-radius: 22px;
+    border-radius: 11px;
     box-shadow: 0 4px 20px rgba(14, 31, 11, 0.03);
     overflow: hidden;
     transition: border-color 0.3s ease, box-shadow 0.35s ease, transform 0.3s ease;
@@ -3995,10 +4172,11 @@
   .section-contacts {
     position: relative;
     background: #0A0F0C;
-    color: #0E1F0B;
-    padding: 120px 6vw 130px;
+    color: #FFFFFF;
+    padding: 120px 5vw 130px;
     z-index: 10;
     overflow: hidden;
+    box-sizing: border-box;
   }
   .section-contacts-bg-glow {
     position: absolute;
@@ -4012,19 +4190,43 @@
     z-index: 1;
   }
   .contacts-container {
-    max-width: 1140px;
+    max-width: 1520px;
     margin: 0 auto;
     position: relative;
     z-index: 2;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .contacts-header-block {
+    margin-bottom: 36px;
+    text-align: left;
+  }
+  .contacts-header-block .contacts-title {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(2rem, 3.2vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    margin: 0 0 12px;
+  }
+  .contacts-header-block .contacts-subtitle {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: clamp(1rem, 1.15vw, 1.25rem);
+    font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0;
   }
   .contacts-card {
     background: #FFFFFF;
-    border-radius: 36px;
+    border-radius: 18px;
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 1240px;
   }
 
   /* ЛІВА КОЛОНКА: ФОРМА */
@@ -4171,7 +4373,7 @@
     position: relative;
     width: 100%;
     height: 360px;
-    border-radius: 24px;
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 16px 40px rgba(14, 31, 11, 0.07);
     background: #F4F6F2;
@@ -4250,7 +4452,7 @@
     position: relative;
     background: #141414; /* Чистий нейтральний архітектурний темно-сірий, без синього відтінку */
     color: #FFFFFF;
-    padding: clamp(70px, 7vw, 110px) clamp(24px, 5vw, 70px) 36px;
+    padding: clamp(70px, 7vw, 110px) 5vw 36px;
     z-index: 10;
     overflow: hidden;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -4279,10 +4481,12 @@
 
   .footer-container {
     width: 100%;
-    max-width: 1440px;
+    max-width: 1520px;
     margin: 0 auto;
     position: relative;
     z-index: 2;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   .footer-top-row {
@@ -4537,7 +4741,15 @@
 <!-- Незалежна страховка: якщо скрипт нижче взагалі не виконається, клас нікому
      буде зняти й інтерфейс лишиться схованим назавжди. Раніше такого ризику не
      було, бо клас вішав сам скрипт. Сім секунд — із запасом до внутрішніх шести. -->
-<script>setTimeout(function(){document.body.classList.remove('intro-running');},7000);</script>
+<script>
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  document.documentElement.classList.add('intro-running');
+  setTimeout(function(){
+    document.body.classList.remove('intro-running');
+    document.documentElement.classList.remove('intro-running');
+  }, 7000);
+</script>
 
   <!-- 1. Top Navbar: Logo + Liquid Glass Nav Capsule + Phone Capsule + Button (FIXED TO TOP) -->
   <header class="top-navbar">
@@ -4587,16 +4799,13 @@
     </div>
   </header>
 
+  <div class="hero-stage">
   <div class="hero-container">
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
            poster="assets/hero_intro_poster.webp?v=3" src="assets/hero_intro.mp4?v=4"></video>
-    <!-- Цикл крутять ДВА шари по черзі: останній кадр ролика і перший
-         розходяться, тож на стику потрібна розчинка, а не стик. Атрибута loop
-         навмисно нема — петлю веде скрипт. -->
-    <video class="bg-video" id="heroVideo" muted playsinline preload="none" aria-hidden="true"></video>
-    <video class="bg-video" id="heroVideo2" muted playsinline preload="none" aria-hidden="true"></video>
+    <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
 
@@ -4686,12 +4895,13 @@
       <div class="section-badge" id="mfBadge">[ ПРО MANDRA INVEST ]</div>
 
       <h2 class="manifesto-text">
-        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span><span class="inline-capsule" data-tooltip="A-frame шале Mandra з чаном" id="mfCap1"><img src="assets/manifesto/cap1.webp" alt="A-frame шале Mandra" decoding="async" loading="lazy"></span><span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
-        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми представляємо інвестиційні</span><span class="inline-capsule" data-tooltip="Інвестиційні проєкти Mandra" id="mfCap3"><img src="assets/manifesto/cap3.webp" alt="Інвестиційні проєкти" decoding="async" loading="lazy"></span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
+        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span> <span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
+        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
       </h2>
 
     </div>
   </section>
+  </div><!-- /.hero-stage -->
 
   <!-- ============================================================
        ЕКРАН 3 — SCROLL SHOWCASE (4 квадранти)
@@ -4706,9 +4916,9 @@
             <div class="showcase-card showcase-card-lead">
             <div class="card-video-pair" data-fade="1.2">
               <video src="assets/screen2/01_location_loop.mp4?v=3" poster="assets/screen2/01_location.webp?v=5"
-                     muted playsinline preload="metadata" aria-hidden="true"></video>
+                     muted playsinline preload="auto" aria-hidden="true"></video>
               <video src="assets/screen2/01_location_loop.mp4?v=3"
-                     muted playsinline preload="metadata" aria-hidden="true"></video>
+                     muted playsinline preload="auto" aria-hidden="true"></video>
             </div>
               <span class="card-index">01</span>
               <div class="card-badge">
@@ -4721,9 +4931,9 @@
           <div class="showcase-card" data-q="tr">
             <div class="card-video-pair" data-fade="1.2">
               <video src="assets/screen2/02_architecture_loop.mp4?v=1" poster="assets/screen2/02_architecture.webp?v=2"
-                     muted playsinline preload="metadata" aria-hidden="true"></video>
+                     muted playsinline preload="auto" aria-hidden="true"></video>
               <video src="assets/screen2/02_architecture_loop.mp4?v=1"
-                     muted playsinline preload="metadata" aria-hidden="true"></video>
+                     muted playsinline preload="auto" aria-hidden="true"></video>
             </div>
             <span class="card-index">02</span>
             <div class="card-badge">
@@ -5498,6 +5708,10 @@
   <section class="section-contacts" id="contacts">
     <div class="section-contacts-bg-glow"></div>
     <div class="contacts-container">
+      <div class="contacts-header-block">
+        <h2 class="contacts-title" id="contactsTitle">Потрібна консультація?</h2>
+        <p class="contacts-subtitle" id="contactsSubtitle">Наш консультант надасть вам безкоштовну допомогу</p>
+      </div>
       <div class="contacts-card">
         
         <!-- ЛІВА КОЛОНКА: ФОРМА З ЛОГОТИПОМ -->
@@ -5505,8 +5719,6 @@
           <div class="contacts-logo-wrap">
             <img class="contacts-brand-logo" src="assets/logo_m_invest_dark.webp" alt="Mandra Invest" decoding="async">
           </div>
-          <h2 class="contacts-title" id="contactsTitle">Потрібна консультація?</h2>
-          <p class="contacts-subtitle" id="contactsSubtitle">Наш консультант надасть вам безкоштовну допомогу</p>
           <div class="contacts-form-divider"></div>
 
           <form class="contacts-form" id="consultationForm" onsubmit="handleContactSubmit(event)">
@@ -6906,7 +7118,335 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
     })();
+
+    /* ============================================================
+       ЕКРАН 1 → 2: М'який вихід заголовка та кнопки вгору при скролі
+       "заголовок з першого екрана і кнопка м'яко фейдом підуть нагору.
+        Як тільки трохи виштовхне, не доходячи до верхнього краю, зникне."
+       ============================================================ */
+    (function initHeroScrollFade() {
+      const heroContent = document.querySelector('.hero-main-content');
+      const scrollIndicator = document.querySelector('.scroll-indicator');
+      if (!heroContent) return;
+
+      let ticking = false;
+
+      function renderHeroFade() {
+        ticking = false;
+        if (document.body.classList.contains('intro-running')) return;
+
+        const scrollY = window.scrollY;
+        // Відстань згасання: ~280px на десктопі, адаптивно ~32% висоти вікна
+        const fadeDist = Math.min(280, Math.max(160, window.innerHeight * 0.32));
+        const p = Math.min(1, Math.max(0, scrollY / fadeDist));
+
+        // М'який підйом тексту нагору на 70px
+        const translateY = -p * 70;
+        // Опасіті згасає м'яко і досягає 0 на ~85% шляху ("не доходячи до краю верхнього, зникне")
+        const opacity = Math.max(0, 1 - p * 1.22);
+
+        heroContent.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+        heroContent.style.opacity = opacity.toFixed(3);
+        heroContent.style.pointerEvents = opacity < 0.05 ? 'none' : 'auto';
+
+        if (scrollIndicator) {
+          if (scrollY > 0) scrollIndicator.style.transition = 'none';
+          else scrollIndicator.style.transition = '';
+          const indOpacity = Math.max(0, 1 - p * 2.8);
+          scrollIndicator.style.opacity = indOpacity.toFixed(3);
+          scrollIndicator.style.pointerEvents = indOpacity < 0.05 ? 'none' : 'auto';
+        }
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(renderHeroFade);
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      renderHeroFade();
+    })();
+
+    /* ============================================================
+       ЕКРАН 1 → 2: ONE-SCROLL DOCKING ("за один скролл... вжух і в стик")
+       ============================================================ */
+    (function initHeroSheetSnap() {
+      const hero = document.querySelector('.hero-container');
+      const manifesto = document.querySelector('.section-manifesto');
+      if (!hero || !manifesto) return;
+
+      function getSnapY() {
+        // Картки притиснуті до стику внизу екрана, без мертвого порожнього відступу
+        return manifesto ? manifesto.offsetHeight : Math.round(window.innerHeight * 0.38);
+      }
+
+      function getShowcasePositions() {
+        const track = document.querySelector('.section-scroll-showcase');
+        if (!track) return null;
+        const sticky = track.querySelector('.showcase-sticky');
+        const stickyTop = sticky ? (parseFloat(getComputedStyle(sticky).top) || 0) : 0;
+        const total = track.offsetHeight - window.innerHeight;
+        const ASSEMBLE_END = 0.370;
+        const gridY = Math.round(track.offsetTop - stickyTop + ASSEMBLE_END * total);
+        const statsY = Math.round(track.offsetTop - stickyTop + total);
+        return { gridY, statsY };
+      }
+
+      // Спеціальний плавний графік: "медленно, медленно, медленно, быстро... не скачком, а спокойно"
+      function showcaseEase(t) {
+        return t < 0.45
+          ? (Math.pow(t / 0.45, 2.8) * 0.35)
+          : (0.35 + (1 - Math.pow(1 - (t - 0.45) / 0.55, 2.4)) * 0.65);
+      }
+
+      // Тривалість прольоту: прискорено на 40% (було 1.15с, тепер 0.70с) для швидкого, динамічного прольоту у стик
+      const HERO_SNAP_DURATION = 0.70;
+      const SHOWCASE_SNAP_DURATION = 1.05;
+      let isSnapping = false;
+      let snapTimer = 0;
+
+      function scrollToPos(targetY, duration = HERO_SNAP_DURATION) {
+        isSnapping = true;
+        clearTimeout(snapTimer);
+        if (window.lenis) {
+          window.lenis.scrollTo(targetY, {
+            duration: duration,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+            onComplete: function () {
+              setTimeout(function () { isSnapping = false; }, 80);
+            }
+          });
+        } else {
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+          setTimeout(function () { isSnapping = false; }, duration * 1000);
+        }
+        snapTimer = setTimeout(function () { isSnapping = false; }, (duration + 0.2) * 1000);
+      }
+
+      function scrollToShowcasePos(targetY, duration = SHOWCASE_SNAP_DURATION) {
+        isSnapping = true;
+        clearTimeout(snapTimer);
+        if (window.lenis) {
+          window.lenis.scrollTo(targetY, {
+            duration: duration,
+            easing: showcaseEase,
+            onComplete: function () {
+              setTimeout(function () { isSnapping = false; }, 80);
+            }
+          });
+        } else {
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+          setTimeout(function () { isSnapping = false; }, duration * 1000);
+        }
+        snapTimer = setTimeout(function () { isSnapping = false; }, (duration + 0.2) * 1000);
+      }
+
+      // Wheel handler: Екран 1 ↔ Екран 2 та Сітка 2x2 ↔ Статистика в цифрах
+      window.addEventListener('wheel', function (e) {
+        if (isSnapping) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          return;
+        }
+
+        const scrollY = window.scrollY;
+        const snapY = getSnapY();
+
+        // 1. Користувач на першому екрані (Hero): за один скрол вниз вжух у стик
+        if (scrollY < 40 && e.deltaY > 6) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          scrollToPos(snapY, HERO_SNAP_DURATION);
+          return;
+        }
+
+        // 2. Користувач у стику маніфесту:
+        // Скрол вгору — повертаємося на Hero (0).
+        // Скрол вниз — НЕ перехоплюємо, починаємо звичайний скрол далі на картинку!
+        if (Math.abs(scrollY - snapY) < 40 && e.deltaY < -6) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          scrollToPos(0, HERO_SNAP_DURATION);
+          return;
+        }
+
+        const scPos = getShowcasePositions();
+        if (scPos) {
+          // 3. Користувач на сітці 2x2: за один скрол вниз картки м'яко роз'їжджаються і підіймається статистика
+          if (scrollY >= scPos.gridY - 60 && scrollY <= scPos.gridY + 140 && e.deltaY > 6) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            scrollToShowcasePos(scPos.statsY, SHOWCASE_SNAP_DURATION);
+            return;
+          }
+
+          // 4. Користувач на старті секції статистики (колода ще не почала скролитися):
+          // Скрол вгору — за один скрол повертаємося назад на сітку 2x2!
+          const statsDeck = document.querySelector('.stats-col-deck');
+          const deckScrolled = statsDeck ? (parseFloat(getComputedStyle(document.querySelector('.stats-deck-sticky') || statsDeck).top || 0) - statsDeck.getBoundingClientRect().top) : 0;
+          if (scrollY >= scPos.statsY - 80 && scrollY <= scPos.statsY + 60 && deckScrolled <= 25 && e.deltaY < -6) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            scrollToShowcasePos(scPos.gridY, SHOWCASE_SNAP_DURATION);
+            return;
+          }
+        }
+      }, { capture: true, passive: false });
+
+      // Keyboard handler (ArrowDown / Space / ArrowUp)
+      window.addEventListener('keydown', function (e) {
+        if (isSnapping) return;
+        const scrollY = window.scrollY;
+        const snapY = getSnapY();
+        const scPos = getShowcasePositions();
+
+        if (scrollY < 40 && (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input, textarea')))) {
+          e.preventDefault();
+          scrollToPos(snapY, HERO_SNAP_DURATION);
+        } else if (Math.abs(scrollY - snapY) < 40 && (e.key === 'ArrowUp' || e.key === 'PageUp')) {
+          e.preventDefault();
+          scrollToPos(0, HERO_SNAP_DURATION);
+        } else if (scPos) {
+          if (scrollY >= scPos.gridY - 60 && scrollY <= scPos.gridY + 140 && (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input, textarea')))) {
+            e.preventDefault();
+            scrollToShowcasePos(scPos.statsY, SHOWCASE_SNAP_DURATION);
+          } else if (scrollY >= scPos.statsY - 80 && scrollY <= scPos.statsY + 60 && (e.key === 'ArrowUp' || e.key === 'PageUp')) {
+            e.preventDefault();
+            scrollToShowcasePos(scPos.gridY, SHOWCASE_SNAP_DURATION);
+          }
+        }
+      });
+
+      // Touch handler для мобільних пристроїв
+      let touchStartY = 0;
+      window.addEventListener('touchstart', function (e) {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      window.addEventListener('touchend', function (e) {
+        if (isSnapping) return;
+        const touchEndY = e.changedTouches[0].clientY;
+        const deltaY = touchStartY - touchEndY;
+        const scrollY = window.scrollY;
+        const snapY = getSnapY();
+        const scPos = getShowcasePositions();
+
+        if (scrollY < 40 && deltaY > 40) {
+          scrollToPos(snapY, HERO_SNAP_DURATION);
+          return;
+        }
+        if (Math.abs(scrollY - snapY) < 40 && deltaY < -40) {
+          scrollToPos(0, HERO_SNAP_DURATION);
+          return;
+        }
+        if (scPos) {
+          if (scrollY >= scPos.gridY - 60 && scrollY <= scPos.gridY + 140 && deltaY > 40) {
+            scrollToShowcasePos(scPos.statsY, SHOWCASE_SNAP_DURATION);
+            return;
+          }
+          if (scrollY >= scPos.statsY - 80 && scrollY <= scPos.statsY + 60 && deltaY < -40) {
+            scrollToShowcasePos(scPos.gridY, SHOWCASE_SNAP_DURATION);
+            return;
+          }
+        }
+      }, { passive: true });
+
+      // Click on SCROLL indicator
+      const scrollIndicator = document.querySelector('.scroll-indicator');
+      if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', function (e) {
+          e.preventDefault();
+          scrollToPos(getSnapY(), HERO_SNAP_DURATION);
+        });
+      }
+    })();
   
+    /* ============================================================
+       КРОСФЕЙД-ЛУПИ ДЛЯ КАРТОК З ВІДЕО (.card-video-pair)
+       Безшовний цикл для клипів без закільцьованого монтажу:
+       усередині файлу, півтори секунди матеріалу видно лише в суміші, а сам
+       файл коротшає. Тут замикання робить пара накладених <video> з одним
+       джерелом: другий стартує за --fade до кінця першого, і вони перехресно
+       міняються прозорістю, після чого міняються ролями.
+       ============================================================ */
+    (function initCardVideoLoops() {
+      Array.prototype.forEach.call(document.querySelectorAll('.card-video-pair'), function (pair) {
+        const vids = Array.prototype.slice.call(pair.querySelectorAll('video'));
+        if (vids.length < 2) return;
+
+        const fade = parseFloat(pair.dataset.fade) || 1.2;
+        let front = 0, armed = false, raf = 0, live = false;
+
+        vids[0].style.opacity = '1';
+        vids[1].style.opacity = '0';
+
+        function tick() {
+          const a = vids[front], b = vids[1 - front];
+          const d = a.duration;
+
+          if (d && isFinite(d)) {
+            const left = d - a.currentTime;
+
+            if (left <= fade) {
+              if (!armed) {                     // піднімаємо другий шар
+                armed = true;
+                b.currentTime = 0;
+                b.play().catch(function () {});
+              }
+              const t = Math.min(1, Math.max(0, (fade - left) / fade));
+              a.style.opacity = (1 - t).toFixed(3);
+              b.style.opacity = t.toFixed(3);
+            }
+
+            if (a.ended || a.currentTime >= d - 0.04) {
+              a.pause();
+              a.currentTime = 0;
+              a.style.opacity = '0';
+              b.style.opacity = '1';
+              front = 1 - front;
+              armed = false;
+            }
+          }
+
+          if (live) raf = requestAnimationFrame(tick);
+        }
+
+        function start() {
+          if (live) return;
+          live = true;
+          vids[front].play().catch(function () {});
+          if (armed) {
+            vids[1 - front].play().catch(function () {});
+          }
+          raf = requestAnimationFrame(tick);
+        }
+        function stop() {
+          if (!live) return;
+          live = false;
+          cancelAnimationFrame(raf);
+          vids.forEach(function (v) { v.pause(); });
+        }
+
+        pair._playLoop = start;
+        pair._pauseLoop = stop;
+        pair._isLoopLive = function () { return live; };
+
+        // Для елементів поза скрабом — звичайний IntersectionObserver
+        if (!pair.closest('.section-scroll-showcase')) {
+          if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+              entries.forEach(function (en) { en.isIntersecting ? start() : stop(); });
+            }, { threshold: 0.01 }).observe(pair);
+          } else {
+            start();
+          }
+        }
+      });
+    })();
+
     /* ============================================================
        ЕКРАН 3 — SCROLL SCRUB ENGINE (клон механіки alexvillasgroup)
        Фаза 1: перше фото займає весь кадр.
@@ -6920,7 +7460,7 @@
       const items = Array.from(track.querySelectorAll('[data-q]'));
       if (!items.length) return;
 
-      const GAP = 1.6;                       /* зазор між квадратами, % */
+      const GAP = 0.8;                       /* зазор між квадратами зменшено вдвічі (було 1.6%), % */
       const SIDE = (100 - GAP) / 2;          /* сторона квадрата, % */
       const FINAL = {
         tl: { l: 0,          t: 0,          w: SIDE, h: SIDE },
@@ -6941,17 +7481,36 @@
       /* Фази скролу (частка загального треку) */
       const ASSEMBLE_END = 0.370;  /* 0 → 37.0%: збірка у сітку 2x2 (~1310px ходу) */
       const HOLD_END     = 0.441;  /* 37.0 → 44.1%: пауза, сітка зафіксована (~253px) */
-      const FLY_END      = 0.860;  /* 44.1 → 86.0%: розсування (~1485px, швидкість як у стосу) */
-      /* 86.0 → 100%: стоянка (~492px) — картки стоять по краях, статистика в'їжджає.
-         Довжина стоянки підібрана так, щоб фото зривались з піна рівно тоді,
-         коли рушає друга картка стосу (16%), а не на 4 щиглики пізніше. */
-      /* 50 → 100%: розсування карток у сторони (залишаючи ~15% видимості по краях) */
-      const FLY_VW = 44;           /* дистанція розсування (залишає ~15% видимості по краях) */
+      const FLY_END      = 0.720;  /* 44.1 → 72.0%: м'яке розсування карток у сторони */
+      /* Розсування карток: роз'їжджаються у сторони, еле-еле стирчать по краях (~50px / 2.6vw) і не налізають на текст */
+      const FLY_VW = 47;           /* повернено на місце: еле-еле чуть-чуть торчать по боках */
 
       /* Заголовок на картці 01: спокійно тане, поки картка починає розкриватись */
       const TITLE_FADE_START = 0.02;
       const TITLE_FADE_END   = 0.15;
       const titleEl = track.querySelector('.showcase-title');
+
+      /* Відео-пари: 01 (tl, "Аналіз") та 02 (tr, "Концепція та девелопмент") */
+      const pairTL = track.querySelector('[data-q="tl"] .card-video-pair');
+      const pairTR = track.querySelector('[data-q="tr"] .card-video-pair');
+
+      function syncVideos(p, inView) {
+        if (!inView || p >= FLY_END) {
+          if (pairTL && pairTL._pauseLoop) pairTL._pauseLoop();
+          if (pairTR && pairTR._pauseLoop) pairTR._pauseLoop();
+          return;
+        }
+        if (p < ASSEMBLE_END) {
+          // Поки картка 01 повноекранна / збирається у сітку — відео на 01 грає, на 02 на паузі
+          if (pairTL && pairTL._playLoop) pairTL._playLoop();
+          if (pairTR && pairTR._pauseLoop) pairTR._pauseLoop();
+        } else {
+          // Коли 4 картки роз'їхалися (p >= ASSEMBLE_END) — картка 01 відключається на паузу,
+          // і працює тільки відео справа (картка 02)
+          if (pairTL && pairTL._pauseLoop) pairTL._pauseLoop();
+          if (pairTR && pairTR._playLoop) pairTR._playLoop();
+        }
+      }
 
       let ticking = false, lastP = -1;
 
@@ -6959,8 +7518,36 @@
         ticking = false;
         const rect = track.getBoundingClientRect();
         const total = track.offsetHeight - window.innerHeight;
-        let p = total > 0 ? (-rect.top) / total : 0;
+        const sticky = track.querySelector('.showcase-sticky');
+        const stickyTop = sticky ? (parseFloat(getComputedStyle(sticky).top) || 0) : 0;
+        let p = total > 0 ? (-rect.top + stickyTop) / total : 0;
         p = clamp01(p);
+
+        const inView = rect.bottom > 0 && rect.top < window.innerHeight;
+        syncVideos(p, inView);
+
+        /* Заголовок: підіймається разом з карткою і плавно розчиняється заздалегідь,
+           майже дійшовши догори (до шапки/піна), щоб не стирчати під меню */
+        if (titleEl) {
+          if (p > 0) {
+            titleEl.style.opacity = '0';
+          } else {
+            const vh = window.innerHeight;
+            const tTop = titleEl.getBoundingClientRect().top;
+            const fadeStart = vh * 0.44;
+            const fadeEnd   = vh * 0.24;
+            if (tTop <= fadeEnd) {
+              titleEl.style.opacity = '0';
+            } else if (tTop >= fadeStart) {
+              titleEl.style.opacity = '1';
+            } else {
+              const progress = (tTop - fadeEnd) / (fadeStart - fadeEnd);
+              const op = progress * progress * (3 - 2 * progress);
+              titleEl.style.opacity = op.toFixed(3);
+            }
+          }
+        }
+
         if (Math.abs(p - lastP) < 0.0002) return;   /* трек став довшим — поріг дрібніший */
         lastP = p;
 
@@ -6968,12 +7555,6 @@
         const a  = smoothstep(clamp01(p / ASSEMBLE_END));
         /* Фаза 3: плавне розсування у сторони після паузи (50%→100%) */
         const fo = smoothstep(clamp01((p - HOLD_END) / (FLY_END - HOLD_END)));
-
-        /* Заголовок: статичний на старті, плавно зникає до початку розкриття */
-        if (titleEl) {
-          const tf = 1 - clamp01((p - TITLE_FADE_START) / (TITLE_FADE_END - TITLE_FADE_START));
-          titleEl.style.opacity = tf.toFixed(3);
-        }
 
         for (let i = 0; i < items.length; i++) {
           const el = items[i];
@@ -7003,8 +7584,6 @@
           const isLead = el.classList.contains('showcase-lead');
           const badge  = el.querySelector('.card-badge');
           const num    = el.querySelector('.card-index');
-          const title  = el.querySelector('.card-badge-title');
-          const desc   = el.querySelector('.card-badge-desc');
 
           const exit  = 1 - fo * 0.9;               /* танення при розсуванні */
           const start = 0.52 + (i - 1) * 0.11;      /* зсув між картками */
@@ -7018,27 +7597,73 @@
             node.style.transform = 'translate3d(0,' + ((1 - r) * shift).toFixed(1) + 'px,0)';
           }
 
-          if (badge) badge.style.opacity = '1';
           place(num,   reveal(0),    14);
-          place(title, reveal(0.03), 26);
-          place(desc,  reveal(0.06), 34);
+          place(badge, reveal(0.03), 20);
         }
 
-        /* Наплив секції статистики: схована під час збірки 2x2, плавно проявляється при розсуванні */
+        /* Наплив секції статистики: схована під час збірки 2x2, плавно підіймається при розсуванні */
         const statsEl = document.getElementById('stats');
         if (statsEl) {
-          /* Прив'язано до фази розсування, а не до частки треку: інакше при
-             довшому треку наплив розтягнувся б і між секціями зяяла б пустка. */
-          const statsOpacity = clamp01(((p - HOLD_END) / (FLY_END - HOLD_END)) / 0.30);
+          /* Прив'язано до фази розсування: статистика плавно підіймається через розведені картки */
+          const statsOpacity = clamp01((p - 0.50) / 0.35);
           statsEl.style.opacity = statsOpacity.toFixed(3);
         }
       }
+
+      function updateBadgeHeights() {
+        track.querySelectorAll('.showcase-card, .showcase-lead').forEach(function (card) {
+          const badge = card.querySelector('.card-badge');
+          const desc = card.querySelector('.card-badge-desc');
+          const title = card.querySelector('.card-badge-title');
+          if (title) {
+            title.style.opacity = '';
+            title.style.transform = '';
+          }
+          if (desc) {
+            desc.style.opacity = '';
+            desc.style.transform = '';
+            const h = desc.offsetHeight || (desc.getBoundingClientRect && desc.getBoundingClientRect().height) || 0;
+            if (h > 0 && badge) {
+              badge.style.setProperty('--desc-h', h + 'px');
+            }
+          }
+        });
+      }
+
+      // Touch / click toggle for mobile / tablet
+      track.querySelectorAll('.showcase-card, .showcase-lead').forEach(function (card) {
+        card.addEventListener('click', function () {
+          const wasHovered = card.classList.contains('is-hovered');
+          track.querySelectorAll('.showcase-card, .showcase-lead').forEach(function (c) { c.classList.remove('is-hovered'); });
+          if (!wasHovered) card.classList.add('is-hovered');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.showcase-card, .showcase-lead')) {
+          track.querySelectorAll('.showcase-card, .showcase-lead').forEach(function (c) { c.classList.remove('is-hovered'); });
+        }
+      });
 
       function onScroll() {
         if (!ticking) { ticking = true; requestAnimationFrame(render); }
       }
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
+      window.addEventListener('resize', function () {
+        updateBadgeHeights();
+        onScroll();
+      }, { passive: true });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          if (pairTL && pairTL._pauseLoop) pairTL._pauseLoop();
+          if (pairTR && pairTR._pauseLoop) pairTR._pauseLoop();
+        } else {
+          render();
+        }
+      });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(updateBadgeHeights);
+      }
+      updateBadgeHeights();
       render();
     })();
 
@@ -7076,13 +7701,75 @@
 
       let ticking = false;
 
-      // smoothstep: нульова швидкість на обох кінцях — картка м'яко рушає і так
-      // само м'яко стає. Пік швидкості 1.5, тоді як у easeOutCubic він 3 і весь
-      // ривок припадає на старт вікна, тобто рух знову читався б як кидок.
-      const ease = (x) => x * x * (3 - 2 * x);
+      // easeOutSine: миттєвий відгук на скрол без затримки (без мертвої зони smoothstep на старті)
+      // та плавне уповільнення при стикуванні картки у стос
+      const ease = (x) => Math.sin((x * Math.PI) / 2);
 
       const deck = section.querySelector('.stats-col-deck');
       const sticky = section.querySelector('.stats-deck-sticky');
+
+      // Дані для швидкої прокрутки контурних лічильників при підльоті карток
+      const statNumbers = cards.map((card) => {
+        const numEl = card.querySelector('.stat-card-num');
+        const text = numEl ? numEl.textContent.trim() : '';
+        const match = text.match(/^(\d+)(.*)$/);
+        return {
+          el: numEl,
+          target: match ? parseInt(match[1], 10) : 0,
+          suffix: match ? match[2] : '',
+          rawText: text,
+          animated: false,
+          animating: false
+        };
+      });
+
+      function rollCounter(item, duration = 380) {
+        if (!item || !item.el) return;
+        item.animating = true;
+        item.animated = true;
+        const start = performance.now();
+        const target = item.target;
+        const suffix = item.suffix;
+
+        // Для малих чисел (наприклад, 4) створюємо швидкий барабанний прокрут цифр
+        if (target < 10) {
+          const spinDigits = [8, 3, 9, 1, 6, 2, 7, 5, 2, target];
+          function stepSmall(now) {
+            const elapsed = now - start;
+            const p = Math.min(1, elapsed / duration);
+            const idx = Math.min(spinDigits.length - 1, Math.floor(p * spinDigits.length));
+            item.el.textContent = spinDigits[idx] + suffix;
+            if (p < 1) {
+              requestAnimationFrame(stepSmall);
+            } else {
+              item.el.textContent = target + suffix;
+              item.animating = false;
+            }
+          }
+          requestAnimationFrame(stepSmall);
+          return;
+        }
+
+        // Для звичайних чисел: динамічний лічильник з кривою easeOutExpo (миттєвий старт, плавний клік у фінал)
+        function step(now) {
+          const elapsed = now - start;
+          const p = Math.min(1, elapsed / duration);
+          const ease = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+          let current = Math.round(ease * target);
+          if (p >= 0.95 || current >= target) {
+            current = target;
+          }
+          item.el.textContent = current + suffix;
+
+          if (p < 1 && current < target) {
+            requestAnimationFrame(step);
+          } else {
+            item.el.textContent = target + suffix;
+            item.animating = false;
+          }
+        }
+        requestAnimationFrame(step);
+      }
 
       // Передача: скільки пікселів картка проходить на 1px скролу.
       // Те саме число ділить --card-span у CSS (.stats-container) — міняти
@@ -7091,21 +7778,62 @@
 
       let span = 1260;    // скільки скролу з'їдає одна картка
       let travel = 410;   // скільки картка реально пролітає до стикування
-      let pinTop = 100;   // де стос прилипає до верху екрана
+      let pinTop = 176;   // де стос прилипає до верху екрана
 
       function measure() {
-        // --card-span у CSS — це calc(), а кастомні властивості віддаються
-        // нерозв'язаними токенами, тому рахуємо за тією ж формулою тут.
-        const step = parseFloat(getComputedStyle(deck).getPropertyValue('--card-step')) || 26;
-        travel = (cards[0].offsetHeight || 384) + step;   // картка стартує з-під попередньої
+        const info = section.querySelector('.stats-col-info');
+        if (window.innerWidth <= 900) {
+          if (info) {
+            info.style.top = '';
+            info.style.height = 'auto';
+            info.style.paddingTop = '';
+          }
+          return;
+        }
+
+        const step = parseFloat(getComputedStyle(deck).getPropertyValue('--card-step')) || 24;
+        const cardH = cards[0].offsetHeight || 680;
+        const stackHeight = cardH + (cards.length - 1) * step;
+        travel = cardH + step;   // картка стартує з-під попередньої
         span = travel / GEAR;
-        pinTop = parseFloat(getComputedStyle(sticky).top) || 0;
+
+        // Динамічне вирівнювання точки прилипання до фінішу треку Шоукейсу:
+        // коли скрол завершує розведення карток Шоукейсу, колода карток уже зафіксована,
+        // тому перша картка при початку скролу залишається абсолютно статичною на своєму місці.
+        const track = document.querySelector('.section-scroll-showcase');
+        if (track) {
+          const showSticky = track.querySelector('.showcase-sticky');
+          const showStickyTop = showSticky ? (parseFloat(getComputedStyle(showSticky).top) || 0) : 0;
+          const trackTotal = track.offsetHeight - window.innerHeight;
+          const trackEndScroll = track.offsetTop - showStickyTop + trackTotal;
+          const deckAbsTop = deck.getBoundingClientRect().top + window.scrollY;
+          const landingTop = Math.round(deckAbsTop - trackEndScroll);
+          if (landingTop > 0) {
+            sticky.style.top = landingTop + 'px';
+          }
+        }
+        pinTop = parseFloat(getComputedStyle(sticky).top) || 176;
+
+        // Повна синхронізація лівого тексту та колоди карток:
+        // 1. Прилітають на екран і стають sticky одночасно в один піксель (info.style.top = pinTop).
+        // 2. Текст має комфортний відступ під заголовком (22vh) через paddingTop.
+        // 3. Текст стоїть абсолютно нерухомо під час гортання всіх карток (01..130).
+        // 4. Коли остання картка стикується у стек (встик) і ми скролимо далі на наступний екран,
+        //    лівий текстовий блок і колода карток відкріплюються в один і той самий піксель
+        //    (infoTop + infoHeight === pinTop + stackHeight) і разом скроляться нагору в 1:1 синхронізації.
+        if (info) {
+          info.style.top = pinTop + 'px';
+          info.style.height = stackHeight + 'px';
+          const desiredTopVisual = Math.round(window.innerHeight * 0.22);
+          const extraPad = Math.max(0, desiredTopVisual - pinTop);
+          info.style.paddingTop = extraPad + 'px';
+        }
       }
 
       function renderStack() {
         ticking = false;
 
-        const scrolled = pinTop - deck.getBoundingClientRect().top;
+        const scrolled = Math.max(0, pinTop - deck.getBoundingClientRect().top);
 
         const progress = [1];   // перша картка вже у стосі
         const waiting = [0];
@@ -7122,12 +7850,43 @@
         for (let i = 0; i < cards.length; i++) {
           const cover = i + 1 < cards.length ? progress[i + 1] : 0;
 
-          const y = (1 - progress[i]) * travel + waiting[i];
-          const scale = 1 - cover * 0.042;
+          if (i === 0) {
+            // Перша картка після прильоту залишається 100% статичною на своєму місці:
+            // жодного зміщення по Y та жодного масштабування (scale 1.0)
+            cards[0].style.transform = 'translate3d(0, 0, 0)';
+            cards[0].style.setProperty('--dim', (cover * 0.15).toFixed(3));
+          } else {
+            const y = (1 - progress[i]) * travel + waiting[i];
+            cards[i].style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+            cards[i].style.setProperty('--dim', (cover * 0.15).toFixed(3));
+          }
+        }
 
-          cards[i].style.transform =
-            `translate3d(0, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
-          cards[i].style.setProperty('--dim', (cover * 0.11).toFixed(3));
+        // Анімація прокрутки цифр (контурний лічильник при зальоті картки)
+        // Картка 0: крутиться при появі секції в зоні видимості
+        const statsRect = section.getBoundingClientRect();
+        if (statsRect.top < window.innerHeight * 0.78 && statsRect.bottom > 120) {
+          if (!statNumbers[0].animated && !statNumbers[0].animating) {
+            rollCounter(statNumbers[0], 500);
+          }
+        } else if (statsRect.top > window.innerHeight) {
+          // Відскролили вгору вище секції — скидаємо Card 0
+          statNumbers[0].animated = false;
+          statNumbers[0].el.textContent = statNumbers[0].rawText;
+        }
+
+        // Картки 1..4: кожна прокручується швидко, коли підлітає на екран
+        for (let i = 1; i < cards.length; i++) {
+          const raw = (scrolled - (i - 1) * span) / span;
+          if (raw > 0.05) {
+            if (!statNumbers[i].animated && !statNumbers[i].animating) {
+              rollCounter(statNumbers[i], 460);
+            }
+          } else if (raw < 0.01) {
+            // Картка опустилася вниз — скидаємо стан для повторного зальоту
+            statNumbers[i].animated = false;
+            statNumbers[i].el.textContent = statNumbers[i].rawText;
+          }
         }
       }
 
@@ -7145,6 +7904,10 @@
 
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onResize, { passive: true });
+      window.addEventListener('load', onResize, { passive: true });
+      if (document.fonts) {
+        document.fonts.ready.then(onResize);
+      }
       measure();
       renderStack();
     })();
@@ -7586,7 +8349,6 @@
     (function initHeroIntro() {
       const intro = document.getElementById('heroIntro');
       const cycle = document.getElementById('heroVideo');
-      const cycle2 = document.getElementById('heroVideo2');
       if (!intro || !cycle) return;
 
       const FADE = 0.5;         // секунди розчинки інтро в цикл
@@ -7604,12 +8366,34 @@
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let revealed = false, handed = false, failSafe = 0;
 
+      // Повне блокування прокручування коліщатком, тачем та клавішами під час інтро
+      function blockIntroScroll(e) {
+        if (document.body.classList.contains('intro-running')) {
+          e.preventDefault();
+        }
+      }
+      window.addEventListener('wheel', blockIntroScroll, { passive: false });
+      window.addEventListener('touchmove', blockIntroScroll, { passive: false });
+      window.addEventListener('keydown', function (e) {
+        if (document.body.classList.contains('intro-running')) {
+          const keys = ['Space', 'PageUp', 'PageDown', 'End', 'Home', 'ArrowUp', 'ArrowDown'];
+          if (keys.includes(e.code) || keys.includes(e.key)) {
+            e.preventDefault();
+          }
+        }
+      }, { passive: false });
+
       function revealUi() {
         if (revealed) return;
         revealed = true;
         clearTimeout(failSafe);
         document.body.classList.remove('intro-running');
+        document.documentElement.classList.remove('intro-running');
         document.body.classList.add('intro-done');
+        if (window.lenis) {
+          window.lenis.start();
+        }
+        window.dispatchEvent(new Event('scroll'));
       }
 
       intro.addEventListener('error', revealUi);
@@ -7626,57 +8410,12 @@
          би застиглий останній кадр інтро — це видно.
          Цикл вмикаємо на повну одразу: він лежить під інтро, тому невидимий,
          поки верхній шар не почне гаснути. */
-      /* ПЕТЛЯ ЦИКЛУ.
-         Останній кадр ролика і перший розходяться на 5.21, тоді як сусідні
-         кадри всередині ролика дають 0.06 — стрибок у 87 разів більший за
-         фон, його видно. Геометрія при цьому чиста: підгонка масштабом дає
-         рівно 1.0000 і зсув 0,0, тобто ріже саме зміст, і обрізанням кадрів
-         це не лікується. Тому два шари крутять один файл по черзі й
-         перетікають один в одного. Розчинка живе у вёрстці, а не запечена у
-         файл: у файлі вона з'їла б довжину ролика назавжди.
-         Момент рахуємо таймером від duration, а не rAF щокадру — вікно
-         завширшки майже пів секунди, зайвий цикл малювання тут ні до чого. */
-      const LOOP_FADE = 0.45;
-      let live = cycle, spare = cycle2, loopTimer = 0;
-
-      function armLoop() {
-        clearTimeout(loopTimer);
-        if (!spare) return;                    /* другого шару нема — крутимо як є */
-        if (!live.duration) {
-          live.addEventListener('loadedmetadata', armLoop, { once: true });
-          return;
-        }
-        const left = (live.duration - LOOP_FADE - live.currentTime) * 1000;
-        loopTimer = setTimeout(swapLoop, Math.max(0, left));
-      }
-
-      function swapLoop() {
-        /* Таймер зводиться від currentTime у мить запуску, а відео може
-           поїхати на десяту пізніше. Якщо прокинулись зарано — просто
-           переводимо будильник, бо інакше розчинка з'їла б живий кадр. */
-        const early = live.duration - LOOP_FADE - live.currentTime;
-        if (early > 0.12) { armLoop(); return; }
-        const out = live;
-        spare.currentTime = 0;
-        spare.play().catch(function () {});
-        spare.classList.add('is-ready');
-        out.classList.add('is-cycle-out');     /* гасне поверх наступного */
-        live = spare;
-        spare = out;
-        setTimeout(function () {
-          out.pause();
-          out.classList.remove('is-ready', 'is-cycle-out');
-        }, LOOP_FADE * 1000 + 80);
-        armLoop();
-      }
-
       function startCycle() {
         if (handed) return;
         handed = true;
         cycle.play().catch(function () {});
         cycle.classList.add('is-ready');
         intro.classList.remove('is-ready');
-        armLoop();
         setTimeout(function () { intro.pause(); }, FADE * 1000 + 80);
       }
 
@@ -7702,92 +8441,13 @@
       /* Цикл тягнемо фоном, поки грає інтро: до передачі він має бути готовий,
          але змагатися з інтро за канал на першому екрані йому нічого. */
       function preloadCycle() {
-        const src = 'assets/hero_cycle.mp4?v=4';
-        cycle.src = src;
+        cycle.src = 'assets/hero_cycle.mp4?v=4';
         cycle.load();
-        if (cycle2) { cycle2.src = src; cycle2.load(); }   /* той самий URL — з кешу */
       }
       if (document.readyState === 'complete') preloadCycle();
       else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
-    /* ПЕТЛЯ ВІДЕО З КРОСФЕЙДОМ — у вёрстці, а не запечена у файл.
-       Файл віддаємо цілим, усі 6 секунд: якщо зшивати кінець з початком
-       усередині файлу, півтори секунди матеріалу видно лише в суміші, а сам
-       файл коротшає. Тут замикання робить пара накладених <video> з одним
-       джерелом: другий стартує за --fade до кінця першого, і вони перехресно
-       міняються прозорістю, після чого міняються ролями.
-
-       Період повтору при будь-якому кросфейді коротший за клип на довжину
-       переходу — перекриття рахується один раз. 6.04с клипу і 1.2с фейду
-       дають цикл 4.84с. Щоб цикл був рівно 6с, потрібен клип на 7.2с.
-
-       Крутити м'якість переходу — це data-fade у розмітці, файл не чіпаємо. */
-    (function initCardVideoLoops() {
-      Array.prototype.forEach.call(document.querySelectorAll('.card-video-pair'), function (pair) {
-        const vids = Array.prototype.slice.call(pair.querySelectorAll('video'));
-        if (vids.length < 2) return;
-
-        const fade = parseFloat(pair.dataset.fade) || 1.2;
-        let front = 0, armed = false, raf = 0, live = false;
-
-        vids[0].style.opacity = '1';
-        vids[1].style.opacity = '0';
-
-        function tick() {
-          const a = vids[front], b = vids[1 - front];
-          const d = a.duration;
-
-          if (d && isFinite(d)) {
-            const left = d - a.currentTime;
-
-            if (left <= fade) {
-              if (!armed) {                     // піднімаємо другий шар
-                armed = true;
-                b.currentTime = 0;
-                b.play().catch(function () {});
-              }
-              const t = Math.min(1, Math.max(0, (fade - left) / fade));
-              a.style.opacity = (1 - t).toFixed(3);
-              b.style.opacity = t.toFixed(3);
-            }
-
-            if (a.ended || a.currentTime >= d - 0.04) {
-              a.pause();
-              a.currentTime = 0;
-              a.style.opacity = '0';
-              b.style.opacity = '1';
-              front = 1 - front;
-              armed = false;
-            }
-          }
-
-          if (live) raf = requestAnimationFrame(tick);
-        }
-
-        function start() {
-          if (live) return;
-          live = true;
-          vids[front].play().catch(function () {});
-          raf = requestAnimationFrame(tick);
-        }
-        function stop() {
-          live = false;
-          cancelAnimationFrame(raf);
-          vids.forEach(function (v) { v.pause(); });
-        }
-
-        /* Поза кадром не крутимо: секція і так веде скрол-скраб, і віддавати
-           декодеру кадровий бюджет, поки ніхто не дивиться, ні до чого. */
-        if ('IntersectionObserver' in window) {
-          new IntersectionObserver(function (entries) {
-            entries.forEach(function (en) { en.isIntersecting ? start() : stop(); });
-          }, { threshold: 0.01 }).observe(pair);
-        } else {
-          start();
-        }
-      });
-    })();
 
     /* ============================================================
        LENIS — плавний скрол на весь сайт
@@ -7815,6 +8475,11 @@
       requestAnimationFrame(raf);
 
       window.lenis = lenis;  // знадобиться, коли переводитимемо якорі меню
+
+      // Якщо сторінка завантажилась під час інтро — зупиняємо Lenis до revealUi()
+      if (document.body.classList.contains('intro-running')) {
+        lenis.stop();
+      }
     })();
 
     if (document.readyState === 'loading') {

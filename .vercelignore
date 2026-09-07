@@ -1,4 +1,4 @@
-﻿/assets/
+/assets/
 /_РЕФЕРЕНСИ/
 /archive/
 /tools/
@@ -6,6 +6,7 @@
 /.agents/
 /.claude/
 /serve.py
+/scratch/
 /*.png
 /*.jpg
 /*.pdf
