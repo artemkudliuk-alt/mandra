@@ -1546,12 +1546,12 @@
   }
   .showcase-lead[data-q="tl"] .card-index,
   .showcase-card[data-q="tl"] .card-index {
-    top: clamp(70px, calc(7vw - 10px), 94px);
+    top: clamp(50px, calc(7vw - 30px), 74px);
     left: 28px;
     right: auto;
   }
   .showcase-card[data-q="tr"] .card-index {
-    top: clamp(70px, calc(7vw - 10px), 94px);
+    top: clamp(50px, calc(7vw - 30px), 74px);
     left: 34px;
     right: auto;
   }
@@ -2988,11 +2988,32 @@
      Чистий білий фон, архітектурний макет 3D, Liquid Glass картки
      Без зайвих заголовків, фірмова палітра без золота (#DEF7D7, #81B873, #0E1F0B)
      ============================================================ */
+  /* Обгортка обмежує примерзання: доки вона в кадрі, синергія стоїть,
+     а екран 9 повзе поверх. Той самий приём, що з героєм і маніфестом. */
+  .synergy-stage {
+    position: relative;
+    width: 100%;
+  }
+  /* Невеликий запас ходу під примерзлою секцією: дає стику довжину для
+     спокійного прольоту. Раніше було 55vh під два кроки — тепер крок один. */
+  .synergy-hold { height: 22vh; }
+  /* На вузьких екранах стик вимкнено: розпірка не потрібна, а примерзання
+     на короткому вікні лише зжирало б висоту під контент. */
+  @media (max-width: 900px) {
+    .synergy-hold { display: none; }
+    .section-synergy { position: static; min-height: auto; }
+  }
   .section-synergy {
     background: #0B0F0C;
-    padding: 85px 5vw 68px;
+    padding: 85px 5vw 105px;
     width: 100%;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -3036,6 +3057,10 @@
     margin: 0 0 6px;
     letter-spacing: -0.01em;
     line-height: 1.2;
+    /* «Ribas Hotels Group» лягає у два рядки, «Mandra Invest» в один — колонки
+       виходили різної висоти, і при центруванні нижні відступи розходились.
+       Резервуємо два рядки в обох. */
+    min-height: 2.4em;
   }
   .synergy-col-subtitle {
     font-family: var(--sub-font);
@@ -3086,7 +3111,60 @@
     flex-shrink: 0;
   }
 
-  /* Центральна колонка з 3D архітектурним макетом */
+  /* ============================================================
+     ЕКРАН 8 — СХЕМА ПОТОКУ (замість 3D-рендера)
+     ============================================================ */
+
+  /* Скляна плашка з логотипом — той самий рецепт, що в картках екрана 4 */
+  .syn-logo-plate {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 104px;
+    /* Колонка центрується по вертикалі, тож додані сюди пікселі піднімають її
+       на половину — 26px зверху проти 71px знизу вирівнюються саме на 56px. */
+    margin-bottom: 56px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 18px 44px rgba(0, 0, 0, 0.34);
+    cursor: default;
+    transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .syn-logo-plate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .syn-logo-plate:hover {
+    background: rgba(255, 255, 255, 0.075);
+    transform: translateY(-2px);
+  }
+  .syn-logo-plate[data-flow="l"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(129, 184, 115, 0.28); }
+  .syn-logo-plate[data-flow="r"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(111, 168, 240, 0.28); }
+  .syn-logo-img { display: block; width: auto; pointer-events: none; }
+  .syn-logo-mandra { height: 52px; }
+  /* Логотип Ribas у вихідному файлі темно-синій (#1C325F) — на темному фоні
+     його просто не видно, тож виводимо в чистий білий тим самим прийомом,
+     що й у стрічці партнерів. */
+  .syn-logo-ribas { height: 44px; filter: brightness(0) invert(1); }
+
+  /* Центральна колонка */
   .synergy-center-col {
     display: flex;
     flex-direction: column;
@@ -3094,39 +3172,90 @@
     justify-content: center;
     position: relative;
   }
-  .synergy-visual-box {
+  .synergy-flow {
     width: 100%;
-    max-width: 980px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: clamp(300px, 26vw, 430px);
   }
-  .synergy-render-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    /* multiply був потрібен, поки секція була біла й рендер лежав на білому.
-       Тепер фон темний, а в рендера вирізана підкладка — змішування вбивало б
-       картинку в чорноту. */
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* overflow visible — кінці ліній навмисне виходять за рамку центральної
+     колонки й дотикаються до плашок з логотипами в сусідніх колонках */
+  .syn-flow-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+  /* Три шари на кожній лінії: ледь помітна основа, бігучий штрихпунктир
+     і короткий імпульс, що виїжджає з плашки на ховері. */
+  .syn-base  { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1.5; }
+  .syn-dash  { stroke-width: 2; stroke-linecap: round; stroke-dasharray: 13 7 3 7; }
+  .syn-pulse { stroke-width: 3.2; stroke-linecap: round; opacity: 0; }
+
+  .syn-line[data-line="l"] .syn-dash  { stroke: #81B873; }
+  .syn-line[data-line="l"] .syn-pulse { stroke: #C3F0B3; }
+  .syn-line[data-line="r"] .syn-dash  { stroke: #6FA8F0; }
+  .syn-line[data-line="r"] .syn-pulse { stroke: #C6DEFF; }
+  .syn-line[data-line="d"] .syn-dash  { stroke: #F0C85A; stroke-width: 2.6; filter: url(#synGlowGold); }
+  .syn-line[data-line="d"] .syn-pulse { stroke: #FFF0C0; }
+
+  .syn-node-halo { opacity: 0.5; }
+  .syn-node-ring { stroke: rgba(233, 190, 74, 0.55); stroke-width: 1.4; }
+  .syn-node-core { fill: #FFE9A8; filter: url(#synGlowGold); }
+
+  /* Долари летять уздовж ліній; позицію кожного щокадру ставить rAF */
+  .syn-glyph {
+    font-family: var(--title-font);
+    font-size: 15px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
   }
-  .synergy-render-img:hover {
-    transform: scale(1.02);
+  .syn-glyph.g-l { fill: #9FD98E; }
+  .syn-glyph.g-r { fill: #8FBEF7; }
+  .syn-glyph.g-d { fill: #F2CE6A; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .syn-glyphs { display: none; }
+    .syn-dash { stroke-dashoffset: 0 !important; }
   }
 
   /* Архітектурна метрика Інвестора (без AI-плашки-пігулки) */
   .synergy-investor-stat {
-    margin-top: 64px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     position: relative;
     z-index: 3;
-    padding: 0 16px;
-    transition: transform 0.35s ease;
+    padding: 24px 32px 26px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 18px 44px rgba(0, 0, 0, 0.34);
+    transition: transform 0.35s ease, box-shadow 0.45s ease;
+  }
+  .synergy-investor-stat::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  /* Спалах, коли в плашку падає черговий долар */
+  .synergy-investor-stat.is-hit {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 18px 44px rgba(0, 0, 0, 0.34),
+      0 0 34px rgba(233, 190, 74, 0.30);
   }
   .synergy-investor-stat:hover {
     transform: translateY(-2px);
@@ -3224,15 +3353,125 @@
   }
 
   /* ============================================================
+     ЕКРАН 9 — СЛАЙДЕР ВІДГУКІВ
+     Жодних рамок і підкладок: лапка, текст і дві стрілки просто на фоні.
+     ============================================================ */
+  .ph1-reviews {
+    display: grid;
+    grid-template-columns: 30px 1fr 30px;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin: clamp(22px, 2.4vw, 36px) 0 clamp(20px, 2.2vw, 32px);
+  }
+  .ph1-rev-arrow {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.38);
+    transition: color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ph1-rev-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .ph1-rev-arrow:hover { color: #81B873; }
+  .ph1-rev-prev:hover { transform: translateX(-3px); }
+  .ph1-rev-next:hover { transform: translateX(3px); }
+
+  .ph1-rev-stage { position: relative; text-align: center; }
+  /* Підпис у стилі тега «ІНВЕСТОР» — сайт уже говорить цією мовою, тож
+     блок одразу читається як відгук, а не як просто курсив. */
+  .ph1-rev-tag {
+    font-family: var(--title-font);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #81B873;
+    margin-bottom: clamp(10px, 1.2vw, 16px);
+  }
+  /* Лапка пішла за текст водяним знаком: підказує жанр, але не претендує
+     на роль окремого елемента. */
+  .ph1-rev-quote {
+    position: absolute;
+    top: clamp(14px, 1.8vw, 26px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--title-font);
+    font-size: clamp(6rem, 8vw, 9rem);
+    line-height: 0.8;
+    color: rgba(129, 184, 115, 0.10);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .ph1-rev-track { position: relative; z-index: 1; }
+  .ph1-rev-foot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: clamp(14px, 1.6vw, 22px);
+    font-family: var(--sub-font);
+    font-size: 0.82rem;
+  }
+  .ph1-rev-stars { color: #E9BE4A; letter-spacing: 0.12em; font-size: 0.76rem; }
+  .ph1-rev-src { color: rgba(255, 255, 255, 0.42); }
+  .ph1-rev-count { color: rgba(255, 255, 255, 0.30); font-variant-numeric: tabular-nums; }
+  .ph1-rev-count b { color: rgba(255, 255, 255, 0.72); font-weight: 700; }
+  /* Обидва відгуки лежать один на одному, тому висота не стрибає при зміні */
+  .ph1-rev-track { position: relative; }
+  .ph1-rev-item {
+    margin: 0;
+    max-width: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ph1-rev-item:not(.is-on) { position: absolute; inset: 0; }
+  .ph1-rev-item.is-on { opacity: 1; visibility: visible; transform: none; position: relative; }
+  .ph1-rev-item p {
+    font-family: var(--sub-font);
+    /* Курсив того самого шрифта — відгук читається як пряма мова гостя */
+    font-style: italic;
+    font-size: clamp(0.9rem, 0.98vw, 1.04rem);
+    font-weight: 500;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.76);
+    margin: 0 0 9px;
+  }
+  .ph1-rev-item p:last-child { margin-bottom: 0; }
+
+
+  @media (max-width: 900px) {
+    .ph1-reviews { grid-template-columns: 24px 1fr 24px; gap: 4px; }
+    .ph1-rev-arrow { width: 24px; height: 24px; }
+    .ph1-rev-arrow svg { width: 18px; height: 18px; }
+  }
+
+  /* ============================================================
      ЕКРАН 9 — ПЕРША ЧЕРГА MANDRA PETRICHOR УЖЕ ПРАЦЮЄ
      Глибокий темний фон (#0B0F0C), оливкові акценти NUMO (#81B873),
      4 метрики в рядок + спліт сенсів/відгуків та 16:9 відеоплеєр
      ============================================================ */
+  /* Наїжджає слоєм поверх примерзлої синергії — звідси z-index і скруглені
+     верхні кути, як у маніфесту над героєм. */
   .section-phase1-live {
+    position: relative;
+    z-index: 3;
+    /* На стику секція стає в нуль вікна, а шапка фіксована й накриває верх —
+       додаємо її висоту до верхнього паддінгу, щоб заголовок не заїжджав. */
+    scroll-margin-top: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     background-color: #121212;
     background-image: 
       radial-gradient(circle at 82% 18%, rgba(129, 184, 115, 0.06) 0%, transparent 55%);
-    padding: 96px 5vw 70px;
+    padding: calc(96px + clamp(64px, 5.5vw, 84px)) 5vw 70px;
     width: 100%;
     position: relative;
     box-sizing: border-box;
@@ -4928,7 +5167,7 @@
 
     <!-- LIQUID GLASS MENU CAPSULE WITH PADDING -->
     <nav class="nav-menu" aria-label="Основне меню навігації">
-      <a class="nav-link" href="#petrichor">MANDRA PETRICOR</a>
+      <a class="nav-link" href="#petrichor">MANDRA PETRICHOR</a>
       <a class="nav-link" href="#infrastructure">ІНФРАСТРУКТУРА</a>
       <a class="nav-link" href="#map">ІНТЕРАКТИВНА МАПА</a>
       <a class="nav-link" href="#construction">БУДІВНИЦТВО</a>
@@ -5141,7 +5380,7 @@
 
       <!-- Ліва колонка: інформація за макетом (без плашки зверху) -->
       <div class="stats-col-info">
-        <h2 class="stats-title" id="stTitle">Мандра Інвест в цифрах</h2>
+        <h2 class="stats-title" id="stTitle">Mandra Invest в цифрах</h2>
         <div class="stats-title-line"></div>
         <p class="stats-desc" id="stDesc">
           Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. 
@@ -5242,7 +5481,7 @@
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
-        <h2 class="mp-float-title" id="mpTitle">Інвест проект Мандра Петрікор</h2>
+        <h2 class="mp-float-title" id="mpTitle">Інвест проект Mandra Petrichor</h2>
         <div class="mp-float-line"></div>
         <h3 class="mp-float-subtitle" id="mpSubtitle">Один комплекс. Три різні концепції відпочинку.</h3>
         <p class="mp-float-desc" id="mpDesc">
@@ -5276,7 +5515,7 @@
        ============================================================ -->
   <section class="section-partners" id="partners">
     <div class="partners-top-container">
-      <h2 class="partners-title" id="partnersTitle">Партнери Мандра Інвест</h2>
+      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
     </div>
 
     <!-- Нескінченна біжуча стрічка логотипів -->
@@ -5413,6 +5652,7 @@
        ЕКРАН 8 — СИНЕРГІЯ ПАРТНЕРСТВА ТА ДОХІДНІСТЬ ІНВЕСТОРА
        Mandra Invest (Девелопер) + 3D Архітектурний стіл + Ribas Hotels Group (Оператор)
        ============================================================ -->
+  <div class="synergy-stage">
   <section class="section-synergy" id="synergy">
     <div class="synergy-container">
       
@@ -5422,6 +5662,9 @@
         
         <!-- ЛІВА КОЛОНКА: ДЕВЕЛОПЕР (Mandra Invest) -->
         <div class="synergy-side-col developer-col">
+          <div class="syn-logo-plate" data-flow="l">
+            <img src="assets/logo_m_invest_clean.webp?v=2" alt="Mandra Invest" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
+          </div>
           <h3 class="synergy-col-title" id="synDevTitle">Mandra Invest</h3>
           <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
           <div class="synergy-card-divider"></div>
@@ -5436,15 +5679,58 @@
 
         <!-- ЦЕНТРАЛЬНА КОЛОНКА: 3D АРХІТЕКТУРНИЙ СТІЛ + ПОТОКИ МОНЕТ -->
         <div class="synergy-center-col">
-          <div class="synergy-visual-box">
-            <img src="assets/infographic/resort_table_gold_flow_cut.webp" 
-                 alt="Mandra Petrichor 3D Архітектурна модель та інвестиційні потоки" 
-                 class="synergy-render-img" 
-                 loading="lazy" decoding="async">
+          <!-- Схема потоку: два бренди -> вузол злиття -> капітал інвестора.
+               Усе векторне: штрихпунктир біжить через stroke-dashoffset, долари
+               рухає rAF по getPointAtLength, тому швидкість можна плавно
+               підганяти на ховері без ривка. -->
+          <div class="synergy-flow" id="synFlow">
+            <svg class="syn-flow-svg" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <filter id="synGlowGold" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="2.6" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <radialGradient id="synNodeCore">
+                  <stop offset="0%" stop-color="#FFF3CE"/>
+                  <stop offset="55%" stop-color="#E9BE4A"/>
+                  <stop offset="100%" stop-color="#E9BE4A" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <path id="synPathL" fill="none"/>
+              <path id="synPathR" fill="none"/>
+              <path id="synPathD" fill="none"/>
+
+              <g class="syn-line" data-line="l">
+                <use href="#synPathL" class="syn-base"/>
+                <use href="#synPathL" class="syn-dash"/>
+                <use href="#synPathL" class="syn-pulse"/>
+              </g>
+              <g class="syn-line" data-line="r">
+                <use href="#synPathR" class="syn-base"/>
+                <use href="#synPathR" class="syn-dash"/>
+                <use href="#synPathR" class="syn-pulse"/>
+              </g>
+              <g class="syn-line" data-line="d">
+                <use href="#synPathD" class="syn-base"/>
+                <use href="#synPathD" class="syn-dash"/>
+                <use href="#synPathD" class="syn-pulse"/>
+              </g>
+
+              <!-- Вузол злиття -->
+              <g class="syn-node" id="synNode">
+                <circle class="syn-node-halo" r="34" fill="url(#synNodeCore)"/>
+                <circle class="syn-node-ring" r="19" fill="none"/>
+                <circle class="syn-node-ring syn-node-ring-2" r="19" fill="none"/>
+                <circle class="syn-node-core" r="6.5"/>
+              </g>
+
+              <g class="syn-glyphs" id="synGlyphs"></g>
+            </svg>
           </div>
-          
+
           <!-- Архітектурна метрика Інвестора (без AI-плашки-пігулки) -->
-          <div class="synergy-investor-stat">
+          <div class="synergy-investor-stat" id="synInvestorPlate">
             <div class="investor-stat-header">
               <span class="investor-stat-tag" id="synInvBadge">ІНВЕСТОР</span>
             </div>
@@ -5458,6 +5744,9 @@
 
         <!-- ПРАВА КОЛОНКА: ГОТЕЛЬНЕ УПРАВЛІННЯ (Ribas Hotels Group) -->
         <div class="synergy-side-col operator-col">
+          <div class="syn-logo-plate" data-flow="r">
+            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="syn-logo-img syn-logo-ribas" loading="lazy" decoding="async">
+          </div>
           <h3 class="synergy-col-title" id="synRibasTitle">Ribas Hotels Group</h3>
           <div class="synergy-col-subtitle" id="synRibasSubtitle">Готельне управління</div>
           <div class="synergy-card-divider"></div>
@@ -5473,6 +5762,9 @@
       </div>
     </div>
   </section>
+
+  <!-- Хід скролу, на якому синергія стоїть примерзла, а екран 9 ще не поїхав -->
+  <div class="synergy-hold" aria-hidden="true"></div>
 
   <!-- ============================================================
        ЕКРАН 9 — ПЕРША ЧЕРГА MANDRA PETRICHOR УЖЕ ПРАЦЮЄ
@@ -5519,11 +5811,42 @@
         <div class="phase1-text-col">
           <div class="phase1-paragraphs">
             <p class="phase1-body-p" id="ph1P1">
-              Нові черги розвиваються всередині вже працюючої екосистеми. Досвід першої черги дає нам можливість бачити реальну поведінку гостей, аналізувати попит, вдосконалювати сервіс і використовувати отримані дані при створенні другої та третьої черг.
+              Нові черги ростуть усередині вже працюючої екосистеми: реальна поведінка гостей і попит підказують, якою робити другу й третю чергу.
             </p>
             <p class="phase1-body-p" id="ph1P2">
-              Саме тому Mandra Petrichor розвивається не як три окремі проєкти, а як один великий заміський комплекс із різними концепціями відпочинку.
+              Тому Mandra Petrichor — не три окремі проєкти, а один комплекс із різними сценаріями відпочинку.
             </p>
+          </div>
+
+              <!-- Відгуки гостей: між текстом і плашками рейтингів. Без рамок — лапка, курсив і дві стрілки -->
+          <div class="ph1-reviews" id="ph1Reviews">
+            <button class="ph1-rev-arrow ph1-rev-prev" type="button" aria-label="Попередній відгук">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+            </button>
+
+            <div class="ph1-rev-stage">
+              <div class="ph1-rev-tag" id="ph1RevTag">Відгуки гостей</div>
+              <span class="ph1-rev-quote" aria-hidden="true">&ldquo;</span>
+              <div class="ph1-rev-track">
+                <blockquote class="ph1-rev-item is-on">
+                  <p>Шукали тихе й затишне місце для відпочинку — і залишилися в повному захваті! Будинки нові, ідеально чисті, з якісною білизною та продуманими дрібницями. Сервіс і клієнтоорієнтованість — на найвищому рівні. Персонал дуже душевний та уважний.</p>
+                  <p>Окремо дякуємо за теплий басейн, тишу без гучних компаній і можливість скористатися пізнім виїздом. Обов'язково повернемося ще! 🤍</p>
+                </blockquote>
+                <blockquote class="ph1-rev-item">
+                  <p>Станом на липень 2026 це одне з найкращих місць для тих, хто прагне тиші, природи, басейну, чану та відпочинку без натовпу й шуму. Це про спокій, а не про алкоголь чи гучні вечірки.</p>
+                  <p>Окрема подяка сучасному та уважному персоналу — хлопці й дівчата працюють як бджілки та миттєво реагують на будь-яке прохання. Бажаємо зберегти цю концепцію та першозданний затишок і надалі!</p>
+                </blockquote>
+              </div>
+              <div class="ph1-rev-foot">
+                <span class="ph1-rev-stars" aria-hidden="true">★★★★★</span>
+                <span class="ph1-rev-src" id="ph1RevSrc">Реальні гості комплексу</span>
+                <span class="ph1-rev-count"><b id="ph1RevNum">1</b> / 2</span>
+              </div>
+            </div>
+
+            <button class="ph1-rev-arrow ph1-rev-next" type="button" aria-label="Наступний відгук">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+            </button>
           </div>
 
           <!-- 2 картки відгуків Google та Booking.com -->
@@ -5542,8 +5865,8 @@
 
             <div class="phase1-trust-card">
               <div class="trust-header">
-                <span class="trust-brand" style="color: #003580;">
-                  <span style="background: #003580; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.76rem; font-weight: 900;">B.</span>
+                <span class="trust-brand" style="color: #FFFFFF;">
+                  <span style="background: #FFFFFF; color: #003580; padding: 2px 6px; border-radius: 4px; font-size: 0.76rem; font-weight: 900;">B.</span>
                   Booking.com
                 </span>
                 <span class="trust-stars">★★★★★</span>
@@ -5603,6 +5926,7 @@
       </div>
     </div>
   </section>
+  </div><!-- /.synergy-stage -->
 
   <!-- Модальне вікно перегляду відео курорту -->
   <div class="phase1-video-modal" id="phase1VideoModal" onclick="closePhase1Video(event)">
@@ -5998,7 +6322,7 @@
 
       <!-- Нижній інформаційний рядок за макетом (mockup_bottom.png) -->
       <div class="footer-bottom-row">
-        <div class="footer-copyright" id="footerCopyright">2016-2026 Мандра Інвест</div>
+        <div class="footer-copyright" id="footerCopyright">2016-2026 Mandra Invest</div>
         <div class="footer-credits">
           <a href="https://nextweb.ua" target="_blank" rel="noopener" class="footer-creator-link" id="footerCreator">Зроблено в некствеб</a>
         </div>
@@ -6535,7 +6859,7 @@
     /* BILINGUAL LANGUAGE SWITCHING (UA / EN) */
     const translations = {
       ua: {
-        navPetrichor: 'MANDRA PETRICOR',
+        navPetrichor: 'MANDRA PETRICHOR',
         navInfra: 'ІНФРАСТРУКТУРА',
         navMap: 'ІНТЕРАКТИВНА МАПА',
         navBuild: 'БУДІВНИЦТВО',
@@ -6579,7 +6903,7 @@
         mfP4Desc: "Супровід від вибору об'єкта до стабільного доходу",
 
         /* ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ */
-        stTitle: 'Мандра Інвест в цифрах',
+        stTitle: 'Mandra Invest в цифрах',
         stDesc: 'Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. Показники поруч демонструють реальну динаміку розвитку компанії та стабільний попит на наші проєкти.',
         stCtaText: 'Дізнатися більше',
         st1Text: 'Гектари власної заповідної території в Карпатах з термальним SPA та басейнами',
@@ -6590,7 +6914,7 @@
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
         mpEyebrow: 'МАСШТАБ MANDRA PETRICHOR',
-        mpTitle: 'Інвест проєкт Мандра Петрікор',
+        mpTitle: 'Інвест проєкт Mandra Petrichor',
         mpSubtitle: 'Один комплекс. Три різні концепції відпочинку.',
         mpDesc: 'Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.',
         mpPhaseNum: 'III черга',
@@ -6609,7 +6933,7 @@
         mpTab3: '03 • III черга (Місце для побачень)',
         mpDivideBtnText: 'Розділити на 3 комплекси',
         /* ЕКРАН 6 — ПАРТНЕРИ */
-        partnersTitle: 'Партнери Мандра Інвест',
+        partnersTitle: 'Партнери Mandra Invest',
         /* ЕКРАН 7 — ЗАСНОВНИКИ */
         foundersHeroText: 'Власний інвестиційний проєкт від засновників Mandra Moments та Ribas Hotels Group',
         founderName1: 'Артур Лупашко',
@@ -6649,8 +6973,8 @@
         ph1M3Desc: 'вже прийняв комплекс',
         ph1M4Val: '25%',
         ph1M4Desc: 'повторних бронювань',
-        ph1P1: 'Нові черги розвиваються всередині вже працюючої екосистеми. Досвід першої черги дає нам можливість бачити реальну поведінку гостей, аналізувати попит, вдосконалювати сервіс і використовувати отримані дані при створенні другої та третьої черг.',
-        ph1P2: 'Саме тому Mandra Petrichor розвивається не як три окремі проєкти, а як один великий заміський комплекс із різними концепціями відпочинку.',
+        ph1P1: 'Нові черги ростуть усередині вже працюючої екосистеми: реальна поведінка гостей і попит підказують, якою робити другу й третю чергу.',
+        ph1P2: 'Тому Mandra Petrichor — не три окремі проєкти, а один комплекс із різними сценаріями відпочинку.',
         ph1GoogleVal: '1 200',
         ph1GoogleSub: 'відгуків Google • 4.9 ★',
         ph1BookingVal: '125',
@@ -6718,11 +7042,11 @@
         fnFaq: 'FAQ',
         fnContacts: 'Контакти',
         footerCol2Title: 'Проект Mandra Petrichor',
-        footerCopyright: '2016-2026 Мандра Інвест',
+        footerCopyright: '2016-2026 Mandra Invest',
         footerCreator: 'Зроблено в некствеб'
       },
       en: {
-        navPetrichor: 'MANDRA PETRICOR',
+        navPetrichor: 'MANDRA PETRICHOR',
         navInfra: 'INFRASTRUCTURE',
         navMap: 'INTERACTIVE MAP',
         navBuild: 'CONSTRUCTION',
@@ -6836,7 +7160,7 @@
         ph1M3Desc: 'guests hosted to date',
         ph1M4Val: '25%',
         ph1M4Desc: 'repeat bookings rate',
-        ph1P1: 'Subsequent phases expand within an established, revenue-generating ecosystem. Operational data from Phase I grants real-world behavioral insights, enabling continuous service refinement and data-driven scaling for Phases II & III.',
+        ph1P1: 'Later phases grow inside an ecosystem that already earns: real guest behaviour and demand shape phases II and III.',
         ph1P2: 'Consequently, Mandra Petrichor evolves not as fragmented developments, but as a cohesive mountain destination with differentiated hospitality storylines.',
         ph1GoogleVal: '1,200',
         ph1GoogleSub: 'Google reviews • 4.9 ★',
@@ -6943,7 +7267,7 @@
       const t = translations[lang];
       const navLinks = document.querySelectorAll('.top-navbar .nav-link');
       if (navLinks.length >= 5) {
-        navLinks[0].textContent = t.navPetrichor || 'MANDRA PETRICOR';
+        navLinks[0].textContent = t.navPetrichor || 'MANDRA PETRICHOR';
         navLinks[1].textContent = t.navInfra;
         navLinks[2].textContent = t.navMap;
         navLinks[3].textContent = t.navBuild;
@@ -7458,6 +7782,35 @@
           return;
         }
 
+        /* 5. Стик синергія -> екран 9: один рух колеса, і наступний екран
+           спокійно залітає поверх примерзлої синергії. Через ту саму
+           Lenis-анімацію, що й решта стиків на сайті. */
+        const syn = document.getElementById('synergy');
+        const ph1 = document.getElementById('phase1-live');
+        if (syn && ph1 && window.innerWidth > 900) {
+          const ph1Top = ph1.getBoundingClientRect().top + window.scrollY;
+          const coverY = Math.round(ph1Top);
+          /* Синергія sticky: її getBoundingClientRect().top під час примерзання
+             дорівнює нулю, тож "top + scrollY" давав поточний скрол, а не місце
+             в потоці — перший стик просто ніколи не спрацьовував. Точку відліку
+             беремо в обгортки, вона не липка. */
+          const stage = syn.closest('.synergy-stage');
+          const synTop = stage
+            ? stage.getBoundingClientRect().top + window.scrollY
+            : syn.offsetTop;
+
+          if (e.deltaY > 6 && scrollY > synTop + 40 && scrollY < coverY - 40) {
+            e.stopImmediatePropagation(); e.preventDefault();
+            scrollToShowcasePos(coverY, SHOWCASE_SNAP_DURATION);
+            return;
+          }
+          if (e.deltaY < -6 && scrollY <= coverY + 40 && scrollY > synTop + 40) {
+            e.stopImmediatePropagation(); e.preventDefault();
+            scrollToShowcasePos(Math.max(0, synTop), SHOWCASE_SNAP_DURATION);
+            return;
+          }
+        }
+
         const scPos = getShowcasePositions();
         if (scPos) {
           /* 3. Користувач на зібраній сітці: наступний скрол вниз розводить картки
@@ -7670,6 +8023,263 @@
       }, 12000);
 
       return gate;
+    })();
+
+    /* ============================================================
+       ЕКРАН 8 — АНІМАЦІЯ ПОТОКУ
+       Один rAF на всю схему. Швидкість кожної лінії — величина, яку ми
+       плавно підганяємо до цільової, тому ховер прискорює рух без ривка
+       (animation-duration так не вміє: він перезапускає цикл).
+       Крутиться тільки поки секція у кадрі.
+       ============================================================ */
+    /* ============================================================
+       ЕКРАН 9 — ЛІЧИЛЬНИКИ МЕТРИК І СЛАЙДЕР ВІДГУКІВ
+       ============================================================ */
+    (function initPhase1Extras() {
+      /* Лічильники: число з розмітки лишається в HTML (щоб без JS теж читалось),
+         а звідти ж і беремо ціль — префікси на кшталт "%" та нерозривні пробіли
+         в "2 938" зберігаємо як є. */
+      const vals = Array.prototype.slice.call(document.querySelectorAll('.phase1-metric-val'));
+      if (vals.length) {
+        const items = vals.map(function (el) {
+          const raw = el.textContent.trim();
+          const num = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+          const suffix = raw.replace(/[0-9\s ]/g, '');
+          const grouped = /[\s ]/.test(raw);
+          return { el: el, target: isNaN(num) ? 0 : num, suffix: suffix, grouped: grouped, raw: raw };
+        });
+        const fmt = function (n, it) {
+          const t = it.grouped ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : String(n);
+          return t + it.suffix;
+        };
+        items.forEach(function (it) { it.el.textContent = fmt(0, it); });
+
+        const roll = function (it, dur, delay) {
+          const t0 = performance.now() + delay;
+          (function step(now) {
+            const e = now - t0;
+            if (e < 0) return requestAnimationFrame(step);
+            const p = Math.min(1, e / dur);
+            const ease = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+            it.el.textContent = fmt(Math.round(ease * it.target), it);
+            if (p < 1) requestAnimationFrame(step);
+            else it.el.textContent = it.raw;
+          })(performance.now());
+        };
+
+        const grid = document.querySelector('.phase1-metrics-grid');
+        if (grid && 'IntersectionObserver' in window) {
+          const io = new IntersectionObserver(function (en) {
+            if (!en.some(function (e) { return e.isIntersecting; })) return;
+            io.disconnect();
+            items.forEach(function (it, i) { roll(it, 900, i * 110); });
+          }, { threshold: 0.35 });
+          io.observe(grid);
+        } else {
+          items.forEach(function (it) { it.el.textContent = it.raw; });
+        }
+      }
+
+      /* Слайдер відгуків */
+      const rev = document.getElementById('ph1Reviews');
+      if (!rev) return;
+      const slides = Array.prototype.slice.call(rev.querySelectorAll('.ph1-rev-item'));
+      if (slides.length < 2) return;
+      let cur = 0;
+
+      const num = document.getElementById('ph1RevNum');
+      function show(i) {
+        cur = (i + slides.length) % slides.length;
+        slides.forEach(function (s, n) { s.classList.toggle('is-on', n === cur); });
+        if (num) num.textContent = String(cur + 1);
+      }
+      rev.querySelector('.ph1-rev-prev').addEventListener('click', function () { show(cur - 1); });
+      rev.querySelector('.ph1-rev-next').addEventListener('click', function () { show(cur + 1); });
+      rev.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') show(cur - 1);
+        if (e.key === 'ArrowRight') show(cur + 1);
+      });
+    })();
+
+    (function initSynergyFlow() {
+      const host = document.getElementById('synFlow');
+      if (!host) return;
+      const svg = host.querySelector('.syn-flow-svg');
+      const glyphLayer = document.getElementById('synGlyphs');
+      const plate = document.getElementById('synInvestorPlate');
+      if (!svg || !glyphLayer) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const NS = 'http://www.w3.org/2000/svg';
+      const defs = [
+        { key: 'l', path: 'synPathL', base: 46, count: 5, cls: 'g-l' },
+        { key: 'r', path: 'synPathR', base: 46, count: 5, cls: 'g-r' },
+        { key: 'd', path: 'synPathD', base: 62, count: 6, cls: 'g-d' }
+      ];
+
+      const lines = defs.map(function (d) {
+        const path = document.getElementById(d.path);
+        const dash = svg.querySelector('[data-line="' + d.key + '"] .syn-dash');
+        const pulse = svg.querySelector('[data-line="' + d.key + '"] .syn-pulse');
+        const glyphs = [];
+        for (let i = 0; i < d.count; i++) {
+          const t = document.createElementNS(NS, 'text');
+          t.setAttribute('class', 'syn-glyph ' + d.cls);
+          t.textContent = '$';
+          glyphLayer.appendChild(t);
+          glyphs.push(t);
+        }
+        const jit = glyphs.map(function () {
+          return { sp: 0.78 + Math.random() * 0.22, amp: 2 + Math.random() * 4,
+                   ph: Math.random() * 6.28, sc: (0.82 + Math.random() * 0.42).toFixed(2) };
+        });
+        return {
+          key: d.key, path: path, len: 1, dash: dash, pulse: pulse,
+          glyphs: glyphs, jit: jit, gap: 1, count: d.count,
+          speed: d.base, baseSpeed: d.base, target: d.base,
+          phase: 0, pulseT: 1
+        };
+      });
+
+      /* Геометрію рахуємо з реальних прямокутників плашок, а не зашиваємо в d:
+         інакше лінія тримається лише на тій ширині вікна, де її підганяли.
+         viewBox беремо рівним пікселям сцени, тож одна одиниця = один піксель. */
+      const plateL = document.querySelector('.syn-logo-plate[data-flow="l"]');
+      const plateR = document.querySelector('.syn-logo-plate[data-flow="r"]');
+      const node = document.getElementById('synNode');
+
+      function layout() {
+        const box = svg.getBoundingClientRect();
+        if (!box.width || !box.height) return;
+        svg.setAttribute('viewBox', '0 0 ' + box.width.toFixed(1) + ' ' + box.height.toFixed(1));
+
+        const pl = plateL.getBoundingClientRect();
+        const pr = plateR.getBoundingClientRect();
+        const lx = pl.right - box.left, ly = pl.top + pl.height / 2 - box.top;
+        const rx = pr.left  - box.left, ry = pr.top + pr.height / 2 - box.top;
+
+        const nx = box.width / 2;
+        const ny = Math.max(ly, ry) + Math.min(150, box.height * 0.32);
+
+        const bend = Math.max(60, (nx - lx) * 0.45);
+        document.getElementById('synPathL').setAttribute('d',
+          'M ' + lx + ' ' + ly + ' C ' + (lx + bend) + ' ' + ly + ' ' + (nx - bend * 0.55) + ' ' + ny + ' ' + nx + ' ' + ny);
+        document.getElementById('synPathR').setAttribute('d',
+          'M ' + rx + ' ' + ry + ' C ' + (rx - bend) + ' ' + ry + ' ' + (nx + bend * 0.55) + ' ' + ny + ' ' + nx + ' ' + ny);
+
+        let endY = box.height;
+        if (plate) {
+          const pi = plate.getBoundingClientRect();
+          endY = pi.top - box.top - 12;
+        }
+        document.getElementById('synPathD').setAttribute('d',
+          'M ' + nx + ' ' + (ny + 20) + ' L ' + nx + ' ' + Math.max(ny + 60, endY));
+
+        node.setAttribute('transform', 'translate(' + nx + ' ' + ny + ')');
+
+        lines.forEach(function (l) {
+          l.len = l.path.getTotalLength() || 1;
+          l.gap = l.len / l.count;
+          l.pulse.style.strokeDasharray = '26 ' + (l.len + 26);
+          if (l.phase > l.len) l.phase = 0;
+        });
+      }
+      layout();
+      let relayout = 0;
+      window.addEventListener('resize', function () {
+        clearTimeout(relayout);
+        relayout = setTimeout(layout, 120);
+      });
+
+      const byKey = {};
+      lines.forEach(function (l) { byKey[l.key] = l; });
+
+      /* Ховер по плашці: лінія прискорюється і з неї виїжджає імпульс.
+         Золота гілка підхоплює обидві — капітал унизу спільний. */
+      document.querySelectorAll('.syn-logo-plate').forEach(function (el) {
+        const k = el.dataset.flow;
+        el.addEventListener('mouseenter', function () {
+          const l = byKey[k]; if (!l) return;
+          l.target = l.baseSpeed * 2.3;
+          l.pulseT = 0;
+          byKey.d.target = byKey.d.baseSpeed * 1.7;
+        });
+        el.addEventListener('mouseleave', function () {
+          const l = byKey[k]; if (!l) return;
+          l.target = l.baseSpeed;
+          byKey.d.target = byKey.d.baseSpeed;
+        });
+      });
+
+      let last = 0, running = false, raf = 0, hitAt = 0, nodeT = 0;
+      const ringA = svg.querySelector('.syn-node-ring');
+      const ringB = svg.querySelector('.syn-node-ring-2');
+      const core  = svg.querySelector('.syn-node-core');
+
+      function frame(now) {
+        const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+        last = now;
+
+        /* Вузол дихає в такт: кільце розходиться і тане, ядро ледь пульсує */
+        nodeT = (nodeT + dt / 2.4) % 1;
+        const ring = 1 + nodeT * 1.5;
+        ringA.setAttribute('transform', 'scale(' + ring.toFixed(3) + ')');
+        ringA.setAttribute('opacity', (1 - nodeT).toFixed(2));
+        const ring2 = 1 + ((nodeT + 0.5) % 1) * 1.5;
+        ringB.setAttribute('transform', 'scale(' + ring2.toFixed(3) + ')');
+        ringB.setAttribute('opacity', (1 - ((nodeT + 0.5) % 1)).toFixed(2));
+        core.setAttribute('r', (6.5 + Math.sin(nodeT * 6.28) * 0.9).toFixed(2));
+
+        for (let i = 0; i < lines.length; i++) {
+          const l = lines[i];
+          l.speed += (l.target - l.speed) * Math.min(1, dt * 4.5);
+          l.phase = (l.phase + l.speed * dt) % l.len;
+
+          l.dash.style.strokeDashoffset = (-l.phase).toFixed(2);
+
+          for (let g = 0; g < l.glyphs.length; g++) {
+            const j = l.jit[g];
+            let dist = (l.phase * j.sp + g * l.gap) % l.len;
+            const pt = l.path.getPointAtLength(dist);
+            const el = l.glyphs[g];
+            /* Легке бічне похитування і різний розмір — інакше знаки йдуть
+               рівним стовпчиком, як лінійка, а не сиплються. */
+            const sway = Math.sin(dist * 0.045 + j.ph) * j.amp;
+            el.setAttribute('transform',
+              'translate(' + (pt.x + sway).toFixed(1) + ' ' + pt.y.toFixed(1) + ') scale(' + j.sc + ')');
+            /* Тануть біля обох кінців, щоб не вигулькували з нізвідки */
+            const edge = Math.min(dist, l.len - dist) / 26;
+            el.setAttribute('opacity', Math.max(0, Math.min(1, edge)).toFixed(2));
+            /* Долар, що долетів донизу золотою гілкою, підсвічує плашку */
+            if (l.key === 'd' && dist > l.len - 8 && now - hitAt > 500 && plate) {
+              hitAt = now;
+              plate.classList.add('is-hit');
+              setTimeout(function () { plate.classList.remove('is-hit'); }, 420);
+            }
+          }
+
+          if (l.pulseT < 1) {
+            l.pulseT = Math.min(1, l.pulseT + dt / 0.85);
+            const e = 1 - Math.pow(1 - l.pulseT, 3);
+            l.pulse.style.strokeDashoffset = (-e * (l.len + 26)).toFixed(1);
+            l.pulse.style.opacity = Math.sin(Math.PI * l.pulseT).toFixed(2);
+          } else if (l.pulse.style.opacity !== '0') {
+            l.pulse.style.opacity = '0';
+          }
+        }
+        raf = requestAnimationFrame(frame);
+      }
+
+      function start() { if (running) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
+      function stop() { if (!running) return; running = false; cancelAnimationFrame(raf); }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) {
+          en.forEach(function (e) { e.isIntersecting ? start() : stop(); });
+        }, { threshold: 0.05 }).observe(host);
+      } else {
+        start();
+      }
     })();
 
     (function initLazyShowcaseVideos() {
