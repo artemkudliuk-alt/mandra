@@ -4759,7 +4759,7 @@
     position: relative;
     background: linear-gradient(180deg, #0A0F0C 0%, #16301D 14%, #1A3521 40%, #142819 70%, #0E1B12 100%);
     color: #FFFFFF;
-    padding: clamp(190px, 17vw, 300px) 5vw 36px;
+    padding: clamp(420px, 34vw, 540px) 5vw 36px;
     z-index: 10;
     overflow: hidden;
     border-top: none;
@@ -4824,7 +4824,7 @@
   }
   .site-footer > *:not(.footer-veg) { position: relative; z-index: 4; }
   @media (max-width: 900px) {
-    .site-footer { padding-top: clamp(150px, 32vw, 220px); }
+    .site-footer { padding-top: clamp(260px, 66vw, 340px); }
     .footer-veg[data-veg="far"] {
       height: 240px;
       -webkit-mask-size: auto 100%;
@@ -4846,31 +4846,12 @@
     }
   }
 
-  /* Фоновий масивний водяний знак MANDRA INVEST (як RIBAS у кроках) */
-  .footer-bg-watermark {
-    position: absolute;
-    bottom: -1vw;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(5.5rem, 15vw, 18.5rem);
-    font-weight: 900;
-    line-height: 0.8;
-    letter-spacing: -0.035em;
-    color: rgba(255, 255, 255, 0.045);
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-    z-index: 1;
-    text-transform: uppercase;
-  }
-
   .footer-container {
     width: 100%;
     max-width: 1520px;
     margin: 0 auto;
     position: relative;
-    z-index: 2;
+    z-index: 4;
     padding: 0;
     box-sizing: border-box;
   }
@@ -5078,7 +5059,7 @@
       min-height: 380px;
     }
     .site-footer {
-      padding: 56px 5vw 28px;
+      padding: clamp(230px, 58vw, 300px) 5vw 28px;
     }
     .footer-top-row {
       flex-direction: column;
@@ -6192,7 +6173,7 @@
     <div class="footer-veg" data-veg="far" aria-hidden="true"></div>
     <div class="footer-veg" data-veg="accent" aria-hidden="true"></div>
     <div class="footer-veg" data-veg="near" aria-hidden="true"></div>
-    <div class="footer-bg-watermark">MANDRA INVEST</div>
+
     <div class="footer-container">
       
       <div class="footer-top-row">
@@ -6201,20 +6182,22 @@
           <h4 class="footer-col-title" id="footerCol1Title">Mandra Invest</h4>
           <ul class="footer-nav-list">
             <li><a href="#about" class="footer-nav-link" id="fnAbout">Про Mandra Invest</a></li>
-            <li><a href="#petrichor" class="footer-nav-link" id="fnPetrichor">Mandra Petrichor</a></li>
-            <li><a href="#petrichor" class="footer-nav-link" id="fnPhase2">II черга</a></li>
-            <li><a href="#petrichor" class="footer-nav-link" id="fnPhase3">III черга</a></li>
-            <li><a href="#invest-flow" class="footer-nav-link" id="fnBuild">Хід будівництва</a></li>
             <li><a href="#faq" class="footer-nav-link" id="fnFaq">FAQ</a></li>
             <li><a href="#contacts" class="footer-nav-link" id="fnContacts">Контакти</a></li>
           </ul>
         </div>
 
-        <!-- Колонка 2: Проект Mandra Petrichor (чистий заголовок за макетом) -->
+        <!-- Колонка 2: Проєкт Mandra Petrichor -->
         <div class="footer-col footer-col-2">
           <h4 class="footer-col-title">
-            <a href="#petrichor" class="footer-col-title-link" id="footerCol2Title">Проект Mandra Petrichor</a>
+            <a href="#petrichor" class="footer-col-title-link" id="footerCol2Title">Проєкт Mandra Petrichor</a>
           </h4>
+          <ul class="footer-nav-list">
+            <li><a href="#petrichor" class="footer-nav-link" id="fnPetrichor">Mandra Petrichor</a></li>
+            <li><a href="#petrichor" class="footer-nav-link" id="fnPhase2">II черга</a></li>
+            <li><a href="#petrichor" class="footer-nav-link" id="fnPhase3">III черга</a></li>
+            <li><a href="#invest-flow" class="footer-nav-link" id="fnBuild">Хід будівництва</a></li>
+          </ul>
         </div>
 
         <!-- Колонка 3: Контакти та мережі (без заголовку, строго за макетом) -->
