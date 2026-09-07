@@ -23,6 +23,43 @@
     font-weight: 700;
   }
 
+  /* ============================================================
+     ПРЕЛОАДЕР — контур логотипа, що наливається білим
+     ============================================================ */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: #0B0F0C;
+    display: grid;
+    place-items: center;
+    opacity: 1;
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #preloader.is-out { opacity: 0; pointer-events: none; }
+  #preloader.is-gone { display: none; }
+  .pl-mark {
+    width: clamp(170px, 20vw, 300px);
+    height: auto;
+    overflow: visible;
+  }
+  /* Контур: довжину задає JS через getTotalLength, звідси й малювання */
+  .pl-outline {
+    fill: none;
+    stroke: #FFFFFF;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    stroke-dashoffset: var(--pl-dash, 0);
+    stroke-dasharray: var(--pl-dash, 0);
+  }
+  .pl-fill { fill: #FFFFFF; }
+  /* Прямокутник обрізки рухає JS — анімувати атрибут y дешевше, ніж перемальовувати маску */
+  #plClipRect { transition: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pl-outline { stroke-dasharray: none; stroke-dashoffset: 0; }
+  }
+
   :root {
     --bg-dark: #121212;
     /* Bottom Button Color: Fresh Forest Sage #81B873 */
@@ -1334,7 +1371,7 @@
        статистика (вона їде 1:1 зі скролом і швидше не може) не встигала
        увійти в кадр до того, як картки зриваються з піна, і між секціями
        на мить лишався порожній екран. */
-    height: 489vh;
+    height: 572vh;
   }
   .showcase-sticky {
     position: sticky;
@@ -2437,6 +2474,86 @@
   }
   .mp-plan.is-hot { cursor: pointer; }
 
+  /* У спокої зони мовчать, і незрозуміло, що план інтерактивний. Тому по краю
+     кожної черги йде тонка світна кромка власного кольору.
+     Сам шар тримаємо на opacity 1 — картинка черги піксель у піксель збігається
+     з підкладкою, тож візуально нічого не змінює, зате drop-shadow світить на
+     повну силу. Якби гасили прозорість, разом з нею гасла б і тінь — саме через
+     це попередній варіант розпливався в ніщо.
+     Радіуси малі (2-9px), тож ореол лягає вузькою лінією по контуру, а не хмарою. */
+  /* Блимає ЛИШЕ прозорість, фільтр статичний.
+     Раніше кадри рухали радіуси трьох drop-shadow — браузер перераховував
+     дев'ять гаусових розмиттів по повнокадровій картинці на кожному кадрі,
+     і скрол через секцію відчутно смикався. Тепер тінь рахується один раз,
+     шар кешується, а анімація живе на композиторі.
+     Картинка черги збігається з підкладкою піксель у піксель, тож просідання
+     прозорості не змінює фото — гасне тільки ореол. */
+  @keyframes mpEdgeBlink {
+    0%, 100% { opacity: 0.62; }
+    46%      { opacity: 1;    }
+    54%      { opacity: 0.92; }
+  }
+  .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-zone {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px var(--mp-glow)) drop-shadow(0 0 6px var(--mp-glow)) drop-shadow(0 0 15px var(--mp-glow));
+    will-change: opacity;
+    animation: mpEdgeBlink 3.6s ease-in-out infinite;
+  }
+  .mp-zone[data-phase="1"] { --mp-glow: rgba(151, 214, 133, 1); animation-delay: 0s;    }
+  .mp-zone[data-phase="2"] { --mp-glow: rgba(112, 174, 255, 1); animation-delay: -1.2s; }
+  .mp-zone[data-phase="3"] { --mp-glow: rgba(255, 206, 82, 1);  animation-delay: -2.4s; }
+  @media (prefers-reduced-motion: reduce) {
+    .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-zone {
+      animation: none;
+      opacity: 0.9;
+    }
+  }
+
+  /* Адреса під текстом. Те саме скло, що й у карток екрана 4: напівпрозора
+     підкладка з блюром і градієнтна кромка через ::before з mask-composite. */
+  .mp-address {
+    position: relative;
+    display: inline-block;
+    margin-top: 1.6vw;
+    padding: 0.85vw 1.4vw;
+    border-radius: 10px;
+    background: rgba(16, 23, 18, 0.74);
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.30),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 44px rgba(0, 0, 0, 0.38);
+  }
+  .mp-address::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .mp-address span {
+    font-family: var(--sub-font);
+    font-size: 0.95vw;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  @media (max-width: 900px) {
+    .mp-address { margin-top: 18px; padding: 10px 16px; }
+    .mp-address span { font-size: 13px; }
+  }
+
   /* ПІДПИСИ ЧЕРГ НА ПЛАНІ.
      У спокої на плані лише три мітки: цифра і назва. Жодних підкладок —
      тільки вузька тінь, щоб літери відбились від фону. При наведенні мітка
@@ -2468,13 +2585,13 @@
     opacity: 1;
     transition: opacity 0.24s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  /* під курсором мітки не потрібні — їхню роль бере кружок */
-  .mp-plan.is-hot .mp-marker .mp-marker-inner { opacity: 0.16; }
+  /* під курсором ховається лише мітка активної черги — її роль бере кружок.
+     Сусідні лишаються на місці, інакше пропадала вся навігація по плану. */
   .mp-plan.is-hot .mp-marker.is-on .mp-marker-inner { opacity: 0; }
 
   .mp-mk-num {
     font-family: var(--title-font);
-    font-size: 2.7vw;
+    font-size: 3.51vw;
     font-weight: 800;
     line-height: 1;
     letter-spacing: 0.01em;
@@ -2482,23 +2599,23 @@
        тож заливка суцільна, а від фону відбиває те саме гало, що й назву */
     color: #FFFFFF;
     paint-order: stroke fill;
-    -webkit-text-stroke: 4px rgba(5, 11, 6, 0.6);
+    -webkit-text-stroke: 5.2px rgba(5, 11, 6, 0.6);
     text-shadow: 0 2px 8px rgba(5, 11, 6, 0.45);
   }
   .mp-mk-title {
     font-family: var(--title-font);
-    font-size: 1.22vw;
+    font-size: 1.59vw;
     font-weight: 700;
     line-height: 1.18;
     letter-spacing: -0.005em;
     color: #FFFFFF;
     margin: 0;
-    max-width: 11vw;
+    max-width: 14.3vw;
     /* Картографічне гало: обводка малюється ПІД заливкою, тож назовні
        виходить лише її половина — літера лишається чистою, а підкладка
        під текстом не потрібна взагалі. */
     paint-order: stroke fill;
-    -webkit-text-stroke: 3.4px rgba(5, 11, 6, 0.62);
+    -webkit-text-stroke: 4.4px rgba(5, 11, 6, 0.62);
     text-shadow: 0 1px 6px rgba(5, 11, 6, 0.5);
   }
 
@@ -2552,11 +2669,11 @@
 
   /* ============================================================
      ЕКРАН 6 — ПАРТНЕРИ МАНДРА ІНВЕСТ
-     Білий фон, заголовок, нескінченна рухома стрічка логотипів (hover: pause + scale)
+     Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
      ============================================================ */
   .section-partners {
-    background: #FFFFFF;
-    color: #0B110D;
+    background: #0B0F0C;
+    color: #FFFFFF;
     padding: 140px 5vw 160px;
     min-height: 65vh;
     display: flex;
@@ -2566,14 +2683,14 @@
     overflow: hidden;
     width: 100%;
     box-sizing: border-box;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
   .partners-top-container {
     width: 100%;
     max-width: 1520px;
     margin: 0 auto;
     padding: 0 0 50px;
-    text-align: left;
+    text-align: center;
     box-sizing: border-box;
   }
   .partners-title {
@@ -2582,9 +2699,9 @@
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.02em;
-    color: #0E1611;
+    color: #FFFFFF;
     margin: 0;
-    text-align: left;
+    text-align: center;
   }
 
   /* Стрічка біжучого рядка логотипів */
@@ -2622,19 +2739,48 @@
     100% { transform: translate3d(-33.333333%, 0, 0); }
   }
 
-  /* Логотипи: розміри, відступи, плавний скейл при ховері */
+  /* Логотипи в скляних плашках — те саме скло, що в картках екрана 4
+     і в адресі на генплані: підкладка з блюром плюс градієнтна кромка. */
   .partner-logo-box {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 110px;
-    padding: 0 10px;
+    min-width: 210px;
+    padding: 0 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 18px 44px rgba(0, 0, 0, 0.34);
     cursor: pointer;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.3s ease,
+                opacity 0.3s ease;
     opacity: 0.88;
   }
+  .partner-logo-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(148deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.13) 34%,
+      rgba(255, 255, 255, 0.04) 62%,
+      rgba(255, 255, 255, 0.16) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
   .partner-logo-box:hover {
-    transform: scale(1.22);
+    transform: scale(1.06);
+    background: rgba(255, 255, 255, 0.075);
     opacity: 1;
     z-index: 10;
   }
@@ -2645,6 +2791,8 @@
     width: auto;
     object-fit: contain;
     pointer-events: none;
+    /* усі лого прийшли чорними на прозорому — вирівнюємо в чистий білий */
+    filter: brightness(0) invert(1);
   }
   .partner-img.logo-mandra { height: 56px; max-width: 220px; }
   .partner-img.logo-yod { height: 48px; max-width: 180px; }
@@ -2661,7 +2809,7 @@
       gap: 46px;
       animation-duration: 22s;
     }
-    .partner-logo-box { height: 80px; }
+    .partner-logo-box { height: 80px; min-width: 150px; padding: 0 22px; }
     .partner-img.logo-mandra { height: 42px; }
     .partner-img.logo-yod { height: 36px; }
     .partner-img.logo-ekopark { height: 56px; }
@@ -2679,7 +2827,7 @@
      Чистий білий фон сторінки, розгорнуто по всій ширині екрана
      ============================================================ */
   .section-founders {
-    background: #FFFFFF;
+    background: #0B0F0C;
     padding: 0 0 48px;
     width: 100%;
     position: relative;
@@ -2750,8 +2898,8 @@
     aspect-ratio: 1.04 / 1;
     border-radius: 10px;
     overflow: hidden;
-    background: #F4F6F4;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #141A16;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   }
   .founder-img {
@@ -2771,7 +2919,7 @@
     font-family: var(--title-font);
     font-size: clamp(1.15rem, 1.35vw, 1.65rem);
     font-weight: 700;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0 0 6px 0;
     letter-spacing: -0.01em;
   }
@@ -2779,7 +2927,7 @@
     font-family: var(--sub-font);
     font-size: clamp(0.82rem, 0.9vw, 1.02rem);
     line-height: 1.45;
-    color: #4A5660;
+    color: rgba(255, 255, 255, 0.60);
     margin: 0;
   }
 
@@ -2794,8 +2942,8 @@
     aspect-ratio: 1.15 / 1;
     border-radius: 8px;
     overflow: hidden;
-    background: #F4F6F4;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #141A16;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     position: relative;
@@ -2841,7 +2989,7 @@
      Без зайвих заголовків, фірмова палітра без золота (#DEF7D7, #81B873, #0E1F0B)
      ============================================================ */
   .section-synergy {
-    background: #FFFFFF;
+    background: #0B0F0C;
     padding: 85px 5vw 68px;
     width: 100%;
     position: relative;
@@ -2884,7 +3032,7 @@
     font-family: var(--title-font);
     font-size: clamp(1.6rem, 1.9vw, 2.2rem);
     font-weight: 700;
-    color: #0E1F0B;
+    color: #FFFFFF;
     margin: 0 0 6px;
     letter-spacing: -0.01em;
     line-height: 1.2;
@@ -2900,7 +3048,7 @@
   .synergy-card-divider {
     height: 1.5px;
     width: 100%;
-    background: linear-gradient(90deg, rgba(129, 184, 115, 0.75) 0%, rgba(14, 31, 11, 0.12) 70%, transparent 100%);
+    background: linear-gradient(90deg, rgba(129, 184, 115, 0.75) 0%, rgba(255, 255, 255, 0.14) 70%, transparent 100%);
     margin-bottom: 24px;
   }
 
@@ -2920,7 +3068,7 @@
     font-family: var(--sub-font);
     font-size: clamp(0.95rem, 1.05vw, 1.14rem);
     font-weight: 600;
-    color: #1A281E;
+    color: rgba(255, 255, 255, 0.80);
     line-height: 1.4;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -2959,7 +3107,9 @@
     height: auto;
     display: block;
     object-fit: contain;
-    mix-blend-mode: multiply;
+    /* multiply був потрібен, поки секція була біла й рендер лежав на білому.
+       Тепер фон темний, а в рендера вирізана підкладка — змішування вбивало б
+       картинку в чорноту. */
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .synergy-render-img:hover {
@@ -2996,7 +3146,7 @@
     text-transform: uppercase;
   }
   .investor-stat-divider {
-    color: rgba(14, 31, 11, 0.25);
+    color: rgba(255, 255, 255, 0.28);
     font-size: 0.8rem;
   }
   .investor-stat-subtag {
@@ -3004,7 +3154,7 @@
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.12em;
-    color: rgba(14, 31, 11, 0.45);
+    color: rgba(255, 255, 255, 0.48);
     text-transform: uppercase;
   }
   .investor-stat-main {
@@ -3018,7 +3168,7 @@
     font-family: var(--title-font);
     font-size: clamp(2rem, 2.5vw, 2.8rem);
     font-weight: 800;
-    color: #0E1F0B;
+    color: #FFFFFF;
     letter-spacing: -0.02em;
     line-height: 1.1;
   }
@@ -3032,7 +3182,7 @@
     font-family: 'Manrope', sans-serif;
     font-size: clamp(0.85rem, 0.95vw, 0.96rem);
     font-weight: 500;
-    color: rgba(14, 31, 11, 0.65);
+    color: rgba(255, 255, 255, 0.68);
     max-width: 440px;
     line-height: 1.45;
   }
@@ -4738,6 +4888,25 @@
      низу документа, і все, що встигало намалюватись до нього, показувало
      повний інтерфейс. Тепер стан вірний із першого кадру. -->
 <body class="intro-running">
+
+  <!-- ============================================================
+       ПРЕЛОАДЕР
+       Логотип M INVEST спершу прорисовується контуром, далі знизу вгору
+       наливається білим — рівень заливки і є відсоток завантаження.
+       Коли все готово, оверлей м'яко гасне, а інтро під ним уже грає.
+       ============================================================ -->
+  <div id="preloader" aria-hidden="true">
+    <svg class="pl-mark" viewBox="0 0 381 301" role="img">
+      <defs>
+        <clipPath id="plClip">
+          <rect id="plClipRect" x="0" y="301" width="381" height="301"></rect>
+        </clipPath>
+      </defs>
+      <path class="pl-outline" fill-rule="evenodd" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
+      <path class="pl-fill" fill-rule="evenodd" clip-path="url(#plClip)" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
+    </svg>
+  </div>
+
 <!-- Незалежна страховка: якщо скрипт нижче взагалі не виконається, клас нікому
      буде зняти й інтерфейс лишиться схованим назавжди. Раніше такого ризику не
      було, бо клас вішав сам скрипт. Сім секунд — із запасом до внутрішніх шести. -->
@@ -4915,10 +5084,10 @@
             <h2 class="showcase-title" id="showcaseTitle">Ми відповідаємо за</h2>
             <div class="showcase-card showcase-card-lead">
             <div class="card-video-pair" data-fade="1.2">
-              <video src="assets/screen2/01_location_loop.mp4?v=3" poster="assets/screen2/01_location.webp?v=5"
-                     muted playsinline preload="auto" aria-hidden="true"></video>
-              <video src="assets/screen2/01_location_loop.mp4?v=3"
-                     muted playsinline preload="auto" aria-hidden="true"></video>
+              <video data-src="assets/screen2/01_location_loop.mp4?v=4" poster="assets/screen2/01_location.webp?v=6"
+                     muted playsinline preload="none" aria-hidden="true"></video>
+              <video data-src="assets/screen2/01_location_loop.mp4?v=4"
+                     muted playsinline preload="none" aria-hidden="true"></video>
             </div>
               <span class="card-index">01</span>
               <div class="card-badge">
@@ -4930,10 +5099,10 @@
 
           <div class="showcase-card" data-q="tr">
             <div class="card-video-pair" data-fade="1.2">
-              <video src="assets/screen2/02_architecture_loop.mp4?v=1" poster="assets/screen2/02_architecture.webp?v=2"
-                     muted playsinline preload="auto" aria-hidden="true"></video>
-              <video src="assets/screen2/02_architecture_loop.mp4?v=1"
-                     muted playsinline preload="auto" aria-hidden="true"></video>
+              <video data-src="assets/screen2/02_architecture_loop.mp4?v=2" poster="assets/screen2/02_architecture.webp?v=3"
+                     muted playsinline preload="none" aria-hidden="true"></video>
+              <video data-src="assets/screen2/02_architecture_loop.mp4?v=2"
+                     muted playsinline preload="none" aria-hidden="true"></video>
             </div>
             <span class="card-index">02</span>
             <div class="card-badge">
@@ -4943,7 +5112,7 @@
           </div>
 
           <div class="showcase-card" data-q="bl">
-            <img src="assets/screen2/03_infrastructure.webp?v=2" alt="Інфраструктура та сервіс" loading="lazy" decoding="async">
+            <img src="assets/screen2/03_infrastructure.webp?v=3" alt="Інфраструктура та сервіс" loading="lazy" decoding="async">
             <span class="card-index">03</span>
             <div class="card-badge">
               <span class="card-badge-title" id="sc3Title">Інфраструктура та управління</span>
@@ -4952,7 +5121,7 @@
           </div>
 
           <div class="showcase-card" data-q="br">
-            <img src="assets/screen2/04_service.webp?v=2" alt="Робота з інвесторами" loading="lazy" decoding="async">
+            <img src="assets/screen2/04_service.webp?v=3" alt="Робота з інвесторами" loading="lazy" decoding="async">
             <span class="card-index">04</span>
             <div class="card-badge">
               <span class="card-badge-title" id="sc4Title">Робота з інвесторами</span>
@@ -5079,6 +5248,7 @@
         <p class="mp-float-desc" id="mpDesc">
           Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.
         </p>
+        <div class="mp-address"><span id="mpAddress">Село Забуяння, Київська область, 70км від м. Київ</span></div>
       </div>
 
       <!-- Лінія від плашки до маркера 03 -->
@@ -5102,7 +5272,7 @@
 
   <!-- ============================================================
        ЕКРАН 6 — ПАРТНЕРИ МАНДРА ІНВЕСТ
-       Білий фон, заголовок, нескінченна рухома стрічка логотипів (hover: pause + scale)
+       Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
        ============================================================ -->
   <section class="section-partners" id="partners">
     <div class="partners-top-container">
@@ -5179,7 +5349,7 @@
 
   <!-- ============================================================
        ЕКРАН 7 — ЗАСНОВНИКИ ТА ОБ'ЄКТИ
-       Чистий білий фон сторінки, розгорнуто по всій ширині екрана
+       Темний фон у зв'язці з екраном 6, розгорнуто по всій ширині екрана
        ============================================================ -->
   <section class="section-founders" id="founders">
     <div class="founders-container">
@@ -5195,7 +5365,7 @@
         <!-- Картка Артура Лупашка -->
         <article class="founder-profile-card">
           <div class="founder-img-wrap">
-            <img src="assets/founders/artur_lupashko_hq.webp" alt="Артур Лупашко" class="founder-img" loading="lazy" decoding="async">
+            <img src="assets/founders/artur_lupashko_v2.webp" alt="Артур Лупашко" class="founder-img" loading="lazy" decoding="async">
           </div>
           <div class="founder-info">
             <h4 class="founder-name" id="founderName1">Артур Лупашко</h4>
@@ -5206,7 +5376,7 @@
         <!-- Картка Сергія Боєва -->
         <article class="founder-profile-card">
           <div class="founder-img-wrap">
-            <img src="assets/founders/serhiy_boiev_hq.webp" alt="Сергій Боєв" class="founder-img" loading="lazy" decoding="async">
+            <img src="assets/founders/serhiy_boiev_v2.webp" alt="Сергій Боєв" class="founder-img" loading="lazy" decoding="async">
           </div>
           <div class="founder-info">
             <h4 class="founder-name" id="founderName2">Сергій Боєв</h4>
@@ -5217,23 +5387,23 @@
 
       <!-- Нижня сітка з 6 фотографіями реалізованих локацій -->
       <div class="founders-gallery-grid">
-        <div class="founder-thumb-box" title="Mandra Glamping Interior">
-          <img src="assets/founders/gallery_1_hq.webp" alt="Mandra Glamping Interior" class="founder-thumb-img" loading="lazy" decoding="async">
+        <div class="founder-thumb-box" title="Тераса з видом на гори">
+          <img src="assets/founders/gallery_1_v2.webp" alt="Тераса з видом на гори" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Mandra Safari Glamping">
+          <img src="assets/founders/gallery_6_hq.webp" alt="Mandra Safari Glamping" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Басейн комплексу">
+          <img src="assets/founders/gallery_3_v2.webp" alt="Басейн комплексу" class="founder-thumb-img" loading="lazy" decoding="async">
         </div>
         <div class="founder-thumb-box" title="Mandra Pool">
           <img src="assets/founders/gallery_2_hq.webp" alt="Mandra Pool" class="founder-thumb-img" loading="lazy" decoding="async">
         </div>
-        <div class="founder-thumb-box" title="Mandra Forest Resort">
-          <img src="assets/founders/gallery_3_hq.webp" alt="Mandra Forest Resort" class="founder-thumb-img" loading="lazy" decoding="async">
+        <div class="founder-thumb-box" title="Mandra A-frame Chalet">
+          <img src="assets/founders/gallery_5_v2.webp" alt="Mandra A-frame Chalet" class="founder-thumb-img" loading="lazy" decoding="async">
         </div>
         <div class="founder-thumb-box" title="Mandra Terrace">
           <img src="assets/founders/gallery_4_hq.webp" alt="Mandra Terrace" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra A-frame Chalet">
-          <img src="assets/founders/gallery_5_hq.webp" alt="Mandra A-frame Chalet" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Safari Glamping">
-          <img src="assets/founders/gallery_6_hq.webp" alt="Mandra Safari Glamping" class="founder-thumb-img" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -5267,7 +5437,7 @@
         <!-- ЦЕНТРАЛЬНА КОЛОНКА: 3D АРХІТЕКТУРНИЙ СТІЛ + ПОТОКИ МОНЕТ -->
         <div class="synergy-center-col">
           <div class="synergy-visual-box">
-            <img src="assets/infographic/resort_table_gold_flow_clean.webp" 
+            <img src="assets/infographic/resort_table_gold_flow_cut.webp" 
                  alt="Mandra Petrichor 3D Архітектурна модель та інвестиційні потоки" 
                  class="synergy-render-img" 
                  loading="lazy" decoding="async">
@@ -5438,7 +5608,7 @@
   <div class="phase1-video-modal" id="phase1VideoModal" onclick="closePhase1Video(event)">
     <div class="phase1-modal-box" onclick="event.stopPropagation()">
       <button class="phase1-modal-close" onclick="closePhase1Video()" title="Закрити (Esc)">✕</button>
-      <video class="phase1-modal-video" id="phase1ModalVideoPlayer" controls preload="metadata" playsinline>
+      <video class="phase1-modal-video" id="phase1ModalVideoPlayer" controls preload="none" playsinline>
         <source src="assets/video/mandra_phase1_live.mp4" type="video/mp4">
         Ваш браузер не підтримує відтворення відео.
       </video>
@@ -7189,10 +7359,12 @@
         const sticky = track.querySelector('.showcase-sticky');
         const stickyTop = sticky ? (parseFloat(getComputedStyle(sticky).top) || 0) : 0;
         const total = track.offsetHeight - window.innerHeight;
-        const ASSEMBLE_END = 0.370;
+        const ASSEMBLE_END = 0.305;
+        const HOLD_END     = 0.540;
         const gridY = Math.round(track.offsetTop - stickyTop + ASSEMBLE_END * total);
+        const holdEndY = Math.round(track.offsetTop - stickyTop + HOLD_END * total);
         const statsY = Math.round(track.offsetTop - stickyTop + total);
-        return { gridY, statsY };
+        return { gridY, holdEndY, statsY };
       }
 
       // Спеціальний плавний графік: "медленно, медленно, медленно, быстро... не скачком, а спокойно"
@@ -7207,6 +7379,19 @@
       const SHOWCASE_SNAP_DURATION = 1.05;
       let isSnapping = false;
       let snapTimer = 0;
+      /* Момент, коли сітка щойно зійшлась: доки не мине DOCK_GRACE, розсування
+         не запускаємо — інакше один довгий рух колеса проходить обидва такти. */
+      const DOCK_GRACE = 650;
+      let dockedAt = 0, wasDocked = false;
+      (function watchDock() {
+        const pos = getShowcasePositions();
+        if (pos) {
+          const inGrid = window.scrollY >= pos.gridY - 4 && window.scrollY <= pos.holdEndY;
+          if (inGrid && !wasDocked) { dockedAt = performance.now(); }
+          wasDocked = inGrid;
+        }
+        requestAnimationFrame(watchDock);
+      })();
 
       function scrollToPos(targetY, duration = HERO_SNAP_DURATION) {
         isSnapping = true;
@@ -7275,8 +7460,19 @@
 
         const scPos = getShowcasePositions();
         if (scPos) {
-          // 3. Користувач на сітці 2x2: за один скрол вниз картки м'яко роз'їжджаються і підіймається статистика
-          if (scrollY >= scPos.gridY - 60 && scrollY <= scPos.gridY + 140 && e.deltaY > 6) {
+          /* 3. Користувач на зібраній сітці: наступний скрол вниз розводить картки
+             і піднімає статистику.
+             Вікно починалось за 60px ДО стику — при безперервному скролі снап
+             спрацьовував ще на збірці, і трек перестрибував і паузу, і розсування
+             разом. Друге відео не встигало навіть початись. Тепер: тільки після
+             стику, з витримкою DOCK_GRACE, щоб той самий рух колеса, який довів
+             сітку до стику, одразу не зривав її далі. */
+          if (scrollY >= scPos.gridY + 8 && scrollY <= scPos.holdEndY && e.deltaY > 6) {
+            if (performance.now() - dockedAt < DOCK_GRACE) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              return;
+            }
             e.stopImmediatePropagation();
             e.preventDefault();
             scrollToShowcasePos(scPos.statsY, SHOWCASE_SNAP_DURATION);
@@ -7372,6 +7568,176 @@
        джерелом: другий стартує за --fade до кінця першого, і вони перехресно
        міняються прозорістю, після чого міняються ролями.
        ============================================================ */
+    /* ============================================================
+       ПОСЛІДОВНЕ ЗАВАНТАЖЕННЯ ВІДЕО
+       Чотири ролики 2-го екрана раніше стояли на preload="auto" і тягнулися
+       одразу разом з інтро — близько 7 МБ у ту саму мить, коли браузеру
+       потрібне лише інтро. Тепер src підставляється за екран до появи секції.
+       ============================================================ */
+    /* ============================================================
+       ПРЕЛОАДЕР
+       Спершу малюється контур (stroke-dashoffset), далі знизу вгору
+       піднімається біла заливка — її рівень і є відсоток завантаження.
+       Прогрес рахуємо з двох джерел: буферизація інтро (воно найважче й саме
+       на нього ми чекаємо) і частка завантажених картинок. Значення тягнемо
+       плавно й тільки вгору, щоб смуга не сіпалась назад.
+       Оверлей гасне ЗА 0.75с, і в цей самий момент інтро вже грає під ним —
+       звідси м'який перехід без чорного провалу.
+       ============================================================ */
+    window.__preloadGate = (function initPreloader() {
+      const host = document.getElementById('preloader');
+      if (!host) return Promise.resolve();
+
+      const outline = host.querySelector('.pl-outline');
+      const clipRect = host.querySelector('#plClipRect');
+      const VB_H = 301;
+      const DRAW_MS = 1150;                /* скільки малюється контур */
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let resolveGate;
+      const gate = new Promise(function (r) { resolveGate = r; });
+
+      /* Малювання контуру */
+      const len = outline.getTotalLength ? outline.getTotalLength() : 0;
+      const t0 = performance.now();
+      if (len && !reduced) {
+        outline.style.setProperty('--pl-dash', len.toFixed(1));
+      }
+
+      function introProgress() {
+        const v = document.getElementById('heroIntro');
+        if (!v) return 1;
+        if (v.readyState >= 4) return 1;
+        try {
+          if (v.buffered.length && v.duration) {
+            return Math.min(1, v.buffered.end(v.buffered.length - 1) / v.duration);
+          }
+        } catch (e) {}
+        return v.readyState >= 2 ? 0.35 : 0;
+      }
+
+      function imageProgress() {
+        /* Тільки картинки першого екрана: lazy-зображення нижче фолда не
+           вантажаться, поки стоїть заставка, і прогрес завис би на 0.84. */
+        const imgs = Array.prototype.filter.call(document.images, function (i) {
+          return i.src && i.loading !== 'lazy';
+        });
+        if (!imgs.length) return 1;
+        let n = 0;
+        imgs.forEach(function (i) { if (i.complete) n++; });
+        return n / imgs.length;
+      }
+
+      let shown = 0, finished = false;
+
+      function frame(now) {
+        const elapsed = now - t0;
+
+        if (len && !reduced) {
+          const dp = Math.min(1, elapsed / DRAW_MS);
+          const eased = 1 - Math.pow(1 - dp, 3);
+          outline.style.strokeDashoffset = (len * (1 - eased)).toFixed(1);
+        }
+
+        /* Заливка стартує лише після того, як контур намальовано */
+        const target = Math.min(1, 0.7 * introProgress() + 0.3 * imageProgress());
+        const allowed = reduced ? 1 : Math.min(1, elapsed / DRAW_MS);
+        shown += (Math.min(target, allowed) - shown) * 0.08;
+        if (shown < 0) shown = 0;
+        clipRect.setAttribute('y', (VB_H * (1 - shown)).toFixed(1));
+
+        const ready = target >= 0.999 && shown > 0.985 && elapsed > DRAW_MS + 150;
+        if (ready && !finished) {
+          finished = true;
+          clipRect.setAttribute('y', '0');
+          resolveGate();                    /* інтро стартує ПІД оверлеєм */
+          host.classList.add('is-out');
+          setTimeout(function () { host.classList.add('is-gone'); }, 800);
+          return;
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      /* Страховка: якщо щось не долетіло, не тримаємо людину на заставці */
+      setTimeout(function () {
+        if (finished) return;
+        finished = true;
+        clipRect.setAttribute('y', '0');
+        resolveGate();
+        host.classList.add('is-out');
+        setTimeout(function () { host.classList.add('is-gone'); }, 800);
+      }, 12000);
+
+      return gate;
+    })();
+
+    (function initLazyShowcaseVideos() {
+      const host = document.querySelector('.section-scroll-showcase');
+      if (!host) return;
+      let done = false;
+      function attach(v) {
+        if (!v.dataset.src) return;
+        v.preload = 'auto';
+        v.src = v.dataset.src;
+        v.removeAttribute('data-src');
+        v.load();
+      }
+      /* У парі обидва <video> дивляться на той самий файл. Якщо підставити src
+         одночасно, браузер тягне його двічі паралельно — жодне з двох ще не в
+         кеші. Тому другий шар вмикаємо після того, як перший забуферився. */
+      function hydrate() {
+        if (done) return;
+        done = true;
+        host.querySelectorAll('.card-video-pair').forEach(function (pair) {
+          const vids = Array.prototype.slice.call(pair.querySelectorAll('video[data-src]'));
+          if (!vids.length) return;
+          attach(vids[0]);
+          if (vids[1]) {
+            /* Подія і страховочний таймер могли спрацювати обидва: другий
+               виклик писав у src значення undefined і обнуляв елемент —
+               картка ставала порожньою. Тепер attach спрацьовує рівно раз. */
+            let armed = true;
+            const next = function () {
+              if (!armed) return;
+              armed = false;
+              clearTimeout(fallback);
+              attach(vids[1]);
+            };
+            const fallback = setTimeout(next, 6000);
+            vids[0].addEventListener('canplaythrough', next, { once: true });
+          }
+        });
+      }
+      /* Черга: інтро -> цикл героя -> ролики 2-го екрана. Скрол усе одно
+         заблокований, доки інтро не догралось, тож нижче нікому не потрібно
+         раніше. Спостерігач з великим полем лише вирішує, чи вантажити взагалі. */
+      function whenHeroDone(cb) {
+        const intro = document.getElementById('heroIntro');
+        const cycle = document.getElementById('heroVideo');
+        let fired = false;
+        const go = function () { if (!fired) { fired = true; cb(); } };
+        setTimeout(go, 9000);                       /* страховка, якщо подій не буде */
+        if (!intro) return go();
+        const afterIntro = function () {
+          if (cycle && cycle.readyState < 3) cycle.addEventListener('canplaythrough', go, { once: true });
+          else go();
+        };
+        if (intro.ended) afterIntro();
+        else intro.addEventListener('ended', afterIntro, { once: true });
+      }
+      whenHeroDone(function () {
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver(function (entries) {
+            if (entries.some(function (e) { return e.isIntersecting; })) { hydrate(); io.disconnect(); }
+          }, { rootMargin: '100% 0px' });
+          io.observe(host);
+        } else {
+          hydrate();
+        }
+      });
+    })();
+
     (function initCardVideoLoops() {
       Array.prototype.forEach.call(document.querySelectorAll('.card-video-pair'), function (pair) {
         const vids = Array.prototype.slice.call(pair.querySelectorAll('video'));
@@ -7460,14 +7826,27 @@
       const items = Array.from(track.querySelectorAll('[data-q]'));
       if (!items.length) return;
 
-      const GAP = 0.8;                       /* зазор між квадратами зменшено вдвічі (було 1.6%), % */
-      const SIDE = (100 - GAP) / 2;          /* сторона квадрата, % */
-      const FINAL = {
-        tl: { l: 0,          t: 0,          w: SIDE, h: SIDE },
-        tr: { l: SIDE + GAP, t: 0,          w: SIDE, h: SIDE },
-        bl: { l: 0,          t: SIDE + GAP, w: SIDE, h: SIDE },
-        br: { l: SIDE + GAP, t: SIDE + GAP, w: SIDE, h: SIDE }
-      };
+      /* Зазор задано у відсотках, але left рахується від ширини сцени, а top —
+         від висоти. Сцена не квадратна (~1440x794), тож одна константа давала
+         11.5px по горизонталі проти 6.4px по вертикалі. Вертикальний відсоток
+         перераховуємо через пропорції сцени, щоб у ПІКСЕЛЯХ зазори збіглись. */
+      const GAP = 0.8;                       /* горизонтальний зазор, % ширини */
+      const stageEl = track.querySelector('.showcase-stage');
+      let FINAL;
+      function buildFinal() {
+        const r = stageEl ? stageEl.getBoundingClientRect() : { width: 16, height: 9 };
+        const gapV = r.height ? GAP * (r.width / r.height) : GAP;
+        const sideH = (100 - GAP) / 2;       /* ширина квадрата, % ширини */
+        const sideV = (100 - gapV) / 2;      /* висота квадрата, % висоти */
+        FINAL = {
+          tl: { l: 0,           t: 0,            w: sideH, h: sideV },
+          tr: { l: sideH + GAP, t: 0,            w: sideH, h: sideV },
+          bl: { l: 0,           t: sideV + gapV, w: sideH, h: sideV },
+          br: { l: sideH + GAP, t: sideV + gapV, w: sideH, h: sideV }
+        };
+      }
+      buildFinal();
+      window.addEventListener('resize', buildFinal);
       const START = { l: 0, t: 0, w: 100, h: 100 };   /* усі під першим фото */
 
       /* smoothstep на обидві фази: нульова швидкість на кінцях, пік 1.5.
@@ -7479,9 +7858,14 @@
       const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
       /* Фази скролу (частка загального треку) */
-      const ASSEMBLE_END = 0.370;  /* 0 → 37.0%: збірка у сітку 2x2 (~1310px ходу) */
-      const HOLD_END     = 0.441;  /* 37.0 → 44.1%: пауза, сітка зафіксована (~253px) */
-      const FLY_END      = 0.720;  /* 44.1 → 72.0%: м'яке розсування карток у сторони */
+      /* Трек подовжено з 489vh до 572vh, і всі +83vh віддані паузі. Збірка та
+         розсування зберегли свій хід у пікселях, тож їхнє відчуття не змінилось.
+         Пауза виросла з ~250px (один щиглик колеса — друге відео не встигало
+         навіть розкрутитись) до ~1000px: сітка стоїть, ролик 02 крутиться,
+         і лише наступний рух колеса зриває картки в розсування. */
+      const ASSEMBLE_END = 0.305;  /* 0 → 30.5%: збірка у сітку 2x2 (~1295px) */
+      const HOLD_END     = 0.540;  /* 30.5 → 54.0%: пауза, сітка стоїть (~1000px) */
+      const FLY_END      = 0.770;  /* 54.0 → 77.0%: розсування карток (~977px) */
       /* Розсування карток: роз'їжджаються у сторони, еле-еле стирчать по краях (~50px / 2.6vw) і не налізають на текст */
       const FLY_VW = 47;           /* повернено на місце: еле-еле чуть-чуть торчать по боках */
 
@@ -7956,8 +8340,8 @@
           el.style.top  = (centre[n].y / 1080 * 100).toFixed(2) + '%';
           el.innerHTML =
             '<div class="mp-marker-inner">' +
-              '<div class="mp-mk-num">' + d.no + '</div>' +
-              '<div class="mp-mk-title">' + d.title + '</div>' +
+              '<div class="mp-mk-num">' + d.num.split(' ')[0] + '</div>' +
+              '<div class="mp-mk-title">черга</div>' +
             '</div>';
           plan.appendChild(el);
           markers[n] = el;
@@ -8426,10 +8810,13 @@
       }
 
       intro.addEventListener('canplay', function () {
+        /* Стартуємо не одразу, а коли прелоадер віддасть екран */
+        (window.__preloadGate || Promise.resolve()).then(function () {
         intro.play().then(function () {
           intro.classList.add('is-ready');
           requestAnimationFrame(tick);
         }).catch(revealUi);      /* автоплей заблокований — не ховаємо інтерфейс */
+        });
       }, { once: true });
 
       intro.addEventListener('ended', function () {
