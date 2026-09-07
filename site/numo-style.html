@@ -4814,13 +4814,13 @@
     right: 0;
     bottom: 0;
     width: 100%;
-    height: clamp(200px, 28vw, 380px);
+    height: clamp(240px, 38vw, 560px);
     overflow: hidden;
     pointer-events: none;
     user-select: none;
     z-index: 3;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
   }
 
   .footer-watermark-track {
@@ -4828,25 +4828,26 @@
     flex-shrink: 0;
     width: max-content;
     will-change: transform;
-    animation: footerWatermarkScroll 60s linear infinite;
+    animation: footerWatermarkScroll 95s linear infinite;
   }
 
   .footer-watermark-group {
     display: flex;
     flex-shrink: 0;
-    align-items: center;
+    align-items: flex-end;
   }
 
   .footer-watermark-item {
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(96px, 14vw, 210px);
+    font-size: clamp(160px, 32vw, 480px);
     font-weight: 900;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.038);
     white-space: nowrap;
-    line-height: 1;
-    padding-right: clamp(48px, 6vw, 100px);
+    line-height: 0.76;
+    margin-bottom: -0.06em;
+    padding-right: clamp(50px, 7vw, 140px);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
