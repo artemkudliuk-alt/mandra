@@ -4759,7 +4759,7 @@
     position: relative;
     background: #0A0F0C;
     color: #FFFFFF;
-    padding: clamp(510px, 42vw, 690px) 5vw 118px;
+    padding: clamp(470px, 39vw, 650px) 5vw 158px;
     z-index: 10;
     overflow: hidden;
     border-top: none;
@@ -4807,7 +4807,7 @@
   }
   .site-footer > *:not(.footer-veg) { position: relative; z-index: 4; }
   @media (max-width: 900px) {
-    .site-footer { padding-top: clamp(310px, 80vw, 420px); }
+    .site-footer { padding-top: clamp(270px, 72vw, 380px); }
     .footer-veg[data-veg="far"] {
       bottom: -100px;
       -webkit-mask-size: auto 320px, 100% calc(100% - 318px);
@@ -4897,12 +4897,13 @@
     transform: translateX(3px);
   }
 
-  /* Колонка контактів — вирівнювання праворуч за макетом */
+  /* Колонка контактів — вирівнювання ліворуч у межах колонки,
+     щоб соцмережі стояли точно під лінією іконок контактів */
   .footer-contacts-col {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .footer-contacts-list {
@@ -4935,7 +4936,7 @@
     flex-shrink: 0;
   }
 
-  /* Соцмережі — 3 круглі темні кнопки */
+  /* Соцмережі — 3 круглі фірмові кнопки з автентичними кольорами брендів */
   .footer-social-row {
     display: flex;
     align-items: center;
@@ -4946,25 +4947,33 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
-    transition: all 0.3s ease;
+    border: none;
+    transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
     text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
   .footer-social-btn:hover {
-    background: #81B873;
-    color: #111111;
-    border-color: #81B873;
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.05);
+    filter: brightness(1.15);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  }
+  .footer-social-btn[title="Instagram"] {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  }
+  .footer-social-btn[title="YouTube"] {
+    background: #FF0000;
+  }
+  .footer-social-btn[title="Telegram"] {
+    background: #24A1DE;
   }
   .footer-social-btn svg {
     width: 18px;
     height: 18px;
-    fill: currentColor;
+    fill: #FFFFFF;
   }
 
   /* Нижня смужка: копірайт та автор */
@@ -5038,7 +5047,7 @@
       min-height: 380px;
     }
     .site-footer {
-      padding: clamp(280px, 72vw, 370px) 5vw 48px;
+      padding: clamp(240px, 64vw, 330px) 5vw 48px;
     }
     .footer-top-row {
       flex-direction: column;
