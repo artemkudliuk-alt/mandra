@@ -4442,12 +4442,12 @@
   .flow-leaf[data-side="l"] .flow-leaf-body { border-radius: 999px 14px 999px 999px; }
   .flow-leaf[data-side="r"] .flow-leaf-body { border-radius: 14px 999px 999px 999px; }
 
-  /* Заливка приходить разом із текстом, коли прогрес по лозі досягає листка */
-  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body { background: #81B873; border-color: transparent; }
-  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; border-color: transparent; }
-
-  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
-  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
+  /* Ніякої заливки — картка завжди лише контур, і після активації теж.
+     На ховері трохи підсвічуємо контур і додаємо світіння замість заливки. */
+  .flow-leaf-body:hover {
+    border-color: #81B873;
+    box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.24);
+  }
 
   /* Струс у мить активації: вісь повороту — гострий кут (умовне кріплення
      до гілки), тож саме він майже не рухається, а протилежний закруглений
@@ -4471,15 +4471,18 @@
   .flow-leaf[data-side="l"].is-shaking .flow-leaf-body { animation: leafShakeL 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
   .flow-leaf[data-side="r"].is-shaking .flow-leaf-body { animation: leafShakeR 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
 
+  /* Картка без заливки — текст завжди світлий (фон під ним темний, а не
+     колір тону), тон лишає свій відбиток лише в кольорі номера. */
   .flow-leaf-num {
     font-family: var(--title-font);
     font-size: clamp(0.84rem, 1vw, 1.05rem);
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: rgba(11, 15, 12, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     margin-bottom: 10px;
   }
-  .flow-leaf[data-tone="dark"] .flow-leaf-num { color: rgba(255, 255, 255, 0.45); }
+  .flow-leaf[data-tone="light"] .flow-leaf-num { color: #93C985; }
+  .flow-leaf[data-tone="dark"]  .flow-leaf-num { color: #6FA87A; }
   .flow-leaf-title {
     font-family: var(--title-font);
     font-size: clamp(1.2rem, 1.6vw, 1.78rem);
@@ -4487,18 +4490,16 @@
     line-height: 1.2;
     letter-spacing: -0.01em;
     margin: 0 0 10px;
-    color: #0B0F0C;
+    color: #FFFFFF;
   }
-  .flow-leaf[data-tone="dark"] .flow-leaf-title { color: #FFFFFF; }
   .flow-leaf-desc {
     font-family: var(--sub-font);
     font-size: clamp(0.95rem, 1.1vw, 1.16rem);
     font-weight: 500;
     line-height: 1.5;
     margin: 0;
-    color: rgba(11, 15, 12, 0.72);
+    color: rgba(255, 255, 255, 0.76);
   }
-  .flow-leaf[data-tone="dark"] .flow-leaf-desc { color: rgba(255, 255, 255, 0.78); }
 
   @media (max-width: 900px) {
     .flow-leaf { width: 100%; align-self: stretch !important; min-height: 0; }
