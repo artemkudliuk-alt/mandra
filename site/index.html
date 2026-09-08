@@ -3636,7 +3636,9 @@
     align-items: center;
     gap: 6px;
     width: 100%;
-    margin: clamp(22px, 2.4vw, 36px) 0 clamp(20px, 2.2vw, 32px);
+    /* Підняті ближче до тексту над ними (раніше тут ще був блок з двох
+       абзаців — тепер його нема, тож і відступ зверху зменшили) */
+    margin: clamp(6px, 0.8vw, 12px) 0 clamp(20px, 2.2vw, 32px);
   }
   .ph1-rev-arrow {
     width: 30px;
@@ -3710,10 +3712,11 @@
   .ph1-rev-item.is-on { opacity: 1; visibility: visible; transform: none; position: relative; }
   .ph1-rev-item p {
     font-family: var(--sub-font);
-    /* Курсив того самого шрифта — відгук читається як пряма мова гостя */
-    font-style: italic;
+    /* Виразний нахил і вага — відгук явно виділяється на фоні звичайного
+       тексту колонки, лишаючись читабельним рублением шрифтом (не прописом) */
+    font-style: oblique 12deg;
+    font-weight: 600;
     font-size: clamp(0.9rem, 0.98vw, 1.04rem);
-    font-weight: 500;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.76);
     margin: 0 0 9px;
@@ -3791,7 +3794,10 @@
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.72);
     max-width: 980px;
-    margin: 0;
+    margin: 0 0 14px;
+  }
+  .phase1-lead:last-child {
+    margin-bottom: 0;
   }
 
   /* Сітка 4 метрик у стилі NUMO */
@@ -3841,7 +3847,7 @@
   /* Спліт: ліва частина (тексти + бейджі довіри), права (16:9 відео курорту) */
   .phase1-split {
     display: grid;
-    grid-template-columns: 1fr 1.22fr;
+    grid-template-columns: 1.12fr 1.15fr;
     gap: 48px;
     align-items: stretch;
   }
@@ -3849,19 +3855,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
-  .phase1-paragraphs {
-    margin-bottom: 24px;
-  }
-  .phase1-body-p {
-    font-family: var(--sub-font);
-    font-size: clamp(1rem, 1.08vw, 1.2rem);
-    line-height: 1.65;
-    color: rgba(255, 255, 255, 0.74);
-    margin: 0 0 20px;
-  }
-  .phase1-body-p:last-child {
-    margin-bottom: 0;
   }
 
   /* Бейджі відгуків Google та Booking.com */
@@ -6122,8 +6115,14 @@
           <span class="text-olive" id="ph1TitleOlive">Перша черга Mandra Petrichor</span> 
           <span class="text-white" id="ph1TitleWhite">уже працює</span>
         </h2>
-        <p class="phase1-lead" id="ph1Lead">
-          Перша черга введена в експлуатацію та приймає гостей. Усі котеджі цієї черги продані й працюють у складі єдиного готельного комплексу. Це вже не концепція майбутнього, а діючий resort-продукт із командою, сервісом, інфраструктурою та реальним досвідом гостей.
+        <p class="phase1-lead" id="ph1Lead1">
+          Перша черга введена в експлуатацію, приймає гостей і всі котеджі продані та працюють у складі єдиного готельного комплексу.
+        </p>
+        <p class="phase1-lead" id="ph1Lead2">
+          Це вже діючий продукт із командою, сервісом, інфраструктурою та реальним досвідом гостей.
+        </p>
+        <p class="phase1-lead" id="ph1Lead3">
+          Досвід першої черги дозволяє нам вдосконалювати сервіс, аналізувати попит і створювати наступні черги як продовження єдиної концепції Mandra Petrichor.
         </p>
       </div>
 
@@ -6152,15 +6151,6 @@
         
         <!-- Ліва колонка: сенси та бейджі довіри -->
         <div class="phase1-text-col">
-          <div class="phase1-paragraphs">
-            <p class="phase1-body-p" id="ph1P1">
-              Нові черги ростуть усередині вже працюючої екосистеми: реальна поведінка гостей і попит підказують, якою робити другу й третю чергу.
-            </p>
-            <p class="phase1-body-p" id="ph1P2">
-              Тому Mandra Petrichor — не три окремі проєкти, а один комплекс із різними сценаріями відпочинку.
-            </p>
-          </div>
-
               <!-- Відгуки гостей: між текстом і плашками рейтингів. Без рамок — лапка, курсив і дві стрілки -->
           <div class="ph1-reviews" id="ph1Reviews">
             <button class="ph1-rev-arrow ph1-rev-prev" type="button" aria-label="Попередній відгук">
@@ -7255,7 +7245,9 @@
         ph1Badge: '[ ДІЮЧИЙ КУРОРТ ]',
         ph1TitleOlive: 'Перша черга Mandra Petrichor',
         ph1TitleWhite: 'уже працює',
-        ph1Lead: 'Перша черга введена в експлуатацію та приймає гостей. Усі котеджі цієї черги продані й працюють у складі єдиного готельного комплексу. Це вже не концепція майбутнього, а діючий resort-продукт із командою, сервісом, інфраструктурою та реальним досвідом гостей.',
+        ph1Lead1: 'Перша черга введена в експлуатацію, приймає гостей і всі котеджі продані та працюють у складі єдиного готельного комплексу.',
+        ph1Lead2: 'Це вже діючий продукт із командою, сервісом, інфраструктурою та реальним досвідом гостей.',
+        ph1Lead3: 'Досвід першої черги дозволяє нам вдосконалювати сервіс, аналізувати попит і створювати наступні черги як продовження єдиної концепції Mandra Petrichor.',
         ph1M1Val: '20',
         ph1M1Desc: 'у діючій першій черзі',
         ph1M2Val: '100%',
@@ -7264,8 +7256,6 @@
         ph1M3Desc: 'вже прийняв комплекс',
         ph1M4Val: '25%',
         ph1M4Desc: 'повторних бронювань',
-        ph1P1: 'Нові черги ростуть усередині вже працюючої екосистеми: реальна поведінка гостей і попит підказують, якою робити другу й третю чергу.',
-        ph1P2: 'Тому Mandra Petrichor — не три окремі проєкти, а один комплекс із різними сценаріями відпочинку.',
         ph1GoogleVal: '1 200',
         ph1GoogleSub: 'відгуків Google • 4.9 ★',
         ph1BookingVal: '125',
@@ -7442,7 +7432,9 @@
         ph1Badge: '[ OPERATIONAL RESORT ]',
         ph1TitleOlive: 'Phase I Mandra Petrichor',
         ph1TitleWhite: 'is already operational',
-        ph1Lead: 'Phase I has been commissioned and is actively welcoming guests. All cottages of this phase are sold out and operate within an integrated resort ecosystem. This is not a future concept, but an active hospitality product with staff, service, infrastructure, and proven guest satisfaction.',
+        ph1Lead1: 'Phase I has been commissioned, is welcoming guests, and every cottage is sold and operating within one integrated resort complex.',
+        ph1Lead2: 'This is already an active product — with a team, service, infrastructure, and real guest experience.',
+        ph1Lead3: 'The experience of Phase I lets us refine service, read real demand, and build the next phases as a continuation of one Mandra Petrichor concept.',
         ph1M1Val: '20',
         ph1M1Desc: 'cottages in active operation',
         ph1M2Val: '100%',
@@ -7451,8 +7443,6 @@
         ph1M3Desc: 'guests hosted to date',
         ph1M4Val: '25%',
         ph1M4Desc: 'repeat bookings rate',
-        ph1P1: 'Later phases grow inside an ecosystem that already earns: real guest behaviour and demand shape phases II and III.',
-        ph1P2: 'Consequently, Mandra Petrichor evolves not as fragmented developments, but as a cohesive mountain destination with differentiated hospitality storylines.',
         ph1GoogleVal: '1,200',
         ph1GoogleSub: 'Google reviews • 4.9 ★',
         ph1PlayLabel: 'Watch Resort Video',
@@ -7610,9 +7600,9 @@
                   'synRibas1','synRibas2','synRibas3','synRibas4','synRibas5',
                   'synInvBadge','synInvLabel','synInvAmount',
                   /* ЕКРАН 9 — ПЕРША ЧЕРГА */
-                  'ph1Badge','ph1TitleOlive','ph1TitleWhite','ph1Lead',
+                  'ph1Badge','ph1TitleOlive','ph1TitleWhite','ph1Lead1','ph1Lead2','ph1Lead3',
                   'ph1M1Val','ph1M1Desc','ph1M2Val','ph1M2Desc','ph1M3Val','ph1M3Desc','ph1M4Val','ph1M4Desc',
-                  'ph1P1','ph1P2','ph1GoogleVal','ph1GoogleSub','ph1BookingVal','ph1BookingSub',
+                  'ph1GoogleVal','ph1GoogleSub','ph1BookingVal','ph1BookingSub',
                   'ph1PlayLabel','phaseCapText1','phaseCapText2','phaseCapText3',
                   /* ЕКРАН 10 — ВАШ ШЛЯХ ІНВЕСТОРА */
                   'investFlowTitleLine1','investFlowTitleLine2','investFlowLead','investFlowCtaText',
