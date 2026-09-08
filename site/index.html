@@ -4960,9 +4960,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Вікно кадру зсунуто вниз по вихідному фото — тому обличчя піднімається
-       вгору всередині рамки. 6% лишали її в нижній половині. */
-    object-position: center 34%;
+    /* Фото вже кадроване по центру обличчя (крoп ~1.05:1, обличчя точно
+       посередині кадру), тож просте центрування коректне за будь-якого
+       співвідношення сторін рамки. */
+    object-position: center;
     transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
   }
@@ -6513,19 +6514,19 @@
           </form>
         </div>
 
-        <!-- ПРАВА КОЛОНКА: ФОТО ОЛЬГИ СИЛАН ТА ІНФОРМАЦІЯ НА БІЛОМУ ФОНІ -->
+        <!-- ПРАВА КОЛОНКА: ФОТО ІЛОНИ ОМЕЛЬЧЕНКО ТА ІНФОРМАЦІЯ НА БІЛОМУ ФОНІ -->
         <div class="contacts-media-side">
           <div class="contacts-media-wrap">
-            <img class="contacts-person-img" src="assets/team/olha_silan.webp" alt="Ольга Силан — Менеджер по роботі з клієнтами" loading="lazy" decoding="async">
+            <img class="contacts-person-img" src="assets/team/ilona_omelchenko.webp" alt="Ілона Омельченко — Провідний інвестиційний експерт" loading="lazy" decoding="async">
           </div>
-          
+
           <div class="contacts-person-info">
             <div class="contacts-status-inline">
               <span class="pulse-dot"></span>
               <span id="consultantStatusText">Зараз на зв'язку</span>
             </div>
-            <h3 class="contacts-person-name" id="consultantName">Ольга Силан</h3>
-            <p class="contacts-person-role" id="consultantRole">Менеджер по роботі з клієнтами</p>
+            <h3 class="contacts-person-name" id="consultantName">Ілона Омельченко</h3>
+            <p class="contacts-person-role" id="consultantRole">Провідний інвестиційний експерт</p>
           </div>
         </div>
 
@@ -7322,8 +7323,8 @@
         txtContactSubmit: 'Отримати консультацію',
         contactsGuaranteeText: 'Конфіденційність гарантовано • Відповідаємо протягом 10 хвилин',
         consultantStatusText: "Зараз на зв'язку",
-        consultantName: 'Ольга Силан',
-        consultantRole: 'Менеджер по роботі з клієнтами',
+        consultantName: 'Ілона Омельченко',
+        consultantRole: 'Провідний інвестиційний експерт',
 
         /* ФУТЕР (NUMO STYLE) */
         footerScrollTopText: 'ВГОРУ',
@@ -7507,8 +7508,8 @@
         txtContactSubmit: 'Get Consultation',
         contactsGuaranteeText: 'Privacy guaranteed • We respond within 10 minutes',
         consultantStatusText: 'Online Now',
-        consultantName: 'Olha Silan',
-        consultantRole: 'Client Relations Manager',
+        consultantName: 'Ilona Omelchenko',
+        consultantRole: 'Lead Investment Expert',
 
         /* FOOTER (NUMO STYLE) */
         footerScrollTopText: 'TOP',
