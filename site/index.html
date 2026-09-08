@@ -5971,6 +5971,9 @@
               </g>
 
               <!-- Вузол злиття -->
+              <!-- Квадратики (l) і кружечки (r) заходять ПІД іконку; монетки (d) лишаються поверх -->
+              <g class="syn-glyphs" id="synGlyphsBack"></g>
+
               <g class="syn-node" id="synNode">
                 <circle class="syn-node-halo" r="34" fill="url(#synNodeCore)"/>
                 <circle class="syn-node-ring" r="19" fill="none"/>
@@ -8571,6 +8574,7 @@
       if (!host) return;
       const svg = host.querySelector('.syn-flow-svg');
       const glyphLayer = document.getElementById('synGlyphs');
+      const glyphLayerBack = document.getElementById('synGlyphsBack');
       const plate = document.getElementById('synInvestorPlate');
       if (!svg || !glyphLayer) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -8618,7 +8622,7 @@
             glint.setAttribute('fill-opacity', '.9');
             el.appendChild(outer); el.appendChild(rim); el.appendChild(glint);
           }
-          glyphLayer.appendChild(el);
+          (d.key === 'd' ? glyphLayer : (glyphLayerBack || glyphLayer)).appendChild(el);
           glyphs.push(el);
         }
         const jit = glyphs.map(function () {
