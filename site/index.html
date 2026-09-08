@@ -3286,7 +3286,6 @@
      анімується тільки прозорість і зсув, сітка не сіпається. */
   .synergy-col-title,
   .synergy-col-subtitle,
-  .synergy-card-divider,
   .synergy-item {
     opacity: 0;
     transform: translateY(-14px);
@@ -3294,14 +3293,12 @@
   }
   .synergy-side-col:hover .synergy-col-title,
   .synergy-side-col:hover .synergy-col-subtitle,
-  .synergy-side-col:hover .synergy-card-divider,
   .synergy-side-col:hover .synergy-item {
     opacity: 1;
     transform: translateY(0);
   }
   .synergy-side-col:hover .synergy-col-title    { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
   .synergy-side-col:hover .synergy-col-subtitle { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s; }
-  .synergy-side-col:hover .synergy-card-divider { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s; }
   .synergy-side-col:hover .synergy-item          { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
   .synergy-side-col:hover .synergy-item:nth-child(1) { transition-delay: 0.18s; }
   .synergy-side-col:hover .synergy-item:nth-child(2) { transition-delay: 0.24s; }
@@ -3333,12 +3330,6 @@
     color: #81B873;
     margin: 0 0 20px;
     letter-spacing: 0.01em;
-  }
-  .synergy-card-divider {
-    height: 1.5px;
-    width: 100%;
-    background: linear-gradient(90deg, rgba(129, 184, 115, 0.75) 0%, rgba(255, 255, 255, 0.14) 70%, transparent 100%);
-    margin-bottom: 24px;
   }
 
   /* Список пунктів */
@@ -3604,7 +3595,6 @@
        нема сенсу, вона просто зникне назавжди. Лишаємо завжди видимою. */
     .synergy-col-title,
     .synergy-col-subtitle,
-    .synergy-card-divider,
     .synergy-item {
       opacity: 1;
       transform: none;
@@ -5915,7 +5905,6 @@
           </div>
           <h3 class="synergy-col-title" id="synDevTitle">Mandra Invest</h3>
           <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
-          <div class="synergy-card-divider"></div>
           <ul class="synergy-list">
             <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev1">Концепція</span></li>
             <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev2">Реалізація проєкту</span></li>
@@ -6008,7 +5997,6 @@
           </div>
           <h3 class="synergy-col-title" id="synRibasTitle">Ribas Hotels Group</h3>
           <div class="synergy-col-subtitle" id="synRibasSubtitle">Готельне управління</div>
-          <div class="synergy-card-divider"></div>
           <ul class="synergy-list">
             <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas1">Операційна модель</span></li>
             <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas2">Стандарти сервісу</span></li>
