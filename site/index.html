@@ -3936,11 +3936,11 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-    filter: brightness(0.75);
+    filter: brightness(0.68);
   }
   .phase1-video-card:hover .phase1-video-bg {
     transform: scale(1.05);
-    filter: brightness(0.88);
+    filter: brightness(0.8);
   }
   .phase1-video-scrim {
     position: absolute;
@@ -6212,10 +6212,9 @@
 
         <!-- Права колонка: 16:9 Відеоплеєр діючого курорту -->
         <div class="phase1-video-card" onclick="openPhase1Video()" title="Дивитися відео діючого курорту Mandra Petrichor">
-          <img src="assets/founders/gallery_3_hq.webp" 
-               alt="Mandra Petrichor діючий курорт 1-ї черги" 
-               class="phase1-video-bg" 
-               loading="lazy" decoding="async">
+          <video class="phase1-video-bg" id="ph1VideoBg"
+                 data-src="assets/video_thumb.mp4" poster="assets/founders/gallery_3_hq.webp"
+                 muted loop playsinline preload="none" aria-hidden="true"></video>
           <div class="phase1-video-scrim"></div>
           
           <div class="phase1-play-btn-wrap">
@@ -8797,6 +8796,33 @@
         io.observe(host);
       } else {
         run();
+      }
+    })();
+
+    (function initPhase1VideoBg() {
+      const video = document.getElementById('ph1VideoBg');
+      if (!video) return;
+      let loaded = false;
+      function load() {
+        if (loaded) return;
+        loaded = true;
+        video.src = video.dataset.src;
+        video.load();
+      }
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              load();
+              video.play().catch(function () {});
+            } else {
+              video.pause();
+            }
+          });
+        }, { threshold: 0.15 }).observe(video);
+      } else {
+        load();
+        video.play().catch(function () {});
       }
     })();
 
