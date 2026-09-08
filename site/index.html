@@ -5087,7 +5087,73 @@
     mask-repeat: no-repeat, no-repeat;
     z-index: 2;
   }
-  .site-footer > *:not(.footer-veg):not(.footer-watermark-wrap) { position: relative; z-index: 4; }
+  .site-footer > *:not(.footer-veg):not(.footer-watermark-wrap):not(.footer-scrolltop) { position: relative; z-index: 4; }
+
+  /* Кнопка "нагору" праворуч від стрічки: вертикальний підпис зі стрілкою,
+     сидить у тому ж нижньому шарі футера, що й водяний знак. */
+  .footer-scrolltop {
+    position: absolute;
+    right: clamp(20px, 5vw, 80px);
+    bottom: clamp(36px, 5vw, 76px);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.3s ease;
+  }
+  .footer-scrolltop:hover { color: #81B873; }
+  .footer-scrolltop-arrow {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .footer-scrolltop:hover .footer-scrolltop-arrow {
+    border-color: #81B873;
+    transform: translateY(-3px);
+  }
+  .footer-scrolltop-arrow svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .footer-scrolltop-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--sub-font);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  /* Клік: коротка "пружинка" — трохи стискається, потім трохи більше норми */
+  @keyframes footerScrollTopPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(0.85); }
+    70%  { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  .footer-scrolltop.is-pressed { animation: footerScrollTopPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @media (prefers-reduced-motion: reduce) {
+    .footer-scrolltop.is-pressed { animation: none; }
+  }
+  @media (max-width: 700px) {
+    .footer-scrolltop { right: 5vw; bottom: 24px; }
+  }
 
   /* Фоновий монументальний водяний знак: плавна безкінечна стрічка MANDRA INVEST (60 FPS) */
   .footer-watermark-wrap {
@@ -6546,17 +6612,24 @@
     <div class="footer-watermark-wrap" aria-hidden="true">
       <div class="footer-watermark-track">
         <span class="footer-watermark-group">
-          <span class="footer-watermark-item">MANDRA INVEST</span>
-          <span class="footer-watermark-item">MANDRA INVEST</span>
-          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
         </span>
         <span class="footer-watermark-group">
-          <span class="footer-watermark-item">MANDRA INVEST</span>
-          <span class="footer-watermark-item">MANDRA INVEST</span>
-          <span class="footer-watermark-item">MANDRA INVEST</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
+          <span class="footer-watermark-item">ТОЙ САМИЙ МОМЕНТ</span>
         </span>
       </div>
     </div>
+
+    <button type="button" class="footer-scrolltop" id="footerScrollTop" aria-label="Прокрутити сторінку нагору">
+      <span class="footer-scrolltop-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </span>
+      <span class="footer-scrolltop-label" id="footerScrollTopText">ВГОРУ</span>
+    </button>
 
     <div class="footer-container">
       
@@ -8333,6 +8406,22 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
       apply();
+    })();
+
+    (function initFooterScrollTop() {
+      const btn = document.getElementById('footerScrollTop');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        btn.classList.remove('is-pressed');
+        void btn.offsetWidth;
+        btn.classList.add('is-pressed');
+        if (window.lenis) {
+          window.lenis.scrollTo(0, { duration: 1.1, easing: function (t) { return 1 - Math.pow(1 - t, 3); } });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+      btn.addEventListener('animationend', function () { btn.classList.remove('is-pressed'); });
     })();
 
     (function initContactsReveal() {
