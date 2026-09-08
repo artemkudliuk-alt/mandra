@@ -4453,28 +4453,6 @@
     box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.24);
   }
 
-  /* Струс у мить активації: вісь повороту — гострий кут (умовне кріплення
-     до гілки), тож саме він майже не рухається, а протилежний закруглений
-     край гуляє помітніше — як листок на вітру. */
-  @keyframes leafShakeL {
-    0%   { transform: rotate(-3.5deg); }
-    22%  { transform: rotate(-11deg); }
-    46%  { transform: rotate(5deg); }
-    68%  { transform: rotate(-7deg); }
-    86%  { transform: rotate(-1deg); }
-    100% { transform: rotate(-3.5deg); }
-  }
-  @keyframes leafShakeR {
-    0%   { transform: rotate(3.5deg); }
-    22%  { transform: rotate(11deg); }
-    46%  { transform: rotate(-5deg); }
-    68%  { transform: rotate(7deg); }
-    86%  { transform: rotate(1deg); }
-    100% { transform: rotate(3.5deg); }
-  }
-  .flow-leaf[data-side="l"].is-shaking .flow-leaf-body { animation: leafShakeL 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
-  .flow-leaf[data-side="r"].is-shaking .flow-leaf-body { animation: leafShakeR 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
-
   /* Картка без заливки — текст завжди світлий (фон під ним темний, а не
      колір тону), тон лишає свій відбиток лише в кольорі номера. */
   .flow-leaf-num {
@@ -8615,17 +8593,10 @@
         });
       }
 
-      /* Активація листка: заливка й текст (через .is-in, CSS) + короткий
-         струс (.is-shaking, знімається сам після кінця анімації). Один раз,
+      /* Активація листка: текст проявляється (через .is-in, CSS). Один раз,
          назад не відкочується — щоб скрол туди-сюди не сіпав картку. */
       function activate(li) {
-        li.classList.add('is-in', 'is-shaking');
-        const body = li.querySelector('.flow-leaf-body');
-        if (!body) return;
-        body.addEventListener('animationend', function onEnd() {
-          body.removeEventListener('animationend', onEnd);
-          li.classList.remove('is-shaking');
-        });
+        li.classList.add('is-in');
       }
 
       function draw() {
