@@ -4347,18 +4347,16 @@
   }
   /* Три лози йдуть одним пучком і переплітаються між собою. Товщина кожної
      вдвічі більша за початкову — одна тонка лінія губилась в анімації. */
-  /* Спочатку гілка просто коричнева. У міру спуску вона наливається тим самим
-     коричневим, але з легким зеленим підтоном — не зеленим. Зеленіють лише
-     листочки, коли ріст до них доходить. */
+  /* Гілка завжди простого коричневого кольору, без анімації заливки —
+     "росте" тепер лише прогрес всередині (керує листочками), сама лоза
+     на вигляд статична. */
   .flow-vine-base { fill: none; stroke-width: 5; stroke-linecap: round; }
   .flow-vine-base[data-v="0"] { stroke: #4A3B29; }
   .flow-vine-base[data-v="1"] { stroke: #5C4A33; stroke-width: 4; }
   .flow-vine-base[data-v="2"] { stroke: #3A2E20; stroke-width: 4.4; }
-  /* Жива частина лози дорисовується у міру скролу */
-  .flow-vine-live { fill: none; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(129, 184, 115, 0.18)); }
-  .flow-vine-live[data-v="0"] { stroke: #6E6A3C; stroke-width: 5; }
-  .flow-vine-live[data-v="1"] { stroke: #7D7745; stroke-width: 4; }
-  .flow-vine-live[data-v="2"] { stroke: #5A5730; stroke-width: 4.4; opacity: 0.9; }
+  /* Живий шар лишається в DOM лише для розрахунку довжини маршруту —
+     візуально невидимий, кольору по ньому більше нема. */
+  .flow-vine-live { fill: none; stroke: none; opacity: 0; }
   /* Листочки лежать НАД лозою і загоряються, коли до них доходить ріст */
   .flow-sprig {
     fill: #5C4A33;
@@ -4394,14 +4392,14 @@
   .flow-leaf.is-in .flow-leaf-title { opacity: 1; transform: none; transition-delay: 0.30s; }
   .flow-leaf.is-in .flow-leaf-desc  { opacity: 1; transform: none; transition-delay: 0.42s; }
   .flow-leaf[data-side="l"] { align-self: flex-start; }
-  .flow-leaf[data-side="l"] .flow-leaf-body { transform: rotate(-3.5deg); }
-  .flow-leaf[data-side="l"] .flow-leaf-body:hover { transform: rotate(-3.5deg) translateY(-5px); }
+  .flow-leaf[data-side="l"] .flow-leaf-body { transform: rotate(-3.5deg); transform-origin: 100% 0%; }
+  .flow-leaf[data-side="l"].is-in .flow-leaf-body:hover { transform: rotate(-3.5deg) translateY(-5px); }
   .flow-leaf[data-side="r"] { align-self: flex-end; }
-  .flow-leaf[data-side="r"] .flow-leaf-body { transform: rotate(3.5deg); }
-  .flow-leaf[data-side="r"] .flow-leaf-body:hover { transform: rotate(3.5deg) translateY(-5px); }
+  .flow-leaf[data-side="r"] .flow-leaf-body { transform: rotate(3.5deg); transform-origin: 0% 0%; }
+  .flow-leaf[data-side="r"].is-in .flow-leaf-body:hover { transform: rotate(3.5deg) translateY(-5px); }
 
-  /* Форма листка — два протилежні кути майже круглі, один гострий.
-     Саме той силует, що на обраному ескізі, але тягнеться під обсяг тексту. */
+  /* Форма листка — два протилежні кути майже круглі, один гострий (саме там
+     умовне "кріплення" до лози). До активації — лише контур, без заливки. */
   .flow-leaf-body {
     width: 100%;
     height: 100%;
@@ -4410,15 +4408,41 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, background 0.45s ease;
+    background: transparent;
+    border: 2px solid rgba(129, 184, 115, 0.65);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, background 0.5s ease, border-color 0.5s ease;
   }
   .flow-leaf[data-side="l"] .flow-leaf-body { border-radius: 999px 14px 999px 999px; }
   .flow-leaf[data-side="r"] .flow-leaf-body { border-radius: 14px 999px 999px 999px; }
-  .flow-leaf[data-tone="light"] .flow-leaf-body { background: #81B873; }
-  .flow-leaf[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; }
 
-  .flow-leaf[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
-  .flow-leaf[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
+  /* Заливка приходить разом із текстом, коли прогрес по лозі досягає листка */
+  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body { background: #81B873; border-color: transparent; }
+  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; border-color: transparent; }
+
+  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
+  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
+
+  /* Струс у мить активації: вісь повороту — гострий кут (умовне кріплення
+     до гілки), тож саме він майже не рухається, а протилежний закруглений
+     край гуляє помітніше — як листок на вітру. */
+  @keyframes leafShakeL {
+    0%   { transform: rotate(-3.5deg); }
+    22%  { transform: rotate(-11deg); }
+    46%  { transform: rotate(5deg); }
+    68%  { transform: rotate(-7deg); }
+    86%  { transform: rotate(-1deg); }
+    100% { transform: rotate(-3.5deg); }
+  }
+  @keyframes leafShakeR {
+    0%   { transform: rotate(3.5deg); }
+    22%  { transform: rotate(11deg); }
+    46%  { transform: rotate(-5deg); }
+    68%  { transform: rotate(7deg); }
+    86%  { transform: rotate(1deg); }
+    100% { transform: rotate(3.5deg); }
+  }
+  .flow-leaf[data-side="l"].is-shaking .flow-leaf-body { animation: leafShakeL 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+  .flow-leaf[data-side="r"].is-shaking .flow-leaf-body { animation: leafShakeR 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
 
   .flow-leaf-num {
     font-family: var(--title-font);
@@ -8369,6 +8393,9 @@
           const tipX = (left ? r.right : r.left) - box.left + (left ? -14 : 14);
           const tipY = r.top - box.top + r.height * 0.20;
           const outY = r.top - box.top + r.height + 26;
+          /* Точка, де умовний ріст лози "торкається" листка — та сама частка
+             висоти дерева, що й прогрес p у draw(), тож обидва порівнянні. */
+          li.dataset.growAt = (tipY / box.height).toFixed(4);
           d += ' Q ' + cx.toFixed(1) + ' ' + (tipY - r.height * 0.30).toFixed(1) +
                ' ' + tipX.toFixed(1) + ' ' + tipY.toFixed(1);
           d += ' Q ' + tipX.toFixed(1) + ' ' + (tipY + r.height * 0.45).toFixed(1) +
@@ -8438,6 +8465,19 @@
         });
       }
 
+      /* Активація листка: заливка й текст (через .is-in, CSS) + короткий
+         струс (.is-shaking, знімається сам після кінця анімації). Один раз,
+         назад не відкочується — щоб скрол туди-сюди не сіпав картку. */
+      function activate(li) {
+        li.classList.add('is-in', 'is-shaking');
+        const body = li.querySelector('.flow-leaf-body');
+        if (!body) return;
+        body.addEventListener('animationend', function onEnd() {
+          body.removeEventListener('animationend', onEnd);
+          li.classList.remove('is-shaking');
+        });
+      }
+
       function draw() {
         const box = tree.getBoundingClientRect();
         const vh = window.innerHeight;
@@ -8451,6 +8491,13 @@
             sprigEls[i].classList.toggle('is-lit', p >= at);
           }
         }
+        /* Ріст лози (тепер невидимий на самій гілці) "торкається" листків
+           по черзі — саме тут з'являються заливка й текст. */
+        leaves.forEach(function (li) {
+          if (!li.classList.contains('is-in') && p >= parseFloat(li.dataset.growAt || '2')) {
+            activate(li);
+          }
+        });
       }
 
       build();
@@ -8459,12 +8506,7 @@
       window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { build(); draw(); }, 140); });
       window.addEventListener('scroll', draw, { passive: true });
 
-      if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver(function (en) {
-          en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-        }, { threshold: 0.2 });
-        leaves.forEach(function (li) { io.observe(li); });
-      } else {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         leaves.forEach(function (li) { li.classList.add('is-in'); });
       }
     })();
