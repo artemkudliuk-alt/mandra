@@ -4373,19 +4373,24 @@
   }
   /* Три лози йдуть одним пучком і переплітаються між собою. Товщина кожної
      вдвічі більша за початкову — одна тонка лінія губилась в анімації. */
-  /* Гілка завжди простого коричневого кольору, без анімації заливки —
-     "росте" тепер лише прогрес всередині (керує листочками), сама лоза
-     на вигляд статична. */
+  /* Спочатку гілка проста коричнева. У міру спуску вона наливається тим самим
+     коричневим з легким зеленим підтоном. */
   .flow-vine-base { fill: none; stroke-width: 5; stroke-linecap: round; }
   .flow-vine-base[data-v="0"] { stroke: #4A3B29; }
   .flow-vine-base[data-v="1"] { stroke: #5C4A33; stroke-width: 4; }
   .flow-vine-base[data-v="2"] { stroke: #3A2E20; stroke-width: 4.4; }
-  /* Живий шар лишається в DOM лише для розрахунку довжини маршруту —
-     візуально невидимий, кольору по ньому більше нема. */
-  .flow-vine-live { fill: none; stroke: none; opacity: 0; }
-  /* Дрібні листочки на лозі статично зелені — дерево на скрол не реагує,
-     анімується лише картка-листок */
+  /* Жива частина лози дорисовується у міру скролу */
+  .flow-vine-live { fill: none; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(129, 184, 115, 0.18)); }
+  .flow-vine-live[data-v="0"] { stroke: #6E6A3C; stroke-width: 5; }
+  .flow-vine-live[data-v="1"] { stroke: #7D7745; stroke-width: 4; }
+  .flow-vine-live[data-v="2"] { stroke: #5A5730; stroke-width: 4.4; opacity: 0.9; }
+  /* Листочки на лозі спочатку напівпрозорі, загоряються, коли до них доходить ріст */
   .flow-sprig {
+    fill: #5C4A33;
+    opacity: 0.8;
+    transition: fill 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+  }
+  .flow-sprig.is-lit {
     fill: #8FC97F;
     opacity: 1;
     filter: drop-shadow(0 0 5px rgba(129, 184, 115, 0.55));
@@ -4404,21 +4409,24 @@
     transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .flow-leaf.is-in { opacity: 1; transform: none; }
-  /* Номер, заголовок і опис завжди видимі разом із листком — без окремої
-     затримки чи стану "порожньо до активації" (за фідбеком клієнта). */
+  /* Номер, заголовок і опис проявляються по черзі, коли прогрес доходить до листка */
   .flow-leaf-num, .flow-leaf-title, .flow-leaf-desc {
-    opacity: 1;
-    transform: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  .flow-leaf.is-in .flow-leaf-num   { opacity: 1; transform: none; transition-delay: 0.18s; }
+  .flow-leaf.is-in .flow-leaf-title { opacity: 1; transform: none; transition-delay: 0.30s; }
+  .flow-leaf.is-in .flow-leaf-desc  { opacity: 1; transform: none; transition-delay: 0.42s; }
   .flow-leaf[data-side="l"] { align-self: flex-start; }
   .flow-leaf[data-side="l"] .flow-leaf-body { transform: rotate(-3.5deg); transform-origin: 100% 0%; }
-  .flow-leaf[data-side="l"] .flow-leaf-body:hover { transform: rotate(-3.5deg) translateY(-5px); }
+  .flow-leaf[data-side="l"].is-in .flow-leaf-body:hover { transform: rotate(-3.5deg) translateY(-5px); }
   .flow-leaf[data-side="r"] { align-self: flex-end; }
   .flow-leaf[data-side="r"] .flow-leaf-body { transform: rotate(3.5deg); transform-origin: 0% 0%; }
-  .flow-leaf[data-side="r"] .flow-leaf-body:hover { transform: rotate(3.5deg) translateY(-5px); }
+  .flow-leaf[data-side="r"].is-in .flow-leaf-body:hover { transform: rotate(3.5deg) translateY(-5px); }
 
   /* Форма листка — два протилежні кути майже круглі, один гострий (саме там
-     умовне "кріплення" до лози). Суцільна заливка кольором тону завжди. */
+     умовне "кріплення" до лози). До активації — лише контур, без заливки. */
   .flow-leaf-body {
     width: 100%;
     height: 100%;
@@ -4427,16 +4435,19 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, background 0.5s ease;
+    background: transparent;
+    border: 2px solid rgba(129, 184, 115, 0.65);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, background 0.5s ease, border-color 0.5s ease;
   }
   .flow-leaf[data-side="l"] .flow-leaf-body { border-radius: 999px 14px 999px 999px; }
   .flow-leaf[data-side="r"] .flow-leaf-body { border-radius: 14px 999px 999px 999px; }
 
-  .flow-leaf[data-tone="light"] .flow-leaf-body { background: #81B873; }
-  .flow-leaf[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; }
+  /* Заливка приходить разом із текстом, коли прогрес по лозі досягає листка */
+  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body { background: #81B873; border-color: transparent; }
+  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body { background: #2F5D3A; border-color: transparent; }
 
-  .flow-leaf[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
-  .flow-leaf[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
+  .flow-leaf.is-in[data-tone="light"] .flow-leaf-body:hover { background: #93C985; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.30); }
+  .flow-leaf.is-in[data-tone="dark"]  .flow-leaf-body:hover { background: #3A7047; box-shadow: 0 22px 50px rgba(0,0,0,0.42), 0 0 40px rgba(129,184,115,0.22); }
 
   /* Струс у мить активації: вісь повороту — гострий кут (умовне кріплення
      до гілки), тож саме він майже не рухається, а протилежний закруглений
@@ -8506,6 +8517,7 @@
       if (!leaves.length) return;
 
       const NSVG = 'http://www.w3.org/2000/svg';
+      let len = 1, sprigEls = null;
 
       /* Маршрут один на всі три лози. Будуємо його по кінчиках листків, далі
          щільно семплюємо і розводимо три копії синусом у різній фазі — так
@@ -8579,6 +8591,7 @@
           const sc = 0.55 + ((i * 37) % 13) / 11;   /* від 0.55 до ~1.65 */
           const el = document.createElementNS(NSVG, 'ellipse');
           el.setAttribute('class', 'flow-sprig');
+          el.dataset.at = (i / N).toFixed(4);
           el.setAttribute('rx', (15 * sc).toFixed(1));
           el.setAttribute('ry', (6.5 * sc).toFixed(1));
           el.setAttribute('transform',
@@ -8586,7 +8599,15 @@
             (ang + side * 52).toFixed(1) + ') translate(' + (15 * sc).toFixed(1) + ' 0)');
           sprigs.appendChild(el);
         }
+        sprigEls = sprigs.querySelectorAll('.flow-sprig');
 
+        len = lives[0].getTotalLength() || 1;
+        lives.forEach(function (el) {
+          const L = el.getTotalLength() || len;
+          el.style.strokeDasharray = L;
+          el.style.strokeDashoffset = L;
+          el._len = L;
+        });
       }
 
       /* Активація листка: заливка й текст (через .is-in, CSS) + короткий
@@ -8606,8 +8627,17 @@
         const box = tree.getBoundingClientRect();
         const vh = window.innerHeight;
         const p = Math.max(0, Math.min(1, (vh * 0.75 - box.top) / (box.height + vh * 0.2)));
-        /* Дерево (лоза й дрібні листочки на ній) статичне, на скрол не
-           реагує. Прогрес керує лише активацією карток-листків нижче. */
+        lives.forEach(function (el) {
+          el.style.strokeDashoffset = ((el._len || len) * (1 - p)).toFixed(1);
+        });
+        if (sprigEls) {
+          for (let i = 0; i < sprigEls.length; i++) {
+            const at = parseFloat(sprigEls[i].dataset.at);
+            sprigEls[i].classList.toggle('is-lit', p >= at);
+          }
+        }
+        /* Ріст лози "торкається" карток-листків по черзі — тут з'являються
+           заливка й текст. */
         leaves.forEach(function (li) {
           if (!li.classList.contains('is-in') && p >= parseFloat(li.dataset.growAt || '2')) {
             activate(li);
