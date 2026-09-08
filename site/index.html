@@ -3252,6 +3252,19 @@
     padding: 0;
     box-sizing: border-box;
   }
+  .synergy-section-title {
+    font-family: var(--title-font);
+    font-size: clamp(2rem, 3.2vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    text-align: center;
+    margin: 0 0 56px;
+  }
+  @media (max-width: 992px) {
+    .synergy-section-title { font-size: 8vw; margin-bottom: 32px; }
+  }
 
   /* Головна сітка: 3 колонки (Девелопер | 3D Макет столу | Оператор) */
   .synergy-grid {
@@ -5894,7 +5907,8 @@
   <div class="synergy-stage">
   <section class="section-synergy" id="synergy">
     <div class="synergy-container">
-      
+
+      <h2 class="synergy-section-title" id="synergyTitle">Як ми взаємодіємо</h2>
 
       <!-- Головна триколонкова сітка -->
       <div class="synergy-grid">
@@ -7202,6 +7216,7 @@
         founderName2: 'Сергій Боєв',
         founderRole2: 'Співзасновник Mandra Moments',
         /* ЕКРАН 8 — СИНЕРГІЯ (ДЕВЕЛОПЕР + ОПЕРАТОР + ІНВЕСТОР) */
+        synergyTitle: 'Як ми взаємодіємо',
         synDevTitle: 'Mandra Invest',
         synDevSubtitle: 'Девелопер',
         synDev1: 'Концепція',
@@ -7387,6 +7402,7 @@
         founderName2: 'Serhiy Boiev',
         founderRole2: 'Co-founder of Mandra Moments',
         /* SCREEN 8 — SYNERGY (DEVELOPER + OPERATOR + INVESTOR) */
+        synergyTitle: 'How we work together',
         synDevTitle: 'Mandra Invest',
         synDevSubtitle: 'Developer',
         synDev1: 'Concept',
@@ -7570,6 +7586,7 @@
                   'partnersTitle',
                   'foundersHeroText','founderName1','founderRole1','founderName2','founderRole2',
                   /* ЕКРАН 8 — СИНЕРГІЯ */
+                  'synergyTitle',
                   'synDevTitle','synDevSubtitle',
                   'synDev1','synDev2','synDev3','synDev4','synDev5',
                   'synRibasTitle','synRibasSubtitle',
