@@ -2347,18 +2347,44 @@
     pointer-events: auto;
     transition: opacity 0.5s ease 0.15s;
   }
-  /* Кнопка повернення — та сама капсула cta-btn-numo, що на першому екрані,
-     просто в потоці під текстом, а не абсолютним позиціонуванням збоку. */
-  .mp-back-btn {
+  /* Дві дії під текстом плашки: капсула-заявка (та сама, що на першому
+     екрані) + мінімальне текстове повернення до генплану поруч. */
+  .mp-phase-actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(22px, 2.2vw, 34px);
     margin-top: 1.6vw;
+    margin-left: 6px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease 0.2s;
   }
-  .section-masterplan-clean.mp-video-active.mp-ended .mp-back-btn {
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-phase-actions {
     opacity: 1;
     pointer-events: auto;
   }
+  .mp-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--sub-font);
+    font-size: clamp(0.85rem, 0.9vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: color 0.25s ease, gap 0.25s ease;
+  }
+  .mp-back-link-text {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+  .mp-back-link:hover { color: var(--accent-color); gap: 11px; }
+  .mp-back-link-arrow svg { width: 15px; height: 15px; display: block; }
 
   /* Текстовий блок у лівій верхній частині — вирівняний по вертикальній осі контейнера */
   .mp-floating-content {
@@ -5914,16 +5940,24 @@
           <span id="mpPhL1">SPA-комплекс</span><span id="mpPhL2">ресторан</span><span id="mpPhL3">event hall</span><span id="mpPhL4">простори для побачень</span><span id="mpPhL5">вілли для двох</span>
         </div>
 
-        <!-- Повернення з end-кадру прольоту назад до генплану: та сама капсула, що на першому екрані -->
-        <button type="button" class="cta-btn-numo mp-back-btn" id="mpBackBtn" aria-label="Повернутися назад">
-          <span class="btn-arrow btn-arrow-left" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="action-pill">Повернутися назад</span>
-          <span class="btn-arrow btn-arrow-right" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </button>
+        <!-- Дві дії: заявка (капсула, як на першому екрані) + мінімальне повернення до генплану -->
+        <div class="mp-phase-actions">
+          <a href="#contacts" class="cta-btn-numo mp-phase-cta" id="mpPhaseCta">
+            <span class="btn-arrow btn-arrow-left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="action-pill">Залишити заявку</span>
+            <span class="btn-arrow btn-arrow-right" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+          <button type="button" class="mp-back-link" id="mpBackBtn" aria-label="Повернутися назад">
+            <span class="mp-back-link-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M11 17 6 12l5-5M6.5 12H20" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="mp-back-link-text">Повернутися назад</span>
+          </button>
+        </div>
       </div>
     </div>
   </section>
