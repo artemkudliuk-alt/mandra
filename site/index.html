@@ -3319,8 +3319,12 @@
     line-height: 1.2;
     /* «Ribas Hotels Group» лягає у два рядки, «Mandra Invest» в один — колонки
        виходили різної висоти, і при центруванні нижні відступи розходились.
-       Резервуємо два рядки в обох. */
+       Резервуємо два рядки в обох. Текст притиснуто до низу боксу, інакше
+       однорядковий заголовок лишає порожній рядок НАД собою, а відстань до
+       підзаголовка під ним виходить вдвічі більшою, ніж у дворядкового. */
     min-height: 2.4em;
+    display: flex;
+    align-items: flex-end;
   }
   .synergy-col-subtitle {
     font-family: var(--sub-font);
@@ -7991,22 +7995,6 @@
       const SHOWCASE_SNAP_DURATION = 1.26;
       let isSnapping = false;
       let snapTimer = 0;
-      /* Момент, коли сітка щойно зійшлась: доки не мине DOCK_GRACE, розсування
-         не запускаємо — інакше один довгий рух колеса проходить обидва такти.
-         Було 650мс — цього вистачало, щоб проковтнути й наступний, уже окремий
-         щиглик колеса користувача (відчувалось, наче перший скрол "не спрацював").
-         200мс досить, щоб відсікти лише хвіст того самого руху колеса. */
-      const DOCK_GRACE = 200;
-      let dockedAt = 0, wasDocked = false;
-      (function watchDock() {
-        const pos = getShowcasePositions();
-        if (pos) {
-          const inGrid = window.scrollY >= pos.gridY - 4 && window.scrollY <= pos.holdEndY;
-          if (inGrid && !wasDocked) { dockedAt = performance.now(); }
-          wasDocked = inGrid;
-        }
-        requestAnimationFrame(watchDock);
-      })();
 
       function scrollToPos(targetY, duration = HERO_SNAP_DURATION) {
         isSnapping = true;
@@ -8076,18 +8064,13 @@
         const scPos = getShowcasePositions();
         if (scPos) {
           /* 3. Користувач на зібраній сітці: наступний скрол вниз розводить картки
-             і піднімає статистику.
-             Вікно починалось за 60px ДО стику — при безперервному скролі снап
-             спрацьовував ще на збірці, і трек перестрибував і паузу, і розсування
-             разом. Друге відео не встигало навіть початись. Тепер: тільки після
-             стику, з витримкою DOCK_GRACE, щоб той самий рух колеса, який довів
-             сітку до стику, одразу не зривав її далі. */
+             і піднімає статистику. Вікно починається за 8px ПІСЛЯ стику (не
+             раніше), щоб той самий рух колеса, що зібрав сітку, встиг її
+             показати перш ніж почати розсування. isSnapping вище блокує
+             повторний тригер, поки анімація не завершиться — окремий таймер
+             заморозки більше не потрібен: один скрол-тик одразу запускає
+             розсування, без "мертвого" першого скролу. */
           if (scrollY >= scPos.gridY + 8 && scrollY <= scPos.holdEndY && e.deltaY > 6) {
-            if (performance.now() - dockedAt < DOCK_GRACE) {
-              e.stopImmediatePropagation();
-              e.preventDefault();
-              return;
-            }
             e.stopImmediatePropagation();
             e.preventDefault();
             scrollToShowcasePos(scPos.statsY, SHOWCASE_SNAP_DURATION);
