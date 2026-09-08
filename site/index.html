@@ -5093,13 +5093,13 @@
      сидить у тому ж нижньому шарі футера, що й водяний знак. */
   .footer-scrolltop {
     position: absolute;
-    right: clamp(20px, 5vw, 80px);
-    bottom: clamp(36px, 5vw, 76px);
+    right: 12px;
+    bottom: calc(clamp(36px, 5vw, 76px) + 50px);
     z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 25px;
     background: none;
     border: none;
     padding: 8px;
@@ -5108,26 +5108,22 @@
     transition: color 0.3s ease;
   }
   .footer-scrolltop:hover { color: #81B873; }
+  /* Без кружка навколо — сама стрілка, 2.5x більша */
   .footer-scrolltop-arrow {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.28);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .footer-scrolltop:hover .footer-scrolltop-arrow {
-    border-color: #81B873;
     transform: translateY(-3px);
   }
   .footer-scrolltop-arrow svg {
-    width: 16px;
-    height: 16px;
+    width: 40px;
+    height: 40px;
     stroke: currentColor;
     fill: none;
-    stroke-width: 2;
+    stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
@@ -5135,7 +5131,7 @@
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     font-family: var(--sub-font);
-    font-size: 0.78rem;
+    font-size: 1.95rem;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -5276,7 +5272,7 @@
   /* Заголовки колонок */
   .footer-col-title {
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(1.05rem, 1.25vw, 1.3rem);
+    font-size: clamp(1.37rem, 1.63vw, 1.69rem);
     font-weight: 700;
     color: #FFFFFF;
     margin: 0 0 24px;
@@ -5295,7 +5291,7 @@
 
   .footer-nav-link {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: clamp(0.92rem, 0.98vw, 1.05rem);
+    font-size: clamp(1.2rem, 1.27vw, 1.37rem);
     font-weight: 400;
     color: rgba(255, 255, 255, 0.65);
     text-decoration: none;
@@ -5333,9 +5329,9 @@
 
   .footer-contact-label {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 0.78rem;
+    font-size: 1.01rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .footer-contact-item {
@@ -5345,7 +5341,7 @@
     color: #FFFFFF;
     text-decoration: none;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: clamp(0.92rem, 0.98vw, 1.05rem);
+    font-size: clamp(1.2rem, 1.27vw, 1.37rem);
     font-weight: 400;
     transition: color 0.2s ease;
   }
@@ -5354,8 +5350,8 @@
   }
 
   .footer-contact-icon {
-    width: 18px;
-    height: 18px;
+    width: 23px;
+    height: 23px;
     color: #FFFFFF;
     flex-shrink: 0;
   }
@@ -5400,7 +5396,7 @@
     padding-top: 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 0.88rem;
+    font-size: 1.14rem;
     color: rgba(255, 255, 255, 0.5);
   }
 
