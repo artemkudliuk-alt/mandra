@@ -4,8 +4,9 @@
     {
       "name": "mandra-site",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "3000", "--directory", "site"],
-      "port": 3000
+      "runtimeArgs": ["serve.py"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

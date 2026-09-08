@@ -2259,6 +2259,105 @@
     height: auto;
     display: block;
     object-fit: cover;
+    filter: brightness(0.95);
+    transition: filter 0.4s ease;
+  }
+
+  /* Відео-проліт у чергу: старт-кадр = сам генплан, тому підміна непомітна.
+     Лежить тим самим шаром, що й .mp-plan, і виринає замість нього. */
+  .mp-phase-video,
+  .mp-phase-endframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    transition: opacity 0.5s ease;
+  }
+  .mp-phase-endframe { z-index: 4; }
+  .section-masterplan-clean.mp-video-active .mp-phase-video {
+    opacity: 1;
+  }
+  /* Кінець прольоту: чіткий кадр замінює відео, а інфоблоки й шапка
+     повертаються — друга частина стику "mp-video-active", не окремий стан. */
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-phase-video {
+    opacity: 0;
+  }
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-phase-endframe {
+    opacity: 1;
+  }
+  /* Глобальна шапка сайту — fixed на body, поза секцією мастер-плану,
+     тож ховається окремим правилом через клас на body. */
+  body.mp-video-active .top-navbar {
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.mp-video-active.mp-ended .top-navbar {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .section-masterplan-clean.mp-video-active .mp-floating-content,
+  .section-masterplan-clean.mp-video-active .mp-plan {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .mp-plan { transition: opacity 0.45s ease; }
+  .mp-floating-content { transition: opacity 0.45s ease; }
+
+  /* Left-градієнт над відео/end-кадром (той самий приём, що й .mp-clean-media::before
+     для генплану, але вище за z-index — під фото і відео той градієнт не проглядав). */
+  .mp-clean-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(14, 18, 15, 0.86) 0%, rgba(14, 18, 15, 0.5) 42%, transparent 72%);
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-clean-media::after {
+    opacity: 1;
+  }
+
+  /* Текст III черги на end-кадрі: не боксована плашка, а повноцінний текстовий
+     блок в мові заголовків сусідніх екранів (hero) — просто над лівим
+     градієнтом, без скла й підкладки. Позиція під цей контекст, а не під
+     старий конектор до маркера на широкому генплані (той лишається вимкненим). */
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-phase-card {
+    display: block;
+    left: 5vw;
+    right: auto;
+    bottom: auto;
+    top: 10%;
+    max-width: 640px;
+    width: 40vw;
+    min-width: 340px;
+    transform: none;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 0;
+    border-radius: 0;
+    z-index: 6;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.5s ease 0.15s;
+  }
+  /* Кнопка повернення — та сама капсула cta-btn-numo, що на першому екрані,
+     просто в потоці під текстом, а не абсолютним позиціонуванням збоку. */
+  .mp-back-btn {
+    margin-top: 1.6vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease 0.2s;
+  }
+  .section-masterplan-clean.mp-video-active.mp-ended .mp-back-btn {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* Текстовий блок у лівій верхній частині — вирівняний по вертикальній осі контейнера */
@@ -2368,19 +2467,21 @@
   }
   .mp-phase-title {
     font-family: var(--title-font);
-    font-size: 1.42vw;
+    font-size: clamp(2.2rem, 3.3vw, 4rem);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.15;
     color: #FFFFFF;
     margin: 0 0 1.1vw;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
   }
   .mp-phase-desc {
     font-family: var(--sub-font);
-    font-size: 0.88vw;
-    font-weight: 300;
+    font-size: clamp(1.05rem, 1.25vw, 1.4rem);
+    font-weight: 400;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.88);
     margin: 0 0 1.4vw;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
   }
   .mp-phase-count {
     font-family: var(--title-font);
@@ -2435,9 +2536,10 @@
   .section-masterplan-clean.is-visible .mp-connector circle {
     opacity: 1;
   }
-  /* Плашка черги та лінія-конектор тимчасово приховані — підписи тепер
-     живуть просто на плані. Розмітка, тексти й applyPhase() лишаються
-     робочими, щоб повернути плашку однією правкою. */
+  /* На генплані підписи живуть просто на плані (.mp-marker), тож плашка
+     й лінія-конектор тут вимкнені. Плашку .mp-phase-card повертає інший,
+     більш специфічний правило нижче — вона працює лише на end-кадрі
+     прольоту в чергу (.mp-video-active.mp-ended), не тут. */
   .mp-phase-card, .mp-connector { display: none; }
 
   /* Резервуємо місце під картинку — прибирає стрибок вёрстки */
@@ -2513,45 +2615,184 @@
      підкладка з блюром і градієнтна кромка через ::before з mask-composite. */
   .mp-address {
     position: relative;
-    display: inline-block;
+    display: flex;
+    width: 100%;
+    max-width: 34vw;
+    align-items: center;
+    gap: 0.9vw;
     margin-top: 1.6vw;
-    padding: 0.85vw 1.4vw;
-    border-radius: 10px;
-    background: rgba(16, 23, 18, 0.74);
+    padding: 0.7vw 1.2vw 0.7vw 0.7vw;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 14px;
+    background: rgba(18, 18, 18, 0.42);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
     isolation: isolate;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.30),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
       0 18px 44px rgba(0, 0, 0, 0.38);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease,
+                box-shadow 0.4s ease, background-color 0.4s ease;
   }
-  .mp-address::before {
+  .mp-address:hover {
+    transform: translateY(-2px);
+    border-color: rgba(129, 184, 115, 0.5);
+    background: rgba(22, 28, 22, 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 22px 54px rgba(0, 0, 0, 0.46),
+      0 0 0 1px rgba(129, 184, 115, 0.25);
+  }
+
+  /* Круглий бейдж з піном і "радар-пінгом" — двома кільцями, що розходяться,
+     щоб плашка одразу читалась як жива/клікабельна точка на мапі. */
+  .mp-address-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.5vw;
+    height: 2.5vw;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 50%;
+    background: rgba(129, 184, 115, 0.16);
+    color: #81B873;
+  }
+  .mp-address-icon svg { width: 46%; height: 46%; position: relative; z-index: 2; }
+  .mp-address-ping,
+  .mp-address-ping::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(148deg,
-      rgba(255, 255, 255, 0.46) 0%,
-      rgba(255, 255, 255, 0.13) 34%,
-      rgba(255, 255, 255, 0.04) 62%,
-      rgba(255, 255, 255, 0.16) 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
+    border-radius: 50%;
+    border: 1.5px solid rgba(129, 184, 115, 0.9);
+    box-shadow: 0 0 10px 1px rgba(129, 184, 115, 0.35);
+    animation: mpPing 2.6s cubic-bezier(0.2, 0.7, 0.4, 1) infinite;
+  }
+  .mp-address-ping::after { animation-delay: 1.3s; }
+  @keyframes mpPing {
+    0%   { transform: scale(0.7); opacity: 1; }
+    100% { transform: scale(2.6); opacity: 0; }
+  }
+
+  .mp-address-copy { display: flex; flex-direction: column; gap: 0.15vw; flex: 1 1 auto; min-width: 0; }
+  .mp-address-eyebrow {
+    font-family: var(--sub-font);
+    font-size: 0.62vw;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(129, 184, 115, 0.85);
   }
   .mp-address span {
     font-family: var(--sub-font);
     font-size: 0.95vw;
     font-weight: 500;
     letter-spacing: 0.01em;
-    line-height: 1.35;
+    line-height: 1.3;
     color: rgba(255, 255, 255, 0.92);
   }
+
+  /* Стрілка-підказка видна одразу (щоб було зрозуміло, що плашка клікабельна),
+     на hover лише трохи яскравішає і виїжджає вперед. */
+  .mp-address-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.35vw;
+    flex: none;
+    white-space: nowrap;
+    margin-left: auto;
+    padding-left: 0.9vw;
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+    font-family: var(--sub-font);
+    font-size: 0.78vw;
+    font-weight: 600;
+    color: rgba(129, 184, 115, 0.8);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .mp-address-arrow svg {
+    width: 0.85vw; min-width: 12px; height: auto; flex: none;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mp-address:hover .mp-address-arrow {
+    color: #81B873;
+    border-left-color: rgba(129, 184, 115, 0.3);
+  }
+  .mp-address:hover .mp-address-arrow svg { transform: translate(2px, -2px); }
+
   @media (max-width: 900px) {
-    .mp-address { margin-top: 18px; padding: 10px 16px; }
+    .mp-address { margin-top: 18px; padding: 8px 14px 8px 8px; max-width: 100%; }
+    .mp-address-icon { width: 34px; height: 34px; }
+    .mp-address-eyebrow { font-size: 10px; }
     .mp-address span { font-size: 13px; }
+    .mp-address-arrow { font-size: 11px; padding-left: 10px; }
+    .mp-address-arrow span { display: none; }
+  }
+
+  /* Попап живої супутникової карти локації (той самий glass-modal, що й у відеомодалки) */
+  .mp-map-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(20px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 3vw;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .mp-map-modal.active { display: flex; opacity: 1; }
+  .mp-map-modal-box {
+    position: relative;
+    max-width: 1100px;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #0E1410;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(129, 184, 115, 0.35);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(129, 184, 115, 0.2);
+    transform: scale(0.94) translateY(10px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mp-map-modal.active .mp-map-modal-box { transform: scale(1) translateY(0); }
+  .mp-map-modal-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .mp-map-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 10;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(14, 20, 16, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: transform 0.25s ease, background-color 0.25s ease;
+  }
+  .mp-map-modal-close:hover {
+    transform: scale(1.1);
+    background: #81B873;
+    color: #0E1410;
   }
 
   /* ПІДПИСИ ЧЕРГ НА ПЛАНІ.
@@ -2674,16 +2915,13 @@
   .section-partners {
     background: #0B0F0C;
     color: #FFFFFF;
-    padding: 140px 5vw 160px;
-    min-height: 65vh;
+    padding: 98px 5vw 160px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     position: relative;
     overflow: hidden;
     width: 100%;
     box-sizing: border-box;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
   .partners-top-container {
     width: 100%;
@@ -2802,7 +3040,7 @@
   .partner-img.logo-temo { height: 38px; max-width: 260px; }
 
   @media (max-width: 900px) {
-    .section-partners { padding: 64px 0 74px; }
+    .section-partners { padding: 45px 0 74px; }
     .partners-top-container { padding: 0 6vw 24px; }
     .partners-title { font-size: 7.6vw; }
     .marquee-track {
@@ -2828,7 +3066,7 @@
      ============================================================ */
   .section-founders {
     background: #0B0F0C;
-    padding: 0 0 48px;
+    padding: 100px 0 48px;
     width: 100%;
     position: relative;
     box-sizing: border-box;
@@ -2966,7 +3204,7 @@
   }
 
   @media (max-width: 900px) {
-    .section-founders { padding: 0 0 36px; }
+    .section-founders { padding: 56px 0 36px; }
     .founders-container { padding: 0 5vw; }
     .founders-top-grid {
       grid-template-columns: 1fr;
@@ -2988,28 +3226,18 @@
      Чистий білий фон, архітектурний макет 3D, Liquid Glass картки
      Без зайвих заголовків, фірмова палітра без золота (#DEF7D7, #81B873, #0E1F0B)
      ============================================================ */
-  /* Обгортка обмежує примерзання: доки вона в кадрі, синергія стоїть,
-     а екран 9 повзе поверх. Той самий приём, що з героєм і маніфестом. */
   .synergy-stage {
     position: relative;
     width: 100%;
   }
-  /* Невеликий запас ходу під примерзлою секцією: дає стику довжину для
-     спокійного прольоту. Раніше було 55vh під два кроки — тепер крок один. */
-  .synergy-hold { height: 22vh; }
-  /* На вузьких екранах стик вимкнено: розпірка не потрібна, а примерзання
-     на короткому вікні лише зжирало б висоту під контент. */
   @media (max-width: 900px) {
-    .synergy-hold { display: none; }
-    .section-synergy { position: static; min-height: auto; }
+    .section-synergy { min-height: auto; }
   }
   .section-synergy {
     background: #0B0F0C;
-    padding: 85px 5vw 105px;
+    padding: 85px 5vw 74px;
     width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    position: relative;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -3195,7 +3423,7 @@
 
   .syn-node-halo { opacity: 0.5; }
   .syn-node-ring { stroke: rgba(233, 190, 74, 0.55); stroke-width: 1.4; }
-  .syn-node-core { fill: #FFE9A8; filter: url(#synGlowGold); }
+  .syn-node-icon { filter: url(#synGlowGold); }
 
   /* Долари летять уздовж ліній; позицію кожного щокадру ставить rAF */
   .syn-glyph {
@@ -3217,7 +3445,7 @@
 
   /* Архітектурна метрика Інвестора (без AI-плашки-пігулки) */
   .synergy-investor-stat {
-    margin-top: 30px;
+    margin-top: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3327,7 +3555,7 @@
   }
 
   @media (max-width: 992px) {
-    .section-synergy { padding: 24px 0 80px; }
+    .section-synergy { padding: 24px 0 56px; }
     .synergy-container { padding: 0 5vw; }
     .synergy-grid {
       grid-template-columns: 1fr;
@@ -3348,7 +3576,7 @@
       order: 3;
     }
     .synergy-investor-stat {
-      margin-top: 20px;
+      margin-top: 80px;
     }
   }
 
@@ -3458,24 +3686,16 @@
      Глибокий темний фон (#0B0F0C), оливкові акценти NUMO (#81B873),
      4 метрики в рядок + спліт сенсів/відгуків та 16:9 відеоплеєр
      ============================================================ */
-  /* Наїжджає слоєм поверх примерзлої синергії — звідси z-index і скруглені
-     верхні кути, як у маніфесту над героєм. */
   .section-phase1-live {
     position: relative;
     z-index: 3;
-    /* На стику секція стає в нуль вікна, а шапка фіксована й накриває верх —
-       додаємо її висоту до верхнього паддінгу, щоб заголовок не заїжджав. */
-    scroll-margin-top: 0;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    background-color: #121212;
-    background-image: 
+    background-color: #0B0F0C;
+    background-image:
       radial-gradient(circle at 82% 18%, rgba(129, 184, 115, 0.06) 0%, transparent 55%);
-    padding: calc(96px + clamp(64px, 5.5vw, 84px)) 5vw 70px;
+    padding: 120px 5vw 70px;
     width: 100%;
     position: relative;
     box-sizing: border-box;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
     border-bottom: none;
     overflow: hidden;
   }
@@ -5506,6 +5726,15 @@
         <img class="mp-zone" data-phase="3" src="assets/mp_plan_zone3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </div>
 
+      <!-- Проліт у III чергу: старт-кадр збігається з генпланом вище,
+           тому підміна на клік непомітна. Показується лише коли активна. -->
+      <video class="mp-phase-video" id="mpPhaseVideo" muted playsinline preload="none" aria-hidden="true">
+        <source id="mpPhaseVideoSource" src="assets/cherga%203_video.mp4?v=2" type="video/mp4">
+      </video>
+
+      <!-- End-кадр після прольоту: чітке фото замість м'якого останнього кадру відео. -->
+      <img class="mp-phase-endframe" id="mpPhaseEndframe" src="assets/cherga3_endframe.webp" alt="" aria-hidden="true">
+
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
         <h2 class="mp-float-title" id="mpTitle">Інвест проект Mandra Petrichor</h2>
@@ -5514,7 +5743,28 @@
         <p class="mp-float-desc" id="mpDesc">
           Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.
         </p>
-        <div class="mp-address"><span id="mpAddress">Село Забуяння, Київська область, 70км від м. Київ</span></div>
+        <button type="button" class="mp-address" onclick="openMapModal()">
+          <span class="mp-address-icon">
+            <span class="mp-address-ping"></span>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C7.86 2 4.5 5.36 4.5 9.5c0 5.61 6.23 11.6 6.5 11.86a1.4 1.4 0 0 0 2 0c.27-.26 6.5-6.25 6.5-11.86C19.5 5.36 16.14 2 12 2Zm0 10.6a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z" fill="currentColor"/></svg>
+          </span>
+          <span class="mp-address-copy">
+            <span class="mp-address-eyebrow">Локація проєкту</span>
+            <span id="mpAddress">Село Забуяння, Київська область, 70км від м. Київ</span>
+          </span>
+          <span class="mp-address-arrow" id="mpAddressHint">
+            <span>Показати на карті</span>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- Попап живої супутникової карти локації -->
+      <div class="mp-map-modal" id="mpMapModal" onclick="closeMapModal(event)">
+        <div class="mp-map-modal-box" onclick="event.stopPropagation()">
+          <button class="mp-map-modal-close" onclick="closeMapModal()" title="Закрити (Esc)">✕</button>
+          <iframe class="mp-map-modal-frame" id="mpMapFrame" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Розташування Mandra Petrichor"></iframe>
+        </div>
       </div>
 
       <!-- Лінія від плашки до маркера 03 -->
@@ -5532,83 +5782,17 @@
         <div class="mp-phase-list">
           <span id="mpPhL1">SPA-комплекс</span><span id="mpPhL2">ресторан</span><span id="mpPhL3">event hall</span><span id="mpPhL4">простори для побачень</span><span id="mpPhL5">вілли для двох</span>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============================================================
-       ЕКРАН 6 — ПАРТНЕРИ МАНДРА ІНВЕСТ
-       Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
-       ============================================================ -->
-  <section class="section-partners" id="partners">
-    <div class="partners-top-container">
-      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
-    </div>
-
-    <!-- Нескінченна біжуча стрічка логотипів -->
-    <div class="partners-marquee-wrap">
-      <div class="partners-marquee">
-        <div class="marquee-track">
-          <!-- Комплект 1 -->
-          <div class="partner-logo-box" title="Mandra Moments">
-            <img src="assets/partners/logo_mandra.webp" alt="Mandra Moments" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group">
-            <img src="assets/partners/logo_yod.webp" alt="YOD Group" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka">
-            <img src="assets/partners/logo_ekopark.webp" alt="Ekopark Kovalivka" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group">
-            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time">
-            <img src="assets/partners/logo_happy_time.webp" alt="Happy Time" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design">
-            <img src="assets/partners/logo_temo.svg" alt="TEMO Hotel Design" class="partner-img logo-temo" decoding="async">
-          </div>
-
-          <!-- Комплект 2 (безперервний безшовний цикл) -->
-          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
-            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
-            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
-            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
-            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
-            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
-            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
-          </div>
-
-          <!-- Комплект 3 (запас для надшироких екранів 2K/4K) -->
-          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
-            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
-            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
-            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
-            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
-            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
-            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
-          </div>
-        </div>
+        <!-- Повернення з end-кадру прольоту назад до генплану: та сама капсула, що на першому екрані -->
+        <button type="button" class="cta-btn-numo mp-back-btn" id="mpBackBtn" aria-label="Повернутися назад">
+          <span class="btn-arrow btn-arrow-left" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="action-pill">Повернутися назад</span>
+          <span class="btn-arrow btn-arrow-right" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </button>
       </div>
     </div>
   </section>
@@ -5749,7 +5933,15 @@
                 <circle class="syn-node-halo" r="34" fill="url(#synNodeCore)"/>
                 <circle class="syn-node-ring" r="19" fill="none"/>
                 <circle class="syn-node-ring syn-node-ring-2" r="19" fill="none"/>
-                <circle class="syn-node-core" r="6.5"/>
+                <g class="syn-node-icon" id="synNodeIcon">
+                  <g transform="scale(0.0764) translate(-642.5,-658)">
+                    <path id="roof-body" fill="#0E1F0B" fill-rule="evenodd" d="M 484.0,756.0 L 483.0,762.0 L 478.0,768.0 L 470.0,784.0 L 470.0,788.0 L 483.0,762.0 Z M 498.0,730.0 L 496.0,731.0 L 488.0,747.0 L 490.0,747.0 Z M 514.0,697.0 L 507.0,708.0 L 507.0,712.0 Z M 600.0,589.0 L 465.0,871.0 L 720.0,871.0 Z M 593.0,535.0 L 589.0,541.0 L 589.0,544.0 L 587.0,545.0 L 586.0,551.0 L 583.0,553.0 L 582.0,559.0 L 580.0,560.0 L 585.0,561.0 L 582.0,575.0 L 579.0,577.0 L 575.0,575.0 L 576.0,568.0 L 575.0,573.0 L 553.0,614.0 L 553.0,618.0 L 528.0,665.0 L 528.0,668.0 L 555.0,613.0 L 557.0,611.0 L 561.0,612.0 L 563.0,621.0 L 562.0,627.0 L 558.0,629.0 L 553.0,641.0 L 549.0,641.0 L 547.0,644.0 L 549.0,645.0 L 547.0,656.0 L 542.0,662.0 L 536.0,661.0 L 540.0,669.0 L 536.0,673.0 L 537.0,677.0 L 533.0,679.0 L 534.0,683.0 L 530.0,689.0 L 524.0,693.0 L 521.0,706.0 L 522.0,709.0 L 513.0,721.0 L 514.0,726.0 L 509.0,729.0 L 510.0,732.0 L 504.0,737.0 L 504.0,751.0 L 492.0,761.0 L 491.0,772.0 L 485.0,778.0 L 483.0,787.0 L 477.0,795.0 L 478.0,799.0 L 474.0,804.0 L 471.0,804.0 L 472.0,808.0 L 470.0,810.0 L 468.0,822.0 L 463.0,824.0 L 459.0,835.0 L 457.0,836.0 L 459.0,837.0 L 458.0,844.0 L 453.0,845.0 L 446.0,861.0 L 437.0,861.0 L 437.0,855.0 L 427.0,874.0 L 459.0,871.0 L 454.0,870.0 L 455.0,863.0 L 461.0,855.0 L 461.0,851.0 L 572.0,620.0 L 581.0,602.0 L 585.0,599.0 L 586.0,593.0 L 592.0,588.0 L 593.0,582.0 L 597.0,578.0 L 600.0,578.0 L 601.0,580.0 L 602.0,574.0 L 605.0,571.0 L 608.0,572.0 Z M 433.0,864.0 L 437.0,866.0 L 437.0,869.0 L 434.0,873.0 L 431.0,873.0 L 430.0,868.0 Z M 573.0,585.0 L 575.0,587.0 L 576.0,594.0 L 573.0,598.0 L 570.0,597.0 L 570.0,602.0 L 566.0,604.0 L 567.0,609.0 L 561.0,610.0 L 559.0,605.0 L 568.0,586.0 Z M 594.0,489.0 L 579.0,516.0 L 577.0,523.0 L 499.0,678.0 L 495.0,691.0 L 492.0,693.0 L 488.0,704.0 L 484.0,708.0 L 478.0,725.0 L 475.0,728.0 L 446.0,790.0 L 441.0,797.0 L 416.0,850.0 L 413.0,851.0 L 414.0,855.0 L 405.0,873.0 L 410.0,873.0 L 411.0,868.0 L 429.0,834.0 L 429.0,831.0 L 431.0,830.0 L 458.0,772.0 L 462.0,767.0 L 592.0,501.0 L 596.0,499.0 L 684.0,700.0 L 759.0,878.0 L 762.0,881.0 L 775.0,882.0 L 775.0,893.0 L 770.0,895.0 L 774.0,896.0 L 774.0,906.0 L 777.0,901.0 L 804.0,894.0 L 813.0,893.0 L 814.0,896.0 L 812.0,897.0 L 826.0,894.0 L 822.0,893.0 L 823.0,890.0 L 830.0,889.0 L 830.0,893.0 L 828.0,893.0 L 839.0,891.0 L 836.0,891.0 L 835.0,888.0 L 862.0,881.0 L 864.0,881.0 L 865.0,884.0 L 859.0,886.0 L 872.0,883.0 L 873.0,876.0 L 850.0,834.0 L 850.0,830.0 L 845.0,828.0 L 836.0,808.0 L 833.0,805.0 L 752.0,651.0 L 754.0,646.0 L 750.0,645.0 L 741.0,631.0 L 736.0,617.0 L 703.0,554.0 Z M 814.0,893.0 L 817.0,892.0 L 818.0,895.0 L 815.0,896.0 Z M 818.0,892.0 L 821.0,891.0 L 822.0,894.0 L 819.0,895.0 Z M 865.0,881.0 L 868.0,880.0 L 869.0,883.0 L 866.0,884.0 Z"/>
+                    <path id="deck" fill="#5C4A33" fill-rule="evenodd" d="M 351.0,909.0 L 394.0,911.0 L 548.0,909.0 L 603.0,910.0 L 604.0,912.0 L 752.0,912.0 L 770.0,906.0 L 791.0,902.0 L 797.0,899.0 L 858.0,886.0 L 871.0,882.0 L 871.0,880.0 L 780.0,902.0 L 773.0,901.0 L 774.0,882.0 L 753.0,882.0 L 740.0,880.0 L 607.0,568.0 L 603.0,574.0 L 603.0,578.0 L 600.0,579.0 L 599.0,577.0 L 595.0,580.0 L 593.0,588.0 L 587.0,592.0 L 586.0,599.0 L 583.0,600.0 L 456.0,863.0 L 454.0,871.0 L 444.0,874.0 L 434.0,873.0 L 438.0,864.0 L 443.0,860.0 L 448.0,859.0 L 448.0,852.0 L 450.0,851.0 L 450.0,848.0 L 458.0,843.0 L 458.0,839.0 L 460.0,838.0 L 460.0,828.0 L 464.0,826.0 L 465.0,822.0 L 468.0,822.0 L 469.0,812.0 L 472.0,805.0 L 478.0,805.0 L 476.0,800.0 L 478.0,795.0 L 482.0,793.0 L 480.0,792.0 L 480.0,789.0 L 485.0,777.0 L 490.0,772.0 L 494.0,759.0 L 506.0,748.0 L 504.0,738.0 L 514.0,726.0 L 516.0,714.0 L 521.0,711.0 L 523.0,696.0 L 537.0,675.0 L 539.0,669.0 L 538.0,664.0 L 541.0,663.0 L 542.0,659.0 L 547.0,656.0 L 548.0,643.0 L 553.0,641.0 L 554.0,635.0 L 561.0,629.0 L 562.0,617.0 L 564.0,616.0 L 564.0,611.0 L 568.0,610.0 L 569.0,601.0 L 575.0,596.0 L 575.0,590.0 L 577.0,589.0 L 573.0,586.0 L 571.0,578.0 L 573.0,575.0 L 582.0,575.0 L 585.0,562.0 L 582.0,556.0 L 585.0,550.0 L 588.0,549.0 L 588.0,544.0 L 591.0,538.0 L 432.0,862.0 L 428.0,873.0 L 425.0,875.0 L 406.0,874.0 L 405.0,871.0 L 408.0,866.0 L 400.0,875.0 L 351.0,888.0 Z M 601.0,590.0 L 718.0,863.0 L 720.0,871.0 L 466.0,872.0 L 465.0,869.0 L 598.0,591.0 Z"/>
+                    <path id="trim" fill="#FFFFFF" fill-rule="evenodd" d="M 595.0,498.0 L 499.0,691.0 L 411.0,874.0 L 425.0,874.0 L 427.0,872.0 L 590.0,537.0 L 594.0,536.0 L 741.0,880.0 L 760.0,881.0 Z"/>
+                    <path id="tree-back" fill="#2F5D3A" fill-rule="evenodd" d="M 503.0,796.0 L 499.0,805.0 L 501.0,806.0 L 501.0,813.0 L 501.0,808.0 L 504.0,807.0 L 505.0,797.0 Z M 520.0,761.0 L 520.0,764.0 L 517.0,766.0 L 517.0,772.0 L 520.0,772.0 Z M 526.0,748.0 L 526.0,754.0 L 522.0,756.0 L 522.0,760.0 L 526.0,760.0 Z M 557.0,683.0 L 557.0,686.0 L 549.0,699.0 L 549.0,706.0 L 545.0,707.0 L 540.0,724.0 L 537.0,725.0 L 536.0,732.0 L 540.0,731.0 L 542.0,714.0 L 545.0,711.0 L 549.0,711.0 L 549.0,704.0 L 554.0,702.0 L 556.0,692.0 L 559.0,691.0 L 557.0,690.0 Z M 568.0,660.0 L 564.0,672.0 L 568.0,672.0 L 569.0,666.0 L 572.0,665.0 L 568.0,662.0 Z M 583.0,629.0 L 581.0,636.0 L 578.0,639.0 L 581.0,640.0 L 581.0,645.0 L 581.0,640.0 L 584.0,639.0 L 584.0,634.0 L 587.0,633.0 L 584.0,633.0 Z M 465.0,564.0 L 463.0,564.0 L 460.0,588.0 L 454.0,609.0 L 445.0,625.0 L 436.0,634.0 L 447.0,636.0 L 448.0,646.0 L 435.0,659.0 L 411.0,671.0 L 414.0,674.0 L 419.0,674.0 L 421.0,677.0 L 426.0,677.0 L 427.0,682.0 L 432.0,682.0 L 433.0,691.0 L 416.0,705.0 L 390.0,717.0 L 400.0,722.0 L 400.0,730.0 L 411.0,732.0 L 413.0,739.0 L 421.0,739.0 L 422.0,748.0 L 414.0,756.0 L 401.0,764.0 L 371.0,775.0 L 379.0,781.0 L 386.0,782.0 L 387.0,789.0 L 399.0,790.0 L 400.0,798.0 L 408.0,800.0 L 408.0,808.0 L 398.0,818.0 L 377.0,833.0 L 363.0,840.0 L 370.0,843.0 L 378.0,843.0 L 379.0,848.0 L 390.0,849.0 L 391.0,858.0 L 402.0,859.0 L 407.0,855.0 L 415.0,855.0 L 416.0,858.0 L 416.0,852.0 L 419.0,851.0 L 421.0,847.0 L 421.0,837.0 L 423.0,835.0 L 427.0,835.0 L 427.0,825.0 L 434.0,810.0 L 438.0,807.0 L 440.0,797.0 L 445.0,790.0 L 475.0,726.0 L 477.0,725.0 L 483.0,708.0 L 487.0,704.0 L 491.0,693.0 L 495.0,689.0 L 499.0,677.0 L 486.0,667.0 L 486.0,659.0 L 490.0,656.0 L 497.0,656.0 L 499.0,653.0 L 503.0,653.0 L 504.0,651.0 L 487.0,642.0 L 477.0,631.0 L 477.0,622.0 L 481.0,621.0 L 481.0,619.0 L 474.0,608.0 L 470.0,596.0 Z"/>
+                    <path id="tree-front" fill="#81B873" fill-rule="evenodd" d="M 802.0,404.0 L 797.0,440.0 L 791.0,463.0 L 784.0,477.0 L 769.0,497.0 L 783.0,498.0 L 784.0,507.0 L 759.0,535.0 L 738.0,549.0 L 743.0,551.0 L 751.0,551.0 L 752.0,554.0 L 767.0,553.0 L 768.0,562.0 L 753.0,578.0 L 736.0,591.0 L 754.0,594.0 L 754.0,602.0 L 742.0,614.0 L 737.0,614.0 L 737.0,620.0 L 748.0,642.0 L 753.0,646.0 L 753.0,651.0 L 834.0,805.0 L 837.0,808.0 L 846.0,828.0 L 851.0,830.0 L 851.0,837.0 L 851.0,834.0 L 856.0,833.0 L 858.0,830.0 L 867.0,830.0 L 874.0,835.0 L 887.0,837.0 L 888.0,827.0 L 908.0,827.0 L 911.0,825.0 L 911.0,818.0 L 922.0,813.0 L 905.0,808.0 L 888.0,800.0 L 871.0,787.0 L 871.0,779.0 L 886.0,777.0 L 895.0,782.0 L 906.0,782.0 L 907.0,776.0 L 921.0,774.0 L 922.0,768.0 L 926.0,768.0 L 934.0,763.0 L 905.0,754.0 L 890.0,746.0 L 874.0,735.0 L 857.0,719.0 L 858.0,710.0 L 875.0,710.0 L 879.0,712.0 L 888.0,710.0 L 872.0,696.0 L 873.0,687.0 L 877.0,685.0 L 895.0,687.0 L 897.0,686.0 L 898.0,682.0 L 907.0,682.0 L 913.0,678.0 L 890.0,670.0 L 865.0,656.0 L 864.0,646.0 L 868.0,645.0 L 869.0,643.0 L 841.0,616.0 L 842.0,606.0 L 848.0,606.0 L 850.0,603.0 L 874.0,605.0 L 876.0,599.0 L 881.0,599.0 L 888.0,593.0 L 866.0,585.0 L 843.0,570.0 L 829.0,555.0 L 829.0,547.0 L 839.0,545.0 L 839.0,536.0 L 847.0,535.0 L 851.0,532.0 L 845.0,529.0 L 827.0,513.0 L 817.0,496.0 L 816.0,485.0 L 825.0,484.0 L 826.0,482.0 L 813.0,455.0 Z"/>
+                  </g>
+                </g>
               </g>
 
               <g class="syn-glyphs" id="synGlyphs"></g>
@@ -5789,9 +5981,84 @@
       </div>
     </div>
   </section>
+  </div><!-- /.synergy-stage -->
 
-  <!-- Хід скролу, на якому синергія стоїть примерзла, а екран 9 ще не поїхав -->
-  <div class="synergy-hold" aria-hidden="true"></div>
+  <!-- ============================================================
+       ЕКРАН 8.5 — ПАРТНЕРИ МАНДРА ІНВЕСТ
+       Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
+       ============================================================ -->
+  <section class="section-partners" id="partners">
+    <div class="partners-top-container">
+      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
+    </div>
+
+    <!-- Нескінченна біжуча стрічка логотипів -->
+    <div class="partners-marquee-wrap">
+      <div class="partners-marquee">
+        <div class="marquee-track">
+          <!-- Комплект 1 -->
+          <div class="partner-logo-box" title="Mandra Moments">
+            <img src="assets/partners/logo_mandra.webp" alt="Mandra Moments" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group">
+            <img src="assets/partners/logo_yod.webp" alt="YOD Group" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka">
+            <img src="assets/partners/logo_ekopark.webp" alt="Ekopark Kovalivka" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group">
+            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time">
+            <img src="assets/partners/logo_happy_time.webp" alt="Happy Time" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design">
+            <img src="assets/partners/logo_temo.svg" alt="TEMO Hotel Design" class="partner-img logo-temo" decoding="async">
+          </div>
+
+          <!-- Комплект 2 (безперервний безшовний цикл) -->
+          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
+            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
+            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
+            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
+            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
+            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
+            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
+          </div>
+
+          <!-- Комплект 3 (запас для надшироких екранів 2K/4K) -->
+          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
+            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
+            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
+            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
+            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
+            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
+            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ============================================================
        ЕКРАН 9 — ПЕРША ЧЕРГА MANDRA PETRICHOR УЖЕ ПРАЦЮЄ
@@ -5953,7 +6220,6 @@
       </div>
     </div>
   </section>
-  </div><!-- /.synergy-stage -->
 
   <!-- Модальне вікно перегляду відео курорту -->
   <div class="phase1-video-modal" id="phase1VideoModal" onclick="closePhase1Video(event)">
@@ -7758,35 +8024,6 @@
           return;
         }
 
-        /* 5. Стик синергія -> екран 9: один рух колеса, і наступний екран
-           спокійно залітає поверх примерзлої синергії. Через ту саму
-           Lenis-анімацію, що й решта стиків на сайті. */
-        const syn = document.getElementById('synergy');
-        const ph1 = document.getElementById('phase1-live');
-        if (syn && ph1 && window.innerWidth > 900) {
-          const ph1Top = ph1.getBoundingClientRect().top + window.scrollY;
-          const coverY = Math.round(ph1Top);
-          /* Синергія sticky: її getBoundingClientRect().top під час примерзання
-             дорівнює нулю, тож "top + scrollY" давав поточний скрол, а не місце
-             в потоці — перший стик просто ніколи не спрацьовував. Точку відліку
-             беремо в обгортки, вона не липка. */
-          const stage = syn.closest('.synergy-stage');
-          const synTop = stage
-            ? stage.getBoundingClientRect().top + window.scrollY
-            : syn.offsetTop;
-
-          if (e.deltaY > 6 && scrollY > synTop + 40 && scrollY < coverY - 40) {
-            e.stopImmediatePropagation(); e.preventDefault();
-            scrollToShowcasePos(coverY, SHOWCASE_SNAP_DURATION);
-            return;
-          }
-          if (e.deltaY < -6 && scrollY <= coverY + 40 && scrollY > synTop + 40) {
-            e.stopImmediatePropagation(); e.preventDefault();
-            scrollToShowcasePos(Math.max(0, synTop), SHOWCASE_SNAP_DURATION);
-            return;
-          }
-        }
-
         const scPos = getShowcasePositions();
         if (scPos) {
           /* 3. Користувач на зібраній сітці: наступний скрол вниз розводить картки
@@ -8296,7 +8533,7 @@
       const defs = [
         { key: 'l', path: 'synPathL', base: 46, count: 5, cls: 'g-l' },
         { key: 'r', path: 'synPathR', base: 46, count: 5, cls: 'g-r' },
-        { key: 'd', path: 'synPathD', base: 62, count: 6, cls: 'g-d' }
+        { key: 'd', path: 'synPathD', base: 50.6, count: 6, cls: 'g-d' }
       ];
 
       const lines = defs.map(function (d) {
@@ -8305,11 +8542,33 @@
         const pulse = svg.querySelector('[data-line="' + d.key + '"] .syn-pulse');
         const glyphs = [];
         for (let i = 0; i < d.count; i++) {
-          const t = document.createElementNS(NS, 'text');
-          t.setAttribute('class', 'syn-glyph ' + d.cls);
-          t.textContent = '$';
-          glyphLayer.appendChild(t);
-          glyphs.push(t);
+          let el;
+          if (d.key === 'l') {
+            el = document.createElementNS(NS, 'rect');
+            el.setAttribute('x', '-5.5'); el.setAttribute('y', '-5.5');
+            el.setAttribute('width', '11'); el.setAttribute('height', '11');
+            el.setAttribute('rx', '2');
+            el.setAttribute('class', 'syn-glyph ' + d.cls);
+          } else if (d.key === 'r') {
+            el = document.createElementNS(NS, 'circle');
+            el.setAttribute('r', '5.5');
+            el.setAttribute('class', 'syn-glyph ' + d.cls);
+          } else {
+            /* Монетка: заповнене коло з тонким внутрішнім обідком-бліком */
+            el = document.createElementNS(NS, 'g');
+            const outer = document.createElementNS(NS, 'circle');
+            outer.setAttribute('r', '5.5');
+            outer.setAttribute('class', 'syn-glyph ' + d.cls);
+            const ring = document.createElementNS(NS, 'circle');
+            ring.setAttribute('r', '3');
+            ring.setAttribute('fill', 'none');
+            ring.setAttribute('stroke', '#FFF3CE');
+            ring.setAttribute('stroke-width', '1');
+            ring.setAttribute('stroke-opacity', '.75');
+            el.appendChild(outer); el.appendChild(ring);
+          }
+          glyphLayer.appendChild(el);
+          glyphs.push(el);
         }
         const jit = glyphs.map(function () {
           return { sp: 0.78 + Math.random() * 0.22, amp: 2 + Math.random() * 4,
@@ -8396,7 +8655,7 @@
       let last = 0, running = false, raf = 0, hitAt = 0, nodeT = 0;
       const ringA = svg.querySelector('.syn-node-ring');
       const ringB = svg.querySelector('.syn-node-ring-2');
-      const core  = svg.querySelector('.syn-node-core');
+      const icon  = svg.querySelector('#synNodeIcon');
 
       function frame(now) {
         const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
@@ -8410,7 +8669,7 @@
         const ring2 = 1 + ((nodeT + 0.5) % 1) * 1.5;
         ringB.setAttribute('transform', 'scale(' + ring2.toFixed(3) + ')');
         ringB.setAttribute('opacity', (1 - ((nodeT + 0.5) % 1)).toFixed(2));
-        core.setAttribute('r', (6.5 + Math.sin(nodeT * 6.28) * 0.9).toFixed(2));
+        icon.setAttribute('transform', 'scale(' + (1 + Math.sin(nodeT * 6.28) * 0.09).toFixed(3) + ')');
 
         for (let i = 0; i < lines.length; i++) {
           const l = lines[i];
@@ -8884,69 +9143,6 @@
       const deck = section.querySelector('.stats-col-deck');
       const sticky = section.querySelector('.stats-deck-sticky');
 
-      // Дані для швидкої прокрутки контурних лічильників при підльоті карток
-      const statNumbers = cards.map((card) => {
-        const numEl = card.querySelector('.stat-card-num');
-        const text = numEl ? numEl.textContent.trim() : '';
-        const match = text.match(/^(\d+)(.*)$/);
-        return {
-          el: numEl,
-          target: match ? parseInt(match[1], 10) : 0,
-          suffix: match ? match[2] : '',
-          rawText: text,
-          animated: false,
-          animating: false
-        };
-      });
-
-      function rollCounter(item, duration = 380) {
-        if (!item || !item.el) return;
-        item.animating = true;
-        item.animated = true;
-        const start = performance.now();
-        const target = item.target;
-        const suffix = item.suffix;
-
-        // Для малих чисел (наприклад, 4) створюємо швидкий барабанний прокрут цифр
-        if (target < 10) {
-          const spinDigits = [8, 3, 9, 1, 6, 2, 7, 5, 2, target];
-          function stepSmall(now) {
-            const elapsed = now - start;
-            const p = Math.min(1, elapsed / duration);
-            const idx = Math.min(spinDigits.length - 1, Math.floor(p * spinDigits.length));
-            item.el.textContent = spinDigits[idx] + suffix;
-            if (p < 1) {
-              requestAnimationFrame(stepSmall);
-            } else {
-              item.el.textContent = target + suffix;
-              item.animating = false;
-            }
-          }
-          requestAnimationFrame(stepSmall);
-          return;
-        }
-
-        // Для звичайних чисел: динамічний лічильник з кривою easeOutExpo (миттєвий старт, плавний клік у фінал)
-        function step(now) {
-          const elapsed = now - start;
-          const p = Math.min(1, elapsed / duration);
-          const ease = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
-          let current = Math.round(ease * target);
-          if (p >= 0.95 || current >= target) {
-            current = target;
-          }
-          item.el.textContent = current + suffix;
-
-          if (p < 1 && current < target) {
-            requestAnimationFrame(step);
-          } else {
-            item.el.textContent = target + suffix;
-            item.animating = false;
-          }
-        }
-        requestAnimationFrame(step);
-      }
-
       // Передача: скільки пікселів картка проходить на 1px скролу.
       // Те саме число ділить --card-span у CSS (.stats-container) — міняти
       // треба в обох місцях, інакше трек і рух розійдуться.
@@ -9038,32 +9234,6 @@
           }
         }
 
-        // Анімація прокрутки цифр (контурний лічильник при зальоті картки)
-        // Картка 0: крутиться при появі секції в зоні видимості
-        const statsRect = section.getBoundingClientRect();
-        if (statsRect.top < window.innerHeight * 0.78 && statsRect.bottom > 120) {
-          if (!statNumbers[0].animated && !statNumbers[0].animating) {
-            rollCounter(statNumbers[0], 500);
-          }
-        } else if (statsRect.top > window.innerHeight) {
-          // Відскролили вгору вище секції — скидаємо Card 0
-          statNumbers[0].animated = false;
-          statNumbers[0].el.textContent = statNumbers[0].rawText;
-        }
-
-        // Картки 1..4: кожна прокручується швидко, коли підлітає на екран
-        for (let i = 1; i < cards.length; i++) {
-          const raw = (scrolled - (i - 1) * span) / span;
-          if (raw > 0.05) {
-            if (!statNumbers[i].animated && !statNumbers[i].animating) {
-              rollCounter(statNumbers[i], 460);
-            }
-          } else if (raw < 0.01) {
-            // Картка опустилася вниз — скидаємо стан для повторного зальоту
-            statNumbers[i].animated = false;
-            statNumbers[i].el.textContent = statNumbers[i].rawText;
-          }
-        }
       }
 
       function onScroll() {
@@ -9250,6 +9420,98 @@
         if (img.complete && img.naturalWidth) { if (!--left) buildMap(); }
         else img.addEventListener('load', function () { if (!--left) buildMap(); }, { once: true });
       });
+
+      /* Спільний rAF-хендл для прольоту вперед/назад — новий запуск завжди
+         скасовує попередній цикл, інакше вперед і назад намотували б currentTime
+         одночасно. */
+      let phaseRAF = null;
+
+      /* Проліт у чергу: клік по III (поки що тільки вона має відео) ховає
+         інфоблоки, вмикає відео з того самого кадру, що й генплан, і
+         синхронізує яскравість з ходом ролика — темніше на старті й фініші,
+         світліше в польоті, щоб стик з сусідніми картинками був непомітний. */
+      window.onPhaseEnter = function (n) {
+        if (n !== 3) return;
+        const sec = document.querySelector('.section-masterplan-clean');
+        const video = document.getElementById('mpPhaseVideo');
+        if (!sec || !video) return;
+
+        sec.classList.remove('mp-ended');
+        document.body.classList.remove('mp-ended');
+        sec.classList.add('mp-video-active');
+        document.body.classList.add('mp-video-active');   /* ховає глобальну шапку */
+        setHot(0);                             /* курсор — position:fixed на body, поза секцією й її каскадом */
+
+        /* Кнопка "назад" підміняє джерело на перевернутий файл — про всяк
+           випадок повертаємо прямий, якщо це повторний вхід. */
+        const src = document.getElementById('mpPhaseVideoSource');
+        if (src && src.src.indexOf('_reverse') !== -1) {
+          src.src = 'assets/cherga%203_video.mp4?v=2';
+          video.load();
+        }
+        video.currentTime = 0;
+        video.play().catch(function () {});
+
+        cancelAnimationFrame(phaseRAF);
+        function syncBrightness() {
+          if (video.paused || video.ended) return;
+          const p = video.duration ? Math.min(1, video.currentTime / video.duration) : 0;
+          const b = 0.95 + 0.05 * Math.sin(p * Math.PI);
+          video.style.filter = 'brightness(' + b.toFixed(3) + ')';
+          phaseRAF = requestAnimationFrame(syncBrightness);
+        }
+        phaseRAF = requestAnimationFrame(syncBrightness);
+
+        video.addEventListener('ended', function onEnd() {
+          video.removeEventListener('ended', onEnd);
+          /* Відео -> чіткий end-кадр, і разом з ним повертається UI.
+             mp-video-active лишається — секція просто в другій фазі стику. */
+          sec.classList.add('mp-ended');
+          document.body.classList.add('mp-ended');
+        });
+      };
+
+      /* Кнопка "Повернутися назад": плашка й кнопка ховаються одразу (mp-ended
+         знято), а замість ручної перемотки currentTime (вона стрибала —
+         seek у відео недешевий, до 60 разів/сек це просто не тягне) підміняємо
+         джерело на заздалегідь перевернутий файл (той самий ролик, прогнаний
+         через ffmpeg -vf reverse) і граємо його звичайним play() — так само
+         плавно, як і прямий прогін. Яскравість — та сама крива, вона
+         симетрична, тож підходить і тут. Коли перевернутий ролик дограв —
+         це те саме небо, що на генплані — звичайний UI повертається сам. */
+      const backBtn = document.getElementById('mpBackBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', function () {
+          const sec = document.querySelector('.section-masterplan-clean');
+          const video = document.getElementById('mpPhaseVideo');
+          const src = document.getElementById('mpPhaseVideoSource');
+          if (!sec || !video || !src) return;
+
+          sec.classList.remove('mp-ended');
+          document.body.classList.remove('mp-ended');
+
+          src.src = 'assets/cherga%203_video_reverse.mp4?v=1';
+          video.load();
+          video.currentTime = 0;
+          video.play().catch(function () {});
+
+          cancelAnimationFrame(phaseRAF);
+          function syncBrightnessReverse() {
+            if (video.paused || video.ended) return;
+            const p = video.duration ? Math.min(1, video.currentTime / video.duration) : 0;
+            const b = 0.95 + 0.05 * Math.sin(p * Math.PI);
+            video.style.filter = 'brightness(' + b.toFixed(3) + ')';
+            phaseRAF = requestAnimationFrame(syncBrightnessReverse);
+          }
+          phaseRAF = requestAnimationFrame(syncBrightnessReverse);
+
+          video.addEventListener('ended', function onReverseEnd() {
+            video.removeEventListener('ended', onReverseEnd);
+            sec.classList.remove('mp-video-active');
+            document.body.classList.remove('mp-video-active');
+          });
+        });
+      }
     })();
 
     /* ЕКРАН 5 — текстовий блок їде за скролом.
@@ -9261,29 +9523,45 @@
        під шрифт і ширину вікна. */
     (function initMasterplanTextDrift() {
       const media = document.querySelector('.mp-clean-media');
-      const box = document.querySelector('.mp-floating-content');
-      if (!media || !box) return;
+      const sec = document.querySelector('.section-masterplan-clean');
+      /* .mp-phase-card живе тим самим дрейфом, що й .mp-floating-content —
+         інакше на end-кадрі прольоту текст лишається пришпилений до 50%
+         висоти всієї (високої) картинки й на деяких позиціях скролу впирається
+         в шапку сайту. */
+      const boxes = Array.prototype.slice.call(
+        document.querySelectorAll('.mp-floating-content, .mp-phase-card')
+      );
+      if (!media || !boxes.length) return;
 
       const ease = (x) => x * x * (3 - 2 * x);
-      let travel = 0, ticking = false;
+      const state = boxes.map(function (box) { return { box: box, travel: 0 }; });
+      let ticking = false;
 
       function measure() {
-        if (window.innerWidth <= 900) { travel = 0; box.style.transform = ''; return; }
-        box.style.transform = '';
-        const gap = box.offsetTop;                       /* відступ зверху */
-        travel = Math.max(0, media.offsetHeight - box.offsetHeight - gap * 2);
+        if (window.innerWidth <= 900) {
+          state.forEach(function (s) { s.travel = 0; s.box.style.transform = ''; });
+          return;
+        }
+        state.forEach(function (s) {
+          s.box.style.transform = '';
+          const gap = s.box.offsetTop;                    /* відступ зверху */
+          s.travel = Math.max(0, media.offsetHeight - s.box.offsetHeight - gap * 2);
+        });
       }
 
       function render() {
         ticking = false;
-        if (!travel) return;
         const r = media.getBoundingClientRect();
         const vh = window.innerHeight;
         /* p=0 — картинка увійшла на пів екрана; p=1 — її низ став на низ екрана */
         const dist = media.offsetHeight - vh * 0.5;
         if (dist <= 0) return;
         const p = Math.min(1, Math.max(0, (vh * 0.5 - r.top) / dist));
-        box.style.transform = 'translate3d(0,' + (ease(p) * travel).toFixed(1) + 'px,0)';
+        const eased = ease(p);
+        state.forEach(function (s) {
+          if (!s.travel) return;
+          s.box.style.transform = 'translate3d(0,' + (eased * s.travel).toFixed(1) + 'px,0)';
+        });
       }
 
       function onScroll() {
@@ -9292,12 +9570,20 @@
 
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', function () { measure(); onScroll(); }, { passive: true });
-      /* Висота блоку міняється, коли доїде Unbounded: порахований до цього хід
+      /* Висота блоків міняється, коли доїде Unbounded: порахований до цього хід
          виходив завеликим і блок з'їжджав нижче потрібного. */
       if ('ResizeObserver' in window) {
-        new ResizeObserver(function () { measure(); onScroll(); }).observe(box);
+        const ro = new ResizeObserver(function () { measure(); onScroll(); });
+        state.forEach(function (s) { ro.observe(s.box); });
       } else if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(function () { measure(); onScroll(); });
+      }
+      /* .mp-phase-card з'являється (display:none -> block) лише коли секція
+         отримує mp-ended — до того offsetHeight/offsetTop нульові, тож
+         перерахунок гону саме в цей момент. */
+      if (sec && 'MutationObserver' in window) {
+        new MutationObserver(function () { measure(); onScroll(); })
+          .observe(sec, { attributes: true, attributeFilter: ['class'] });
       }
       measure();
       render();
@@ -9345,6 +9631,32 @@
     }
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closePhase1Video();
+    });
+
+    /* ============================================================
+       ПОПАП ЖИВОЇ КАРТИ ЛОКАЦІЇ (адреса на екрані мастер-плану)
+       iframe вантажиться лише при першому відкритті, супутниковий вигляд.
+       ============================================================ */
+    function openMapModal() {
+      const modal = document.getElementById('mpMapModal');
+      const frame = document.getElementById('mpMapFrame');
+      if (!modal || !frame) return;
+      if (!frame.dataset.mapLoaded) {
+        const q = encodeURIComponent('Село Забуяння, Київська область, Україна');
+        frame.src = 'https://www.google.com/maps?q=' + q + '&t=k&z=14&output=embed';
+        frame.dataset.mapLoaded = '1';
+      }
+      modal.classList.add('active');
+    }
+    function closeMapModal(e) {
+      if (e && e.target && e.target.closest && e.target.closest('.mp-map-modal-box') && !e.target.classList.contains('mp-map-modal-close')) {
+        return;
+      }
+      const modal = document.getElementById('mpMapModal');
+      if (modal) modal.classList.remove('active');
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMapModal();
     });
 
     /* ============================================================
