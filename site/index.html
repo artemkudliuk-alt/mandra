@@ -4357,13 +4357,9 @@
   /* Живий шар лишається в DOM лише для розрахунку довжини маршруту —
      візуально невидимий, кольору по ньому більше нема. */
   .flow-vine-live { fill: none; stroke: none; opacity: 0; }
-  /* Листочки лежать НАД лозою і загоряються, коли до них доходить ріст */
+  /* Дрібні листочки на лозі статично зелені — дерево на скрол не реагує,
+     анімується лише картка-листок */
   .flow-sprig {
-    fill: #5C4A33;
-    opacity: 0.8;
-    transition: fill 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
-  }
-  .flow-sprig.is-lit {
     fill: #8FC97F;
     opacity: 1;
     filter: drop-shadow(0 0 5px rgba(129, 184, 115, 0.55));
@@ -8372,7 +8368,6 @@
       if (!leaves.length) return;
 
       const NSVG = 'http://www.w3.org/2000/svg';
-      let len = 1, sprigEls = null;
 
       /* Маршрут один на всі три лози. Будуємо його по кінчиках листків, далі
          щільно семплюємо і розводимо три копії синусом у різній фазі — так
@@ -8446,7 +8441,6 @@
           const sc = 0.55 + ((i * 37) % 13) / 11;   /* від 0.55 до ~1.65 */
           const el = document.createElementNS(NSVG, 'ellipse');
           el.setAttribute('class', 'flow-sprig');
-          el.dataset.at = (i / N).toFixed(4);
           el.setAttribute('rx', (15 * sc).toFixed(1));
           el.setAttribute('ry', (6.5 * sc).toFixed(1));
           el.setAttribute('transform',
@@ -8454,15 +8448,7 @@
             (ang + side * 52).toFixed(1) + ') translate(' + (15 * sc).toFixed(1) + ' 0)');
           sprigs.appendChild(el);
         }
-        sprigEls = sprigs.querySelectorAll('.flow-sprig');
 
-        len = lives[0].getTotalLength() || 1;
-        lives.forEach(function (el) {
-          const L = el.getTotalLength() || len;
-          el.style.strokeDasharray = L;
-          el.style.strokeDashoffset = L;
-          el._len = L;
-        });
       }
 
       /* Активація листка: заливка й текст (через .is-in, CSS) + короткий
@@ -8482,17 +8468,8 @@
         const box = tree.getBoundingClientRect();
         const vh = window.innerHeight;
         const p = Math.max(0, Math.min(1, (vh * 0.75 - box.top) / (box.height + vh * 0.2)));
-        lives.forEach(function (el) {
-          el.style.strokeDashoffset = ((el._len || len) * (1 - p)).toFixed(1);
-        });
-        if (sprigEls) {
-          for (let i = 0; i < sprigEls.length; i++) {
-            const at = parseFloat(sprigEls[i].dataset.at);
-            sprigEls[i].classList.toggle('is-lit', p >= at);
-          }
-        }
-        /* Ріст лози (тепер невидимий на самій гілці) "торкається" листків
-           по черзі — саме тут з'являються заливка й текст. */
+        /* Дерево (лоза й дрібні листочки на ній) статичне, на скрол не
+           реагує. Прогрес керує лише активацією карток-листків нижче. */
         leaves.forEach(function (li) {
           if (!li.classList.contains('is-in') && p >= parseFloat(li.dataset.growAt || '2')) {
             activate(li);
