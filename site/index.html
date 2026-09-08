@@ -8319,11 +8319,14 @@
         const nearTravel = isMobile ? 260 : 510;
         const nearFinal = isMobile ? -65 : -130;
 
+        /* Цілі пікселі: дробове зміщення масок під час скролу щокадру
+           перерастеризовує згладжені краї дерев — між ними мерехтить
+           темна облямівка. Округлення прибирає це мерехтіння. */
         if (far) {
-          far.style.transform = 'translate3d(0,' + ((1 - p) * farTravel).toFixed(1) + 'px,0)';
+          far.style.transform = 'translate3d(0,' + Math.round((1 - p) * farTravel) + 'px,0)';
         }
         if (near) {
-          near.style.transform = 'translate3d(0,' + ((1 - p) * nearTravel + nearFinal).toFixed(1) + 'px,0)';
+          near.style.transform = 'translate3d(0,' + Math.round((1 - p) * nearTravel + nearFinal) + 'px,0)';
         }
       }
       function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(apply); } }
