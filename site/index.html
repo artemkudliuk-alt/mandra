@@ -3276,6 +3276,38 @@
   .synergy-side-col.developer-col {
     padding-left: 0;
   }
+  .synergy-side-col.operator-col {
+    padding-right: 0;
+  }
+
+  /* За замовчуванням прихована: заголовок, підзаголовок, розділювач і пункти
+     списку зʼявляються лише при наведенні на колонку (вхід через логотип),
+     каскадом зверху вниз. Місце в розмітці лишається зарезервованим —
+     анімується тільки прозорість і зсув, сітка не сіпається. */
+  .synergy-col-title,
+  .synergy-col-subtitle,
+  .synergy-card-divider,
+  .synergy-item {
+    opacity: 0;
+    transform: translateY(-14px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .synergy-side-col:hover .synergy-col-title,
+  .synergy-side-col:hover .synergy-col-subtitle,
+  .synergy-side-col:hover .synergy-card-divider,
+  .synergy-side-col:hover .synergy-item {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .synergy-side-col:hover .synergy-col-title    { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+  .synergy-side-col:hover .synergy-col-subtitle { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s; }
+  .synergy-side-col:hover .synergy-card-divider { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.12s; }
+  .synergy-side-col:hover .synergy-item          { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+  .synergy-side-col:hover .synergy-item:nth-child(1) { transition-delay: 0.18s; }
+  .synergy-side-col:hover .synergy-item:nth-child(2) { transition-delay: 0.24s; }
+  .synergy-side-col:hover .synergy-item:nth-child(3) { transition-delay: 0.30s; }
+  .synergy-side-col:hover .synergy-item:nth-child(4) { transition-delay: 0.36s; }
+  .synergy-side-col:hover .synergy-item:nth-child(5) { transition-delay: 0.42s; }
 
   .synergy-col-title {
     font-family: var(--title-font);
@@ -3563,6 +3595,16 @@
     }
     .synergy-center-col {
       order: 1;
+    }
+    /* На дотикових/вузьких екранах немає стійкого :hover — ховати інформацію
+       нема сенсу, вона просто зникне назавжди. Лишаємо завжди видимою. */
+    .synergy-col-title,
+    .synergy-col-subtitle,
+    .synergy-card-divider,
+    .synergy-item {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
     .synergy-side-card {
       max-width: 580px;
@@ -8731,6 +8773,53 @@
         }, { threshold: 0.05 }).observe(host);
       } else {
         start();
+      }
+    })();
+
+    (function initInvestorCounter() {
+      const el = document.getElementById('synInvAmount');
+      const host = document.getElementById('synInvestorPlate');
+      if (!el || !host) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const TARGET = 35892;
+      const DURATION = 2000;
+
+      function groupThousands(n, sep) {
+        return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+      }
+      function fmtAmount(n) {
+        return currentLang === 'en'
+          ? 'up to $' + groupThousands(n, ',')
+          : 'до ' + groupThousands(n, ' ') + ' $';
+      }
+
+      let done = false;
+      function run() {
+        if (done) return;
+        done = true;
+        const start = performance.now();
+        function tick(now) {
+          const p = Math.min(1, (now - start) / DURATION);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmtAmount(TARGET * eased);
+          if (p < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            const t = translations[currentLang] || translations.ua;
+            el.textContent = t.synInvAmount;
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { run(); io.disconnect(); } });
+        }, { threshold: 0.4 });
+        io.observe(host);
+      } else {
+        run();
       }
     })();
 
