@@ -8865,16 +8865,11 @@
         });
       });
 
-      let last = 0, running = false, raf = 0, hitAt = 0, iconT = 0;
-      const icon  = svg.querySelector('#synNodeIcon');
+      let last = 0, running = false, raf = 0, hitAt = 0;
 
       function frame(now) {
         const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
         last = now;
-
-        /* Пульсація іконки — власний таймер, кілець навколо вузла більше нема */
-        iconT = (iconT + dt / 2.88) % 1;
-        icon.setAttribute('transform', 'scale(' + (1 + Math.sin(iconT * 6.28) * 0.09).toFixed(3) + ')');
 
         for (let i = 0; i < lines.length; i++) {
           const l = lines[i];
