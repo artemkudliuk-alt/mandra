@@ -3318,49 +3318,45 @@
     position: relative;
   }
 
-  /* Бічні колонки (Mandra Invest та Ribas) — чисті, мінімалістичні, без рамок */
+  /* Бічні колонки (Mandra Invest та Ribas) — суцільні картки, текст завжди
+     видно. Раніше заголовок/підзаголовок/пункти ховались до ховеру (opacity:0
+     і розкриття по :hover) — саме це користувач і побачив як «текст ховається»
+     і попросив прибрати назавжди. Акцент лівої картки зелений, правої синій —
+     та сама пара кольорів, що вже в лініях потоку l/r. */
   .synergy-side-col {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 0 8px;
+    /* 76px зверху — під бейдж лого, що наполовину висить над рамкою (висота
+       104px, top:-52px, тобто 52px усередині картки + запас на відступ). */
+    padding: 76px 26px 28px;
+    border-radius: 20px;
     box-sizing: border-box;
-    box-shadow: none;
     position: relative;
     z-index: 2;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
   .synergy-side-col.developer-col {
-    padding-left: 0;
+    background: linear-gradient(160deg, rgba(129, 184, 115, 0.14), rgba(129, 184, 115, 0.04));
+    border: 1px solid rgba(129, 184, 115, 0.22);
   }
   .synergy-side-col.operator-col {
-    padding-right: 0;
+    background: linear-gradient(160deg, rgba(111, 168, 240, 0.14), rgba(111, 168, 240, 0.04));
+    border: 1px solid rgba(111, 168, 240, 0.22);
+  }
+  .synergy-side-col.developer-col:hover {
+    border-color: rgba(129, 184, 115, 0.45);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34), 0 0 26px rgba(129, 184, 115, 0.2);
+    transform: translateY(-2px);
+  }
+  .synergy-side-col.operator-col:hover {
+    border-color: rgba(111, 168, 240, 0.45);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34), 0 0 26px rgba(111, 168, 240, 0.2);
+    transform: translateY(-2px);
   }
 
-  /* За замовчуванням прихована: заголовок, підзаголовок, розділювач і пункти
-     списку зʼявляються лише при наведенні на колонку (вхід через логотип),
-     каскадом зверху вниз. Місце в розмітці лишається зарезервованим —
-     анімується тільки прозорість і зсув, сітка не сіпається. */
   .synergy-col-title,
   .synergy-col-subtitle,
   .synergy-item {
-    opacity: 0;
-    transform: translateY(-14px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-  .synergy-side-col:hover .synergy-col-title,
-  .synergy-side-col:hover .synergy-col-subtitle,
-  .synergy-side-col:hover .synergy-item {
     opacity: 1;
-    transform: translateY(0);
   }
-  .synergy-side-col:hover .synergy-col-title    { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
-  .synergy-side-col:hover .synergy-col-subtitle { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s, transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.06s; }
-  .synergy-side-col:hover .synergy-item          { transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1); }
-  .synergy-side-col:hover .synergy-item:nth-child(1) { transition-delay: 0.18s; }
-  .synergy-side-col:hover .synergy-item:nth-child(2) { transition-delay: 0.24s; }
-  .synergy-side-col:hover .synergy-item:nth-child(3) { transition-delay: 0.30s; }
-  .synergy-side-col:hover .synergy-item:nth-child(4) { transition-delay: 0.36s; }
-  .synergy-side-col:hover .synergy-item:nth-child(5) { transition-delay: 0.42s; }
 
   .synergy-col-title {
     font-family: var(--title-font);
@@ -3381,18 +3377,20 @@
   }
   .synergy-col-subtitle {
     font-family: var(--sub-font);
-    font-size: 1.05rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: #81B873;
-    margin: 0 0 20px;
-    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 18px;
   }
+  .developer-col .synergy-col-subtitle { color: #81B873; }
+  .operator-col .synergy-col-subtitle  { color: #6FA8F0; }
 
   /* Список пунктів */
   .synergy-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 0 20px;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -3404,40 +3402,44 @@
     font-family: var(--sub-font);
     font-size: clamp(0.95rem, 1.05vw, 1.14rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.80);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.4;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   .synergy-item:last-child {
     border-bottom: none;
     padding-bottom: 0;
   }
+  /* Ромб замість крапки — читається як окрема іконка-маркер, не просто буллит */
   .synergy-bullet {
     width: 8px;
     height: 8px;
-    border-radius: 50%;
-    background: #81B873;
-    box-shadow: 0 0 10px rgba(129, 184, 115, 0.55);
+    transform: rotate(45deg);
     flex-shrink: 0;
   }
+  .developer-col .synergy-bullet { background: #81B873; box-shadow: 0 0 10px rgba(129, 184, 115, 0.55); }
+  .operator-col .synergy-bullet  { background: #6FA8F0; box-shadow: 0 0 10px rgba(111, 168, 240, 0.55); }
 
   /* ============================================================
      ЕКРАН 8 — СХЕМА ПОТОКУ (замість 3D-рендера)
      ============================================================ */
 
-  /* Скляна плашка з логотипом — той самий рецепт, що в картках екрана 4 */
+  /* Плашка з логотипом сидить НА межі картки — половина зверху, половина
+     всередині, як бейдж, а не акуратно в відступі. Абсолютне позиціювання
+     відносно .synergy-side-col (яка вже position:relative), центр по X. */
   .syn-logo-plate {
-    position: relative;
+    position: absolute;
+    top: -52px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
     height: 104px;
-    /* Колонка центрується по вертикалі, тож додані сюди пікселі піднімають її
-       на половину — 26px зверху проти 71px знизу вирівнюються саме на 56px. */
-    margin-bottom: 56px;
+    padding: 0 26px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.045);
+    background: rgba(16, 18, 20, 0.92);
     isolation: isolate;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.16),
@@ -3463,8 +3465,8 @@
     pointer-events: none;
   }
   .syn-logo-plate:hover {
-    background: rgba(255, 255, 255, 0.075);
-    transform: translateY(-2px);
+    background: rgba(30, 34, 36, 0.92);
+    transform: translateX(-50%) translateY(-2px);
   }
   .syn-logo-plate[data-flow="l"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(129, 184, 115, 0.28); }
   .syn-logo-plate[data-flow="r"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(111, 168, 240, 0.28); }
@@ -6355,7 +6357,7 @@
             <div class="phase1-play-btn">
               <svg class="phase1-play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <span class="phase1-play-label" id="ph1PlayLabel">Дивитися відео комплексу</span>
+            <span class="phase1-play-label" id="ph1PlayLabel">Відео з відкриття першої черги</span>
           </div>
 
         </div>
@@ -7405,7 +7407,7 @@
         ph1GoogleVal: '1 200',
         ph1GoogleSub: 'відгуків Google • 4.9 ★',
         ph1BookingVal: '125',
-        ph1PlayLabel: 'Дивитися відео комплексу',
+        ph1PlayLabel: 'Відео з відкриття першої черги',
         phaseCapText1: 'Переглянути діючий комплекс',
         phaseCapText2: 'Перейти до II черги',
         phaseCapText3: 'Перейти до III черги',
