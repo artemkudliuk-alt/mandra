@@ -5938,9 +5938,10 @@
         <img class="mp-zone" data-phase="3" src="assets/mp_plan_zone3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </div>
 
-      <!-- Проліт у I чергу (раніше був у III — див. onPhaseEnter): старт-кадр
-           збігається з генпланом вище, тому підміна на клік непомітна.
-           Показується лише коли активна. -->
+      <!-- Спільні video/img для прольоту в будь-яку чергу з відео в PHASES
+           (зараз I і III) — onPhaseEnter підставляє src/endframe з даних
+           потрібної черги. Старт-кадр збігається з генпланом вище, тому
+           підміна на клік непомітна. Показується лише коли активна. -->
       <video class="mp-phase-video" id="mpPhaseVideo" muted playsinline preload="none" aria-hidden="true">
         <source id="mpPhaseVideoSource" src="assets/cherga%201_video.mp4?v=1" type="video/mp4">
       </video>
@@ -9590,7 +9591,10 @@
              count: '20 котеджів',
              status: 'Черга введена в експлуатацію та приймає гостей.',
              ctaText: 'Перейти на сайт діючого комплексу',
-             ctaHref: 'https://mandrapetrichor.com/', ctaExternal: true },
+             ctaHref: 'https://mandrapetrichor.com/', ctaExternal: true,
+             video: 'assets/cherga%201_video.mp4?v=1',
+             videoReverse: 'assets/cherga%201_video_reverse.mp4?v=1',
+             endframe: 'assets/cherga1_endframe.webp' },
         2: { num: 'II черга',  no: '2', title: 'Простір для великих компаній',
              desc: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
              count: '52 котеджі',
@@ -9598,7 +9602,10 @@
         3: { num: 'III черга', no: '3', title: 'Місце для найкращих побачень',
              desc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
              count: '41 котедж',
-             list: ['SPA-комплекс', 'ресторан', 'event hall', 'простори для побачень', 'вілли для двох'] }
+             list: ['SPA-комплекс', 'ресторан', 'event hall', 'простори для побачень', 'вілли для двох'],
+             video: 'assets/cherga%203_video.mp4?v=2',
+             videoReverse: 'assets/cherga%203_video_reverse.mp4?v=1',
+             endframe: 'assets/cherga3_endframe.webp' }
       };
 
       const MW = 384, MH = 216;
@@ -9758,16 +9765,22 @@
          одночасно. */
       let phaseRAF = null;
 
-      /* Проліт у чергу: клік по I (поки що тільки вона має відео — раніше
-         була III, відео зняли) ховає інфоблоки, вмикає відео з того самого
-         кадру, що й генплан, і синхронізує яскравість з ходом ролика —
-         темніше на старті й фініші, світліше в польоті, щоб стик з сусідніми
-         картинками був непомітний. */
+      /* Проліт у чергу: будь-яка черга з відео в PHASES (зараз I і III) грає
+         свій ролик з того самого кадру, що й генплан, і синхронізує
+         яскравість з ходом ролика — темніше на старті й фініші, світліше в
+         польоті, щоб стик з сусідніми картинками був непомітний. Черги без
+         відео (II) просто ховаються під applyPhase(), сюди не заходять. */
+      let activePhaseNum = null;
       window.onPhaseEnter = function (n) {
-        if (n !== 1) return;
+        const d = PHASES[n];
+        if (!d || !d.video) return;
+        activePhaseNum = n;
+
         const sec = document.querySelector('.section-masterplan-clean');
         const video = document.getElementById('mpPhaseVideo');
-        if (!sec || !video) return;
+        const src = document.getElementById('mpPhaseVideoSource');
+        const endframe = document.getElementById('mpPhaseEndframe');
+        if (!sec || !video || !src) return;
 
         sec.classList.remove('mp-ended');
         document.body.classList.remove('mp-ended');
@@ -9775,13 +9788,9 @@
         document.body.classList.add('mp-video-active');   /* ховає глобальну шапку */
         setHot(0);                             /* курсор — position:fixed на body, поза секцією й її каскадом */
 
-        /* Кнопка "назад" підміняє джерело на перевернутий файл — про всяк
-           випадок повертаємо прямий, якщо це повторний вхід. */
-        const src = document.getElementById('mpPhaseVideoSource');
-        if (src && src.src.indexOf('_reverse') !== -1) {
-          src.src = 'assets/cherga%201_video.mp4?v=1';
-          video.load();
-        }
+        if (endframe) endframe.src = d.endframe;
+        src.src = d.video;
+        video.load();
         video.currentTime = 0;
         video.play().catch(function () {});
 
@@ -9818,12 +9827,13 @@
           const sec = document.querySelector('.section-masterplan-clean');
           const video = document.getElementById('mpPhaseVideo');
           const src = document.getElementById('mpPhaseVideoSource');
-          if (!sec || !video || !src) return;
+          const d = PHASES[activePhaseNum];
+          if (!sec || !video || !src || !d) return;
 
           sec.classList.remove('mp-ended');
           document.body.classList.remove('mp-ended');
 
-          src.src = 'assets/cherga%201_video_reverse.mp4?v=1';
+          src.src = d.videoReverse;
           video.load();
           video.currentTime = 0;
           video.play().catch(function () {});
