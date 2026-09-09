@@ -2349,11 +2349,15 @@
     left: calc(5vw + max(0px, (90vw - 1520px) / 2));
     right: auto;
     bottom: auto;
-    top: 10%;
+    /* Було top:10% + transform:none — блок прибитий до верху й просто рос
+       униз через увесь свій вміст, тому осідав ближче до низу кадру. Тепер
+       центр блоку співпадає з центром кадру по вертикалі; по горизонталі
+       лишається зліва, як і було. */
+    top: 50%;
     max-width: 640px;
     width: 40vw;
     min-width: 340px;
-    transform: none;
+    transform: translateY(-50%);
     background: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -2479,8 +2483,9 @@
        Лінія-коннектор поруч тягнеться разом із шириною секції
        (preserveAspectRatio="none"), тож плашка тепер їде з нею синхронно. */
     left: calc(42% + 3.2552vw);
-    bottom: 3.5%;
-    transform: translateX(-50%);
+    /* Було приліплено донизу (bottom:3.5%) — тепер по центру висоти лівої
+       колонки, як просив користувач, замість тулитись до низу кадру. */
+    top: 50%;
     width: 29vw;
     min-width: 410px;
     padding: 2.1vw 2.3vw;
@@ -2491,13 +2496,13 @@
     border: none;
     z-index: 4;
     opacity: 0;
-    transform: translateX(-50%) translateY(22px);
+    transform: translate(-50%, -50%) translateY(22px);
     transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .section-masterplan-clean.is-visible .mp-phase-card {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translate(-50%, -50%) translateY(0);
   }
   .mp-phase-num {
     font-family: var(--sub-font);
@@ -2510,7 +2515,9 @@
   }
   .mp-phase-title {
     font-family: var(--title-font);
-    font-size: clamp(2.2rem, 3.3vw, 4rem);
+    /* Було clamp(2.2rem,3.3vw,4rem) — заголовок мав бути в масштабі хіро
+       (--title-size: 3.6vw), тож підняли і vw, і стелю. */
+    font-size: clamp(2.6rem, 4vw, 4.8rem);
     font-weight: 700;
     line-height: 1.15;
     color: #FFFFFF;
@@ -2526,14 +2533,40 @@
     margin: 0 0 1.4vw;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
   }
+  .mp-phase-count-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.7vw;
+    margin-bottom: 1.2vw;
+    padding-bottom: 1.2vw;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
   .mp-phase-count {
     font-family: var(--title-font);
     font-size: 1.15vw;
     font-weight: 700;
     color: #FFFFFF;
-    margin-bottom: 1.2vw;
-    padding-bottom: 1.2vw;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  /* Бейдж "вже працює" — для черг у продажі його немає (display:none за
+     замовчуванням, JS вмикає inline-flex лише коли в PHASES є d.status). */
+  @keyframes mpStatusBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+  }
+  .mp-phase-status {
+    display: none;
+    align-items: center;
+    font-family: var(--sub-font);
+    font-size: 0.78vw;
+    font-weight: 600;
+    color: #C3F0B3;
+    background: rgba(129, 184, 115, 0.15);
+    border: 1px solid rgba(129, 184, 115, 0.35);
+    border-radius: 20px;
+    padding: 0.35vw 0.9vw;
+    line-height: 1.3;
+    animation: mpStatusBlink 2.4s ease-in-out infinite;
   }
   .mp-phase-list {
     display: grid;
@@ -5905,14 +5938,15 @@
         <img class="mp-zone" data-phase="3" src="assets/mp_plan_zone3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </div>
 
-      <!-- Проліт у III чергу: старт-кадр збігається з генпланом вище,
-           тому підміна на клік непомітна. Показується лише коли активна. -->
+      <!-- Проліт у I чергу (раніше був у III — див. onPhaseEnter): старт-кадр
+           збігається з генпланом вище, тому підміна на клік непомітна.
+           Показується лише коли активна. -->
       <video class="mp-phase-video" id="mpPhaseVideo" muted playsinline preload="none" aria-hidden="true">
-        <source id="mpPhaseVideoSource" src="assets/cherga%203_video.mp4?v=2" type="video/mp4">
+        <source id="mpPhaseVideoSource" src="assets/cherga%201_video.mp4?v=1" type="video/mp4">
       </video>
 
       <!-- End-кадр після прольоту: чітке фото замість м'якого останнього кадру відео. -->
-      <img class="mp-phase-endframe" id="mpPhaseEndframe" src="assets/cherga3_endframe.webp" alt="" aria-hidden="true">
+      <img class="mp-phase-endframe" id="mpPhaseEndframe" src="assets/cherga1_endframe.webp" alt="" aria-hidden="true">
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
@@ -5952,13 +5986,19 @@
         <circle cx="1440" cy="726" r="6" fill="#81B873"/>
       </svg>
 
-      <!-- Плашка III черги -->
+      <!-- Плашка активної черги (текст підставляє applyPhase() з PHASES) -->
       <div class="mp-phase-card">
         <div class="mp-phase-num" id="mpPhaseNum">III черга</div>
         <h3 class="mp-phase-title" id="mpPhaseTitle">Місце для найкращих побачень</h3>
         <p class="mp-phase-desc" id="mpPhaseDesc">Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.</p>
-        <div class="mp-phase-count" id="mpPhaseCount">41 котедж</div>
-        <div class="mp-phase-list">
+        <div class="mp-phase-count-row">
+          <span class="mp-phase-count" id="mpPhaseCount">41 котедж</span>
+          <!-- Бейдж-статус замість тегів-зручностей — тільки для вже діючої черги
+               (I), де немає списку майбутніх зручностей, а є факт "вже працює".
+               Приховано порожнім рядком, applyPhase() вмикає/вимикає його. -->
+          <span class="mp-phase-status" id="mpPhaseStatus"></span>
+        </div>
+        <div class="mp-phase-list" id="mpPhaseList">
           <span id="mpPhL1">SPA-комплекс</span><span id="mpPhL2">ресторан</span><span id="mpPhL3">event hall</span><span id="mpPhL4">простори для побачень</span><span id="mpPhL5">вілли для двох</span>
         </div>
 
@@ -5968,7 +6008,7 @@
             <span class="btn-arrow btn-arrow-left" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-            <span class="action-pill">Залишити заявку</span>
+            <span class="action-pill" id="mpPhaseCtaLabel">Залишити заявку</span>
             <span class="btn-arrow btn-arrow-right" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -9545,10 +9585,12 @@
 
       /* ЗАГЛУШКИ для I та II черги за зразком третьої — замінити на реальні. */
       const PHASES = {
-        1: { num: 'I черга',   no: '1', title: 'Серце комплексу',
-             desc: 'Родинний відпочинок навколо великого басейну та відкритих терас.',
-             count: '38 котеджів',
-             list: ['басейн', 'тераси', 'дитячий клуб', 'лаунж-зона', 'прокат'] },
+        1: { num: 'I черга',   no: '1', title: 'Ареал спокою',
+             desc: 'Простір для відновлення, тиші та контакту з природою.',
+             count: '20 котеджів',
+             status: 'Черга введена в експлуатацію та приймає гостей.',
+             ctaText: 'Перейти на сайт діючого комплексу',
+             ctaHref: 'https://mandrapetrichor.com/', ctaExternal: true },
         2: { num: 'II черга',  no: '2', title: 'Простір для великих компаній',
              desc: 'Котеджі з приватними басейнами для груп, свят і корпоративних виїздів.',
              count: '52 котеджі',
@@ -9631,7 +9673,23 @@
         put('mpPhaseTitle', d.title);
         put('mpPhaseDesc', d.desc);
         put('mpPhaseCount', d.count);
-        d.list.forEach(function (t, i) { put('mpPhL' + (i + 1), t); });
+        put('mpPhaseCtaLabel', d.ctaText || 'Залишити заявку');
+        const cta = document.getElementById('mpPhaseCta');
+        if (cta) {
+          cta.href = d.ctaHref || '#contacts';
+          if (d.ctaExternal) { cta.target = '_blank'; cta.rel = 'noopener noreferrer'; }
+          else { cta.removeAttribute('target'); cta.removeAttribute('rel'); }
+        }
+
+        /* Черга вже в експлуатації (d.status) показує бейдж "вже працює"
+           замість переліку майбутніх зручностей — одному факту непотрібен
+           список на 5 пунктів, а порожні d.list в тегах виглядали б дірками. */
+        const statusEl = document.getElementById('mpPhaseStatus');
+        const listEl = document.getElementById('mpPhaseList');
+        put('mpPhaseStatus', d.status || '');
+        if (statusEl) statusEl.style.display = d.status ? 'inline-flex' : 'none';
+        if (listEl) listEl.style.display = d.status ? 'none' : '';
+        (d.list || []).forEach(function (t, i) { put('mpPhL' + (i + 1), t); });
 
         /* Лінія-конектор була намальована під стару картинку і вказувала в одну
            точку назавжди. Тепер її кінець їде в центр вибраної черги. */
@@ -9700,12 +9758,13 @@
          одночасно. */
       let phaseRAF = null;
 
-      /* Проліт у чергу: клік по III (поки що тільки вона має відео) ховає
-         інфоблоки, вмикає відео з того самого кадру, що й генплан, і
-         синхронізує яскравість з ходом ролика — темніше на старті й фініші,
-         світліше в польоті, щоб стик з сусідніми картинками був непомітний. */
+      /* Проліт у чергу: клік по I (поки що тільки вона має відео — раніше
+         була III, відео зняли) ховає інфоблоки, вмикає відео з того самого
+         кадру, що й генплан, і синхронізує яскравість з ходом ролика —
+         темніше на старті й фініші, світліше в польоті, щоб стик з сусідніми
+         картинками був непомітний. */
       window.onPhaseEnter = function (n) {
-        if (n !== 3) return;
+        if (n !== 1) return;
         const sec = document.querySelector('.section-masterplan-clean');
         const video = document.getElementById('mpPhaseVideo');
         if (!sec || !video) return;
@@ -9720,7 +9779,7 @@
            випадок повертаємо прямий, якщо це повторний вхід. */
         const src = document.getElementById('mpPhaseVideoSource');
         if (src && src.src.indexOf('_reverse') !== -1) {
-          src.src = 'assets/cherga%203_video.mp4?v=2';
+          src.src = 'assets/cherga%201_video.mp4?v=1';
           video.load();
         }
         video.currentTime = 0;
@@ -9764,7 +9823,7 @@
           sec.classList.remove('mp-ended');
           document.body.classList.remove('mp-ended');
 
-          src.src = 'assets/cherga%203_video_reverse.mp4?v=1';
+          src.src = 'assets/cherga%201_video_reverse.mp4?v=1';
           video.load();
           video.currentTime = 0;
           video.play().catch(function () {});
