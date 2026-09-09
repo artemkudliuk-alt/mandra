@@ -3469,7 +3469,7 @@
   .syn-logo-plate[data-flow="l"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(129, 184, 115, 0.28); }
   .syn-logo-plate[data-flow="r"]:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 18px 44px rgba(0,0,0,0.34), 0 0 26px rgba(111, 168, 240, 0.28); }
   .syn-logo-img { display: block; width: auto; pointer-events: none; }
-  .syn-logo-mandra { height: 52px; }
+  .syn-logo-mandra { height: 44px; }
   /* Логотип Ribas у вихідному файлі темно-синій (#1C325F) — на темному фоні
      його просто не видно, тож виводимо в чистий білий тим самим прийомом,
      що й у стрічці партнерів. */
@@ -3504,8 +3504,22 @@
   .syn-line[data-line="d"] .syn-dash  { stroke: #F0C85A; stroke-width: 2.6; filter: url(#synGlowGold); }
   .syn-line[data-line="d"] .syn-pulse { stroke: #FFF0C0; }
 
-  .syn-node-halo { opacity: 0.5; }
-  .syn-node-ring { stroke: rgba(233, 190, 74, 0.55); stroke-width: 1.4; }
+  /* Два м'яких розмитих бліки за карткою замість рівного золотого кола:
+     зелений зліва, синій справа — та сама пара, що вже біжить пунктиром по
+     лініях l/r. Легкі (низька базова opacity), тому це відчувається як
+     атмосферне світло позаду, а не окрема яскрава пляма. Мигання —
+     нерівномірне за часом, щоб не читалось як метроном. */
+  @keyframes synHaloFlicker {
+    0%, 100% { opacity: 0.22; }
+    35%      { opacity: 0.4; }
+    55%      { opacity: 0.28; }
+    78%      { opacity: 0.36; }
+  }
+  .syn-node-halo {
+    opacity: 0.3;
+    filter: url(#synBokehBlur);
+    animation: synHaloFlicker 2.6s ease-in-out infinite;
+  }
   .syn-node-icon { filter: url(#synGlowGold); }
 
   /* Долари летять уздовж ліній; позицію кожного щокадру ставить rAF */
@@ -5748,9 +5762,9 @@
 
           <div class="showcase-card" data-q="tr">
             <div class="card-video-pair" data-fade="1.2">
-              <video data-src="assets/screen2/02_architecture_loop.mp4?v=2" poster="assets/screen2/02_architecture.webp?v=3"
+              <video data-src="assets/screen2/02_architecture_loop.mp4?v=3" poster="assets/screen2/02_architecture.webp?v=4"
                      muted playsinline preload="none" aria-hidden="true"></video>
-              <video data-src="assets/screen2/02_architecture_loop.mp4?v=2"
+              <video data-src="assets/screen2/02_architecture_loop.mp4?v=3"
                      muted playsinline preload="none" aria-hidden="true"></video>
             </div>
             <span class="card-index">02</span>
@@ -6046,7 +6060,7 @@
         <!-- ЛІВА КОЛОНКА: ДЕВЕЛОПЕР (Mandra Invest) -->
         <div class="synergy-side-col developer-col">
           <div class="syn-logo-plate" data-flow="l">
-            <img src="assets/logo_m_invest_clean.webp?v=2" alt="Mandra Invest" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
+            <img src="assets/logo_mandra_moments_synergy.webp" alt="Mandra Moments" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
           </div>
           <h3 class="synergy-col-title" id="synDevTitle">Mandra Invest</h3>
           <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
@@ -6072,11 +6086,9 @@
                   <feGaussianBlur stdDeviation="2.6" result="b"/>
                   <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                 </filter>
-                <radialGradient id="synNodeCore">
-                  <stop offset="0%" stop-color="#FFF3CE"/>
-                  <stop offset="55%" stop-color="#E9BE4A"/>
-                  <stop offset="100%" stop-color="#E9BE4A" stop-opacity="0"/>
-                </radialGradient>
+                <filter id="synBokehBlur" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="22"/>
+                </filter>
               </defs>
 
               <path id="synPathL" fill="none"/>
@@ -6104,17 +6116,14 @@
               <g class="syn-glyphs" id="synGlyphsBack"></g>
 
               <g class="syn-node" id="synNode">
-                <circle class="syn-node-halo" r="34" fill="url(#synNodeCore)"/>
-                <circle class="syn-node-ring" r="19" fill="none"/>
-                <circle class="syn-node-ring syn-node-ring-2" r="19" fill="none"/>
+                <!-- Растрове фото картки, 3х більше за попередню спробу.
+                     Свічення — не по силуету (то виходило суцільною плямою,
+                     бо розмиття з'їдало прямокутну форму), а два м'які
+                     розмиті бліки за картинкою: зелений зліва, синій справа. -->
+                <ellipse class="syn-node-halo" cx="-90" cy="-9" rx="90" ry="70" fill="#6BDB9C"/>
+                <ellipse class="syn-node-halo" cx="90" cy="-9" rx="90" ry="70" fill="#5FACFF"/>
                 <g class="syn-node-icon" id="synNodeIcon">
-                  <g transform="scale(0.669) translate(-320,-192.5)">
-                    <path id="tree-light" fill="#81B873" fill-rule="evenodd" d="M 639.0,302.0 L 632.0,309.0 L 629.0,315.0 L 628.0,329.0 L 619.0,336.0 L 616.0,342.0 L 616.0,354.0 L 639.0,354.0 Z M 109.0,51.0 L 106.0,54.0 L 96.0,73.0 L 46.0,156.0 L 71.0,157.0 L 72.0,159.0 L 27.0,234.0 L 56.0,235.0 L 57.0,237.0 L 14.0,308.0 L 88.0,309.0 L 89.0,354.0 L 125.0,354.0 L 125.0,310.0 L 128.0,308.0 L 193.0,309.0 L 199.0,306.0 L 199.0,303.0 L 159.0,238.0 L 160.0,235.0 L 189.0,235.0 L 176.0,211.0 L 168.0,200.0 L 144.0,159.0 L 145.0,157.0 L 162.0,157.0 L 170.0,155.0 Z"/>
-                    <path id="tree-dark" fill="#2F5D3A" fill-rule="evenodd" d="M 622.0,123.0 L 561.0,16.0 L 554.0,7.0 L 489.0,123.0 L 515.0,124.0 L 516.0,126.0 L 468.0,210.0 L 499.0,211.0 L 500.0,214.0 L 454.0,289.0 L 454.0,292.0 L 456.0,294.0 L 534.0,294.0 L 536.0,298.0 L 536.0,349.0 L 534.0,355.0 L 166.0,355.0 L 165.0,353.0 L 163.0,355.0 L 125.0,356.0 L 15.0,355.0 L 14.0,381.0 L 639.0,382.0 L 639.0,356.0 L 573.0,354.0 L 574.0,294.0 L 639.0,294.0 L 639.0,261.0 L 610.0,213.0 L 611.0,211.0 L 616.0,210.0 L 639.0,211.0 L 639.0,204.0 L 593.0,126.0 L 594.0,124.0 Z"/>
-                    <path id="cabin-body" fill="#5C4A33" fill-rule="evenodd" d="M 441.0,354.0 L 334.0,199.0 L 222.0,354.0 L 315.0,355.0 L 316.0,287.0 L 351.0,288.0 L 351.0,355.0 Z M 498.0,354.0 L 456.0,294.0 L 454.0,293.0 L 454.0,289.0 L 449.0,285.0 L 335.0,119.0 L 201.0,303.0 L 201.0,306.0 L 196.0,310.0 L 164.0,354.0 L 205.0,355.0 L 208.0,353.0 L 227.0,325.0 L 271.0,266.0 L 276.0,257.0 L 333.0,180.0 L 337.0,182.0 L 388.0,257.0 L 444.0,336.0 L 455.0,354.0 Z"/>
-                    <path id="cabin-door" fill="#0E1F0B" fill-rule="evenodd" d="M 316.0,288.0 L 316.0,354.0 L 350.0,355.0 L 350.0,288.0 Z"/>
-                    <path id="trim" fill="#FFFFFF" fill-rule="evenodd" d="M 446.0,279.0 L 453.0,288.0 L 457.0,284.0 L 451.0,283.0 Z M 454.0,353.0 L 334.0,180.0 L 209.0,352.0 L 215.0,351.0 L 222.0,353.0 L 327.0,206.0 L 333.0,199.0 L 335.0,199.0 L 441.0,353.0 Z"/>
-                  </g>
+                  <image href="assets/synergy_house_icon.webp" x="-180" y="-82.2" width="360" height="145.9" preserveAspectRatio="xMidYMid meet"/>
                 </g>
               </g>
 
@@ -8854,24 +8863,14 @@
         });
       });
 
-      let last = 0, running = false, raf = 0, hitAt = 0, nodeT = 0, iconT = 0;
-      const ringA = svg.querySelector('.syn-node-ring');
-      const ringB = svg.querySelector('.syn-node-ring-2');
+      let last = 0, running = false, raf = 0, hitAt = 0, iconT = 0;
       const icon  = svg.querySelector('#synNodeIcon');
 
       function frame(now) {
         const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
         last = now;
 
-        /* Вузол дихає в такт: кільце розходиться і тане, ядро ледь пульсує */
-        nodeT = (nodeT + dt / 2.4) % 1;
-        const ring = 1 + nodeT * 1.5;
-        ringA.setAttribute('transform', 'scale(' + ring.toFixed(3) + ')');
-        ringA.setAttribute('opacity', (1 - nodeT).toFixed(2));
-        const ring2 = 1 + ((nodeT + 0.5) % 1) * 1.5;
-        ringB.setAttribute('transform', 'scale(' + ring2.toFixed(3) + ')');
-        ringB.setAttribute('opacity', (1 - ((nodeT + 0.5) % 1)).toFixed(2));
-        /* Пульсація іконки на 20% повільніша за кільця — власний таймер */
+        /* Пульсація іконки — власний таймер, кілець навколо вузла більше нема */
         iconT = (iconT + dt / 2.88) % 1;
         icon.setAttribute('transform', 'scale(' + (1 + Math.sin(iconT * 6.28) * 0.09).toFixed(3) + ')');
 
