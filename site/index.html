@@ -2000,10 +2000,17 @@
     font-size: clamp(1.75rem, 2.6vw, 3.2rem);
     font-weight: 800;
     line-height: 1.1;
-    max-width: 100%;               /* ширину задає колонка -> два рядки */
+    max-width: 100%;
     letter-spacing: -0.02em;
     color: #FFFFFF;                /* світлий заголовок на темному */
     margin: 0;
+  }
+  /* Перенос на власний рядок примусовий (display:block), а не залежить від
+     ширини колонки — так другий рядок завжди "цифрах"/"Numbers" незалежно
+     від екрана. textContent при зміні мови оновлює лише цей span, а не
+     весь h2, тому розбивка не злітає при перемиканні UA/EN. */
+  .stats-title-break {
+    display: block;
   }
 
   /* Єдиний стандарт акцентної лінії під заголовками (80px × 3px) */
@@ -2175,7 +2182,7 @@
   .stat-card:hover .stat-card-media img {
     transform: scale(1.04);
   }
-  .stat-card[data-card="4"] .stat-card-media img {
+  .stat-card[data-card="3"] .stat-card-media img {
     object-position: 82% center;
   }
 
@@ -3959,6 +3966,7 @@
     margin-top: auto;
   }
   .phase1-trust-card {
+    position: relative;
     background: rgba(18, 24, 20, 0.65);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -3970,11 +3978,35 @@
     flex-direction: column;
     gap: 8px;
     transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    /* Картки тепер <a> (клікабельні на відгуки) — прибираємо стандартні стилі лінка */
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
   }
   .phase1-trust-card:hover {
     transform: translateY(-3px);
     border-color: rgba(129, 184, 115, 0.5);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+  /* Стрілка "веде на зовнішній сайт" — та сама іконка, що й у cta-btn-numo,
+     щоб мова кліку була однаковою по всьому сайту. У спокої ледь помітна,
+     на ховері яскравіє й трохи їде по діагоналі — той самий почерк, що й
+     у кнопок з двома btn-arrow. */
+  .trust-link-icon {
+    position: absolute;
+    /* Було top:18px поруч із зірочками — налазило на них. Опустили в
+       правий нижній кут картки, де порожньо, і збільшили. */
+    bottom: 18px;
+    right: 18px;
+    width: 22px;
+    height: 22px;
+    color: rgba(255, 255, 255, 0.28);
+    transition: color 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .trust-link-icon svg { width: 100%; height: 100%; display: block; }
+  .phase1-trust-card:hover .trust-link-icon {
+    color: var(--accent-color);
+    transform: translate(2px, -2px);
   }
   .trust-header {
     display: flex;
@@ -4533,7 +4565,9 @@
   .flow-leaf[data-tone="dark"]  .flow-leaf-num { color: #6FA87A; }
   .flow-leaf-title {
     font-family: var(--title-font);
-    font-size: clamp(1.2rem, 1.6vw, 1.78rem);
+    /* Було clamp(1.2rem,1.6vw,1.78rem) — найдовший заголовок (карта 6) ламався
+       у 3 рядки й розпирав картку понад її min-height. Трохи зменшили. */
+    font-size: clamp(1.1rem, 1.45vw, 1.6rem);
     font-weight: 800;
     line-height: 1.2;
     letter-spacing: -0.01em;
@@ -4949,6 +4983,12 @@
     box-shadow: 0 0 0 4px rgba(129, 184, 115, 0.16);
   }
   .contacts-input::placeholder { color: rgba(255, 255, 255, 0.32); }
+  .contacts-textarea {
+    resize: none;
+    min-height: 84px;
+    line-height: 1.5;
+    font-family: 'Manrope', sans-serif;
+  }
 
   .btn-contacts-submit {
     position: relative;
@@ -5653,11 +5693,11 @@
         </span>
       </button>
       <!-- FRAMELESS PHONE LINK (NO CAPSULE BACKGROUND / NO BORDER) -->
-      <a class="phone-capsule phone-link-frameless" href="tel:+380501571311" aria-label="Номер телефону Mandra Invest">
+      <a class="phone-capsule phone-link-frameless" href="tel:+380631501477" aria-label="Номер телефону Mandra Invest">
         <span class="phone-icon-badge">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>
         </span>
-        <span>+380 50 157 13 11</span>
+        <span>+380 63 150 14 77</span>
       </a>
 
       <a class="btn-top-accent" id="btnTopAction" href="#contacts">Онлайн заявка</a>
@@ -5692,7 +5732,7 @@
         <!-- BLOCK 2: Subtitle / Description -->
         <div class="desc-wrapper">
           <p class="hero-main-desc fx-solid" id="heroMainDesc">
-            Створюємо відпочинкові проєкти, що поєднують нерухомість, сервіс і інвестиційну цінність у Карпатах.
+            Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.
           </p>
         </div>
 
@@ -5763,7 +5803,7 @@
 
       <h2 class="manifesto-text">
         <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span> <span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
-        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
+        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми&nbsp;представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
       </h2>
 
     </div>
@@ -5839,11 +5879,11 @@
 
       <!-- Ліва колонка: інформація за макетом (без плашки зверху) -->
       <div class="stats-col-info">
-        <h2 class="stats-title" id="stTitle">Mandra Invest в цифрах</h2>
+        <h2 class="stats-title" id="stTitle"><span id="stTitleMain">Mandra Invest</span> <span class="stats-title-break" id="stTitleBreak">в цифрах</span></h2>
         <div class="stats-title-line"></div>
         <p class="stats-desc" id="stDesc">
-          Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. 
-          Показники поруч демонструють реальну динаміку розвитку компанії та стабільний попит на наші проєкти.
+          Ми не просто презентуємо проєкти — ми будуємо їх у високому темпі.
+          Цифри нижче показують реальну динаміку реалізації Mandra Invest та фактичний прогрес наших проєктів.
         </p>
         <div class="stats-cta-wrap">
           <a class="stats-cta-btn" href="#invest" id="stCta">
@@ -5864,55 +5904,43 @@
             <div class="stat-card-body">
               <h3 class="stat-card-num">101</h3>
               <p class="stat-card-text" id="st1Text">
-                Апартаментів різних категорій в номерному фонді
+                Загальний номерний фонд
               </p>
             </div>
           </article>
 
-          <!-- 02. Досвід на ринку -->
+          <!-- 02. На ринку з 2020 року -->
           <article class="stat-card" data-card="1">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">7</h3>
+              <h3 class="stat-card-num">2020</h3>
               <p class="stat-card-text" id="st2Text">
-                Років досвіду на ринку девелопменту та інвестицій
+                Mandra Moments на ринку девелопменту
               </p>
             </div>
           </article>
 
-          <!-- 03. Черги будівництва -->
+          <!-- 03. Реалізовані проєкти -->
           <article class="stat-card" data-card="2">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">4</h3>
-              <p class="stat-card-text" id="st3Text">
-                Черги будівництва флагманського гірського комплексу Mandra Petrichor
+              <h3 class="stat-card-num">5</h3>
+              <p class="stat-card-text" id="st4Text">
+                Реалізованих проєктів від девелопера Mandra Moments
               </p>
             </div>
           </article>
 
-          <!-- 04. Залучені інвестиції -->
+          <!-- 04. Інвестори (ФІНАЛЬНА КАРТКА НА ВЕРШИНІ СТОПКИ — СТРОГО ЗА МАКЕТОМ) -->
           <article class="stat-card" data-card="3">
             <div class="stat-card-media">
             </div>
             <div class="stat-card-body">
-              <h3 class="stat-card-num">5.5</h3>
-              <p class="stat-card-text" id="st4Text">
-                Млн залучених інвестицій
-              </p>
-            </div>
-          </article>
-
-          <!-- 05. Інвестори (ФІНАЛЬНА КАРТКА НА ВЕРШИНІ СТОПКИ — СТРОГО ЗА МАКЕТОМ) -->
-          <article class="stat-card" data-card="4">
-            <div class="stat-card-media">
-            </div>
-            <div class="stat-card-body">
-              <h3 class="stat-card-num">130</h3>
+              <h3 class="stat-card-num">100+</h3>
               <p class="stat-card-text" id="st5Text">
-                Інвесторів що стали власниками дольової участі або цілого юніту
+                Інвесторів які стали партнерами проєкту
               </p>
             </div>
           </article>
@@ -5951,7 +5979,7 @@
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
-        <h2 class="mp-float-title" id="mpTitle">Інвест проект Mandra Petrichor</h2>
+        <h2 class="mp-float-title" id="mpTitle">Масштаб Mandra Petrichor</h2>
         <div class="mp-float-line"></div>
         <h3 class="mp-float-subtitle" id="mpSubtitle">Один комплекс. Три різні концепції відпочинку.</h3>
         <p class="mp-float-desc" id="mpDesc">
@@ -6314,7 +6342,7 @@
           <p class="phase1-metric-desc" id="ph1M2Desc">котеджів продано</p>
         </div>
         <div class="phase1-metric-card">
-          <div class="phase1-metric-val" id="ph1M3Val">2 938</div>
+          <div class="phase1-metric-val" id="ph1M3Val">3 298</div>
           <p class="phase1-metric-desc" id="ph1M3Desc">вже прийняв комплекс</p>
         </div>
         <div class="phase1-metric-card">
@@ -6361,7 +6389,8 @@
 
           <!-- 2 картки відгуків Google та Booking.com -->
           <div class="phase1-trust-grid">
-            <div class="phase1-trust-card">
+            <a class="phase1-trust-card" href="https://www.google.com/travel/search?q=%D0%BC%D0%B0%D0%BD%D0%B4%D1%80%D0%B0%20%D0%BF%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%BE%D1%80&hl=uk-UA&gl=ua" target="_blank" rel="noopener noreferrer">
+              <span class="trust-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               <div class="trust-header">
                 <span class="trust-brand">
                   <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8 0-1.3.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.8 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16C3.7 20.4 7.5 23 12 23z"/></svg>
@@ -6371,9 +6400,10 @@
               </div>
               <div class="trust-count" id="ph1GoogleVal">1 200</div>
               <div class="trust-sub" id="ph1GoogleSub">відгуків Google • 4.9 ★</div>
-            </div>
+            </a>
 
-            <div class="phase1-trust-card">
+            <a class="phase1-trust-card" href="https://www.booking.com/hotel/ua/mandra-petrichor.uk.html#tab-reviews" target="_blank" rel="noopener noreferrer">
+              <span class="trust-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               <div class="trust-header">
                 <span class="trust-brand" style="color: #FFFFFF;">
                   <span style="background: #FFFFFF; color: #003580; padding: 2px 6px; border-radius: 4px; font-size: 0.76rem; font-weight: 900;">B.</span>
@@ -6383,7 +6413,7 @@
               </div>
               <div class="trust-count" id="ph1BookingVal">125</div>
               <div class="trust-sub" id="ph1BookingSub">відгуків Booking • 9.4 Чудово</div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -6411,7 +6441,7 @@
         <!-- Капсула 1: Діючий комплекс (за замовчуванням активна з розширеною картинкою) -->
         <a href="#phase1-live" class="phase-capsule active" id="phaseCap1" onclick="openPhase1Video(); return false;">
           <div class="capsule-img-wrap">
-            <img src="assets/phases/phase_nav_1.webp" alt="Mandra Petrichor діючий комплекс" class="capsule-img" loading="lazy" decoding="async">
+            <img src="assets/phases/phase_nav_1.webp?v=2" alt="Mandra Petrichor діючий комплекс" class="capsule-img" loading="lazy" decoding="async">
           </div>
           <span class="capsule-label" id="phaseCapText1">Переглянути діючий комплекс</span>
         </a>
@@ -6419,7 +6449,7 @@
         <!-- Капсула 2: II черга -->
         <a href="#masterplan" class="phase-capsule" id="phaseCap2" onclick="goToPhase(2); return false;">
           <div class="capsule-img-wrap">
-            <img src="assets/phases/phase_nav_2.webp" alt="Mandra Petrichor II черга" class="capsule-img" loading="lazy" decoding="async">
+            <img src="assets/phases/phase_nav_2.webp?v=2" alt="Mandra Petrichor II черга" class="capsule-img" loading="lazy" decoding="async">
           </div>
           <span class="capsule-label" id="phaseCapText2">Перейти до II черги</span>
         </a>
@@ -6427,7 +6457,7 @@
         <!-- Капсула 3: III черга -->
         <a href="#masterplan" class="phase-capsule" id="phaseCap3" onclick="goToPhase(3); return false;">
           <div class="capsule-img-wrap">
-            <img src="assets/phases/phase_nav_3.webp" alt="Mandra Petrichor III черга" class="capsule-img" loading="lazy" decoding="async">
+            <img src="assets/phases/phase_nav_3.webp?v=2" alt="Mandra Petrichor III черга" class="capsule-img" loading="lazy" decoding="async">
           </div>
           <span class="capsule-label" id="phaseCapText3">Перейти до III черги</span>
         </a>
@@ -6481,15 +6511,15 @@
           <li class="flow-leaf" data-side="l" data-tone="light">
             <div class="flow-leaf-body">
               <span class="flow-leaf-num">01</span>
-              <h3 class="flow-leaf-title" id="stepTitle1">Вибираєте об'єкт і підписуєте договір.</h3>
-              <p class="flow-leaf-desc" id="stepDesc1">Усе максимально просто: ви обираєте найкращий об'єкт, а ми забезпечуємо надійне оформлення.</p>
+              <h3 class="flow-leaf-title" id="stepTitle1">Від вибору об'єкту до підписання договору.</h3>
+              <p class="flow-leaf-desc" id="stepDesc1">Ми підбираємо оптимальну пропозицію під вашу інвестиційну ціль та забезпечуємо повний супровід угоди.</p>
             </div>
           </li>
           <li class="flow-leaf" data-side="r" data-tone="dark">
             <div class="flow-leaf-body">
               <span class="flow-leaf-num">02</span>
               <h3 class="flow-leaf-title" id="stepTitle2">Оплачуєте — одразу або в розтермінування.</h3>
-              <p class="flow-leaf-desc" id="stepDesc2">Комфорт на ваших умовах завдяки гнучкому інвестуванню та прозорим графікам оплати.</p>
+              <p class="flow-leaf-desc" id="stepDesc2">Обирайте зручний формат оплати та плануйте інвестицію у комфортному для вас темпі.</p>
             </div>
           </li>
           <li class="flow-leaf" data-side="l" data-tone="light">
@@ -6503,21 +6533,21 @@
             <div class="flow-leaf-body">
               <span class="flow-leaf-num">04</span>
               <h3 class="flow-leaf-title" id="stepTitle4">Готельне управління комплексом.</h3>
-              <p class="flow-leaf-desc" id="stepDesc4">Котедж стає частиною єдиного готельного курорту та працює за спільними стандартами мережі Ribas Hotels Group.</p>
+              <p class="flow-leaf-desc" id="stepDesc4">Ribas Hotels Group бере на себе повний цикл управління комплексом — від операційної роботи до сервісу та контролю стандартів.</p>
             </div>
           </li>
           <li class="flow-leaf" data-side="l" data-tone="light">
             <div class="flow-leaf-body">
               <span class="flow-leaf-num">05</span>
-              <h3 class="flow-leaf-title" id="stepTitle5">Отримання стабільного доходу та контроль через застосунок.</h3>
-              <p class="flow-leaf-desc" id="stepDesc5">Власник отримує прогнозований валютний дохід, а фінансова звітність та аналітика доступні у смартфоні 24/7.</p>
+              <h3 class="flow-leaf-title" id="stepTitle5">Контроль вашого бізнесу у смартфоні.</h3>
+              <p class="flow-leaf-desc" id="stepDesc5">Застосунок Ribas Investor, аналітика та звітність у вашому смартфоні.</p>
             </div>
           </li>
           <li class="flow-leaf" data-side="r" data-tone="dark">
             <div class="flow-leaf-body">
               <span class="flow-leaf-num">06</span>
-              <h3 class="flow-leaf-title" id="stepTitle6">Відпочинок у власному шале з паруючим чаном.</h3>
-              <p class="flow-leaf-desc" id="stepDesc6">Ви можете приїжджати на приватний відпочинок у своє шале, насолоджуватися природою Карпат і користуватися всіма сервісами курорту.</p>
+              <h3 class="flow-leaf-title" id="stepTitle6">Не лише інвестиція, а й власний формат відпочинку.</h3>
+              <p class="flow-leaf-desc" id="stepDesc6">Для інвестора передбачено 19 бонусних днів на рік для особистого проживання в комплексі без втрати прибутку.</p>
             </div>
           </li>
         </ol>
@@ -6537,10 +6567,11 @@
       </div>
 
       <div class="faq-list" id="faqList">
-        <!-- Питання 1 (закрите за замовчуванням, як і решта) -->
+        <!-- Питання 1 (закрите за замовчуванням, як і решта). Відповіді поки
+             порожні навмисно — користувач додасть текст пізніше окремим кроком. -->
         <div class="faq-item" id="faqItem1">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ1">Що таке Mandra Invest?</h3>
+            <h3 class="faq-question" id="faqQ1">Де знаходиться проєкт Мандра Петрикор?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6548,7 +6579,7 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA1">Mandra Invest — інвестиційний напрям девелопера Mandra Moments, що спеціалізується на створенні та продажу високодохідної відпочинкової нерухомості в Україні. Ми супроводжуємо інвестора на всіх етапах: від аналізу ринку та вибору індивідуального юніту до введення в експлуатацію, співпраці з міжнародним готельним оператором Ribas Hotels Group і регулярної виплати дивідендів у валюті.</p>
+              <p class="faq-answer" id="faqA1"></p>
             </div>
           </div>
         </div>
@@ -6556,7 +6587,7 @@
         <!-- Питання 2 -->
         <div class="faq-item" id="faqItem2">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ2">Що таке Mandra Petrichor?</h3>
+            <h3 class="faq-question" id="faqQ2">Хто керує комплексом?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6564,7 +6595,7 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA2">Mandra Petrichor — масштабний цілорічний заміський курорт у рекреаційній лісовій зоні, створений як єдина екосистема з трьома автономними концепціями відпочинку: I черга (Ареал спокою), II черга (Сімейний простір для батьків і дітей) та III черга (Adults Only простір для побачень). Комплекс об'єднує понад 40 гектарів природи, термальний SPA-комплекс, басейни, авторські ресторани та івент-простори.</p>
+              <p class="faq-answer" id="faqA2"></p>
             </div>
           </div>
         </div>
@@ -6572,7 +6603,7 @@
         <!-- Питання 3 -->
         <div class="faq-item" id="faqItem3">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ3">Чи працює комплекс зараз?</h3>
+            <h3 class="faq-question" id="faqQ3">Скільки черг будівництва у проєкті?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6580,7 +6611,7 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA3">Так, перша черга комплексу Mandra Petrichor уже введена в експлуатацію, успішно працює та щодня приймає гостей. Усі котеджі першої черги були повністю викуплені приватними інвесторами та демонструють стабільно високу заповнюваність (понад 2 900 прийнятих гостей, рейтинг 4.9★ у Google Reviews). Це дає новим інвесторам можливість побачити реальний, діючий бізнес на власні очі перед інвестуванням у наступні черги.</p>
+              <p class="faq-answer" id="faqA3"></p>
             </div>
           </div>
         </div>
@@ -6588,7 +6619,7 @@
         <!-- Питання 4 -->
         <div class="faq-item" id="faqItem4">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ4">Хто управляє комплексом?</h3>
+            <h3 class="faq-question" id="faqQ4">Які проєкти у наявності?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6596,7 +6627,7 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA4">Операційне управління курортом здійснює Ribas Hotels Group — провідний міжнародний готельний оператор із портфелем понад 50 об'єктів. Ribas бере на себе повний цикл щоденного сервісу: маркетинг, динамічне ціноутворення, залучення гостей через світові системи бронювання, професійний клінінг, догляд за майном інвестора та щомісячну фінансову звітність.</p>
+              <p class="faq-answer" id="faqA4"></p>
             </div>
           </div>
         </div>
@@ -6604,7 +6635,7 @@
         <!-- Питання 5 -->
         <div class="faq-item" id="faqItem5">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ5">Хто працює над архітектурою комплексу?</h3>
+            <h3 class="faq-question" id="faqQ5">Графік виплат дивідендів?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6612,7 +6643,7 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA5">Архітектурну концепцію, майстер-план та дизайн інтер'єрів розробляють визнані лідери індустрії гостинності: авторитетна архітектурна студія YOD Group та бюро TEMO Hotel Design у тісній синергії з девелоперською командою Mandra Moments. Кожен будинок спроєктовано за принципами органічної архітектури, з використанням екологічних локальних матеріалів та панорамним склінням із видом на дику природу.</p>
+              <p class="faq-answer" id="faqA5"></p>
             </div>
           </div>
         </div>
@@ -6620,7 +6651,7 @@
         <!-- Питання 6 -->
         <div class="faq-item" id="faqItem6">
           <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
-            <h3 class="faq-question" id="faqQ6">Які об'єкти зараз доступні для придбання?</h3>
+            <h3 class="faq-question" id="faqQ6">Які умови нарахування дивідендів?</h3>
             <div class="faq-chevron" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -6628,7 +6659,55 @@
           <div class="faq-item-body">
             <div class="faq-item-content">
               <div class="faq-divider"></div>
-              <p class="faq-answer" id="faqA6">Наразі відкриті продажі юнітів другої та третьої черг Mandra Petrichor (дизайнерські шале та вілли площею від 42 до 110 м² з власними терасами, чанами або басейнами). Доступні як повне право власності на окремий котедж із земельною ділянкою, так і формати дольової участі. Для інвесторів діють індивідуальні програми безвідсоткового розтермінування від девелопера.</p>
+              <p class="faq-answer" id="faqA6"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Питання 7 -->
+        <div class="faq-item" id="faqItem7">
+          <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
+            <h3 class="faq-question" id="faqQ7">Чи є розтермінування?</h3>
+            <div class="faq-chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="faq-item-body">
+            <div class="faq-item-content">
+              <div class="faq-divider"></div>
+              <p class="faq-answer" id="faqA7"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Питання 8 -->
+        <div class="faq-item" id="faqItem8">
+          <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
+            <h3 class="faq-question" id="faqQ8">Де розташований комплекс?</h3>
+            <div class="faq-chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="faq-item-body">
+            <div class="faq-item-content">
+              <div class="faq-divider"></div>
+              <p class="faq-answer" id="faqA8"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Питання 9 -->
+        <div class="faq-item" id="faqItem9">
+          <div class="faq-item-header" role="button" tabindex="0" aria-expanded="false">
+            <h3 class="faq-question" id="faqQ9">Які переваги проєкту?</h3>
+            <div class="faq-chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="faq-item-body">
+            <div class="faq-item-content">
+              <div class="faq-divider"></div>
+              <p class="faq-answer" id="faqA9"></p>
             </div>
           </div>
         </div>
@@ -6663,6 +6742,11 @@
               <input type="tel" id="inpContactPhone" class="contacts-input" placeholder="+380 (__) ___-__-__" required autocomplete="tel">
             </div>
 
+            <div class="contacts-field-group">
+              <label for="inpContactComment" class="contacts-label" id="lblContactComment">Ваш коментар</label>
+              <textarea id="inpContactComment" class="contacts-input contacts-textarea" placeholder="Напишіть коментар" rows="3"></textarea>
+            </div>
+
             <button type="submit" class="btn-contacts-submit" id="btnContactSubmit">
               <span id="txtContactSubmit">Отримати консультацію</span>
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -6678,7 +6762,7 @@
         <!-- ПРАВА КОЛОНКА: ФОТО ІЛОНИ ОМЕЛЬЧЕНКО ТА ІНФОРМАЦІЯ НА БІЛОМУ ФОНІ -->
         <div class="contacts-media-side">
           <div class="contacts-media-wrap">
-            <img class="contacts-person-img" src="assets/team/ilona_omelchenko.webp" alt="Ілона Омельченко — Провідний інвестиційний експерт" loading="lazy" decoding="async">
+            <img class="contacts-person-img" src="assets/team/ilona_omelchenko.webp" alt="Іллона Омельченко — Провідний інвестиційний експерт" loading="lazy" decoding="async">
           </div>
 
           <div class="contacts-person-info">
@@ -6686,7 +6770,7 @@
               <span class="pulse-dot"></span>
               <span id="consultantStatusText">Зараз на зв'язку</span>
             </div>
-            <h3 class="contacts-person-name" id="consultantName">Ілона Омельченко</h3>
+            <h3 class="contacts-person-name" id="consultantName">Іллона Омельченко</h3>
             <p class="contacts-person-role" id="consultantRole">Провідний інвестиційний експерт</p>
           </div>
         </div>
@@ -6758,13 +6842,9 @@
           <div class="footer-contacts-list">
             <div class="footer-contact-group">
               <span class="footer-contact-label" id="footerPhoneLabel">Телефон</span>
-              <a href="tel:+380500507745" class="footer-contact-item">
+              <a href="tel:+380631501477" class="footer-contact-item">
                 <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span>(050) 050 77 45</span>
-              </a>
-              <a href="tel:+380949304085" class="footer-contact-item">
-                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span>(094) 930 40 85</span>
+                <span>+380 63 150 14 77</span>
               </a>
             </div>
             <div class="footer-contact-group">
@@ -7068,7 +7148,7 @@
            ======================================================== -->
       <div class="tab-pane" id="tabSubheadline">
         <div class="section-label">Текст підзаголовка</div>
-        <textarea id="inpMainDesc" class="text-input-field" rows="3" oninput="setMainDesc(this.value)">Створюємо відпочинкові проєкти, що поєднують нерухомість, сервіс і інвестиційну цінність у Карпатах.</textarea>
+        <textarea id="inpMainDesc" class="text-input-field" rows="3" oninput="setMainDesc(this.value)">Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.</textarea>
 
         <!-- 5 VISUAL EFFECTS FOR SUBTITLE -->
         <div class="section-label">5 Ефектів підзаголовка</div>
@@ -7337,7 +7417,7 @@
         navContacts: 'КОНТАКТИ',
         topBtn: 'Онлайн заявка',
         headline: '<span class="title-word-accent">Дохідна</span> нерухомість, у яку хочеться повертатися',
-        desc: 'Створюємо відпочинкові проєкти, що поєднують нерухомість, сервіс і інвестиційну цінність у Карпатах.',
+        desc: 'Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.',
         ctaText: 'Дізнатися більше',
         ctaCircle: 'Дізнатися<br>більше',
         showcaseTitle: 'Ми відповідаємо за',
@@ -7355,7 +7435,7 @@
         mfPart1: 'Від ідеї — до працюючого',
         mfPart1b: 'готельного продукту',
         mfPart2: 'Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments',
-        mfPart3: 'Ми представляємо інвестиційні',
+        mfPart3: 'Ми представляємо інвестиційні',
         mfPart3b: 'проєкти у сфері гостинності',
         mfPart4: "та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості",
         mfPart5: '.',
@@ -7374,18 +7454,17 @@
         mfP4Desc: "Супровід від вибору об'єкта до стабільного доходу",
 
         /* ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ */
-        stTitle: 'Mandra Invest в цифрах',
+        stTitleMain: 'Mandra Invest', stTitleBreak: 'в цифрах',
         stDesc: 'Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. Показники поруч демонструють реальну динаміку розвитку компанії та стабільний попит на наші проєкти.',
         stCtaText: 'Дізнатися більше',
-        st1Text: 'Апартаментів різних категорій в номерному фонді',
-        st2Text: 'Років досвіду на ринку девелопменту та інвестицій',
-        st3Text: 'Черги будівництва флагманського гірського комплексу Mandra Petrichor',
-        st4Text: 'Млн залучених інвестицій',
-        st5Text: 'Інвесторів що стали власниками дольової участі або цілого юніту',
+        st1Text: 'Загальний номерний фонд',
+        st2Text: 'Mandra Moments на ринку девелопменту',
+        st4Text: 'Реалізованих проєктів від девелопера Mandra Moments',
+        st5Text: 'Інвесторів які стали партнерами проєкту',
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
         mpEyebrow: 'МАСШТАБ MANDRA PETRICHOR',
-        mpTitle: 'Інвест проєкт Mandra Petrichor',
+        mpTitle: 'Масштаб Mandra Petrichor',
         mpSubtitle: 'Один комплекс. Три різні концепції відпочинку.',
         mpDesc: 'Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.',
         mpPhaseNum: 'III черга',
@@ -7441,7 +7520,7 @@
         ph1M1Desc: 'котеджів у діючій першій черзі',
         ph1M2Val: '100%',
         ph1M2Desc: 'котеджів продано',
-        ph1M3Val: '2 938',
+        ph1M3Val: '3 298',
         ph1M3Desc: 'вже прийняв комплекс',
         ph1M4Val: '25%',
         ph1M4Desc: 'повторних бронювань',
@@ -7458,47 +7537,54 @@
         investFlowLead: 'Як працює інвестування з Mandra: від вибору нерухомості до стабільного отримання щоквартального доходу.',
         investFlowCtaText: 'Дізнатися більше про умови інвестування',
         stepBadge1: 'Крок 1',
-        stepTitle1: 'Вибираєте об\'єкт і підписуєте договір.',
-        stepDesc1: 'Усе максимально просто: ви обираєте найкращий об\'єкт, а ми забезпечуємо надійне оформлення.',
+        stepTitle1: 'Від вибору об\'єкту до підписання договору.',
+        stepDesc1: 'Ми підбираємо оптимальну пропозицію під вашу інвестиційну ціль та забезпечуємо повний супровід угоди.',
         stepBadge2: 'Крок 2',
         stepTitle2: 'Оплачуєте — одразу або в розтермінування.',
-        stepDesc2: 'Комфорт на ваших умовах завдяки гнучкому інвестуванню та прозорим графікам оплати.',
+        stepDesc2: 'Обирайте зручний формат оплати та плануйте інвестицію у комфортному для вас темпі.',
         stepBadge3: 'Крок 3',
         stepTitle3: 'Реалізація проєкту та комплектація.',
         stepDesc3: 'Девелопер відповідає за будівництво, комплектацію та підготовку об\'єкта до введення в експлуатацію.',
         stepBadge4: 'Крок 4',
         stepTitle4: 'Готельне управління комплексом.',
-        stepDesc4: 'Котедж стає частиною єдиного готельного курорту та працює за спільними стандартами мережі Ribas Hotels Group.',
+        stepDesc4: 'Ribas Hotels Group бере на себе повний цикл управління комплексом — від операційної роботи до сервісу та контролю стандартів.',
         stepBadge5: 'Крок 5',
-        stepTitle5: 'Отримання стабільного доходу.',
-        stepDesc5: 'Власник отримує прогнозований дохід відповідно до фінансової моделі з регулярними виплатами у валюті.',
+        stepTitle5: 'Контроль вашого бізнесу у смартфоні.',
+        stepDesc5: 'Застосунок Ribas Investor, аналітика та звітність у вашому смартфоні.',
         stepBadge6: 'Крок 6',
-        stepTitle6: 'Контроль дохідності через застосунок Ribas.',
-        stepDesc6: 'Фінансова звітність, аналітика та ключові показники роботи об\'єкта доступні інвестору в режимі реального часу.',
+        stepTitle6: 'Не лише інвестиція, а й власний формат відпочинку.',
+        stepDesc6: 'Для інвестора передбачено 19 бонусних днів на рік для особистого проживання в комплексі без втрати прибутку.',
         /* ЕКРАН 11 — НАЙЧАСТІШІ ПИТАННЯ */
         faqTitle: 'Найчастіші питання',
-        faqQ1: 'Що таке Mandra Invest?',
-        faqA1: 'Mandra Invest — інвестиційний напрям девелопера Mandra Moments, що спеціалізується на створенні та продажу високодохідної відпочинкової нерухомості в Україні. Ми супроводжуємо інвестора на всіх етапах: від аналізу ринку та вибору індивідуального юніту до введення в експлуатацію, співпраці з міжнародним готельним оператором Ribas Hotels Group і регулярної виплати дивідендів у валюті.',
-        faqQ2: 'Що таке Mandra Petrichor?',
-        faqA2: 'Mandra Petrichor — масштабний цілорічний заміський курорт у рекреаційній лісовій зоні, створений як єдина екосистема з трьома автономними концепціями відпочинку: I черга (Ареал спокою), II черга (Сімейний простір для батьків і дітей) та III черга (Adults Only простір для побачень). Комплекс об\'єднує понад 40 гектарів природи, термальний SPA-комплекс, басейни, авторські ресторани та івент-простори.',
-        faqQ3: 'Чи працює комплекс зараз?',
-        faqA3: 'Так, перша черга комплексу Mandra Petrichor уже введена в експлуатацію, успішно працює та щодня приймає гостей. Усі котеджі першої черги були повністю викуплені приватними інвесторами та демонструють стабільно високу заповнюваність (понад 2 900 прийнятих гостей, рейтинг 4.9★ у Google Reviews). Це дає новим інвесторам можливість побачити реальний, діючий бізнес на власні очі перед інвестуванням у наступні черги.',
-        faqQ4: 'Хто управляє комплексом?',
-        faqA4: 'Операційне управління курортом здійснює Ribas Hotels Group — провідний міжнародний готельний оператор із портфелем понад 50 об\'єктів. Ribas бере на себе повний цикл щоденного сервісу: маркетинг, динамічне ціноутворення, залучення гостей через світові системи бронювання, професійний клінінг, догляд за майном інвестора та щомісячну фінансову звітність.',
-        faqQ5: 'Хто працює над архітектурою комплексу?',
-        faqA5: 'Архітектурну концепцію, майстер-план та дизайн інтер\'єрів розробляють визнані лідери індустрії гостинності: авторитетна архітектурна студія YOD Group та бюро TEMO Hotel Design у тісній синергії з девелоперською командою Mandra Moments. Кожен будинок спроєктовано за принципами органічної архітектури, з використанням екологічних локальних матеріалів та панорамним склінням із видом на дику природу.',
-        faqQ6: 'Які об\'єкти зараз доступні для придбання?',
-        faqA6: 'Наразі відкриті продажі юнітів другої та третьої черг Mandra Petrichor (дизайнерські шале та вілли площею від 42 до 110 м² з власними терасами, чанами або басейнами). Доступні як повне право власності на окремий котедж із земельною ділянкою, так і формати дольової участі. Для інвесторів діють індивідуальні програми безвідсоткового розтермінування від девелопера.',
+        faqQ1: 'Де знаходиться проєкт Мандра Петрикор?',
+        faqA1: '',
+        faqQ2: 'Хто керує комплексом?',
+        faqA2: '',
+        faqQ3: 'Скільки черг будівництва у проєкті?',
+        faqA3: '',
+        faqQ4: 'Які проєкти у наявності?',
+        faqA4: '',
+        faqQ5: 'Графік виплат дивідендів?',
+        faqA5: '',
+        faqQ6: 'Які умови нарахування дивідендів?',
+        faqA6: '',
+        faqQ7: 'Чи є розтермінування?',
+        faqA7: '',
+        faqQ8: 'Де розташований комплекс?',
+        faqA8: '',
+        faqQ9: 'Які переваги проєкту?',
+        faqA9: '',
 
         /* ЕКРАН 12 — КОНТАКТНА ФОРМА */
         contactsTitle: 'Потрібна консультація?',
         contactsSubtitle: 'Наш консультант надасть вам безкоштовну допомогу',
         lblContactName: "Ваше ім'я",
         lblContactPhone: 'Ваш номер телефону',
+        lblContactComment: 'Ваш коментар',
         txtContactSubmit: 'Отримати консультацію',
         contactsGuaranteeText: 'Конфіденційність гарантовано • Відповідаємо протягом 10 хвилин',
         consultantStatusText: "Зараз на зв'язку",
-        consultantName: 'Ілона Омельченко',
+        consultantName: 'Іллона Омельченко',
         consultantRole: 'Провідний інвестиційний експерт',
 
         /* ФУТЕР (NUMO STYLE) */
@@ -7526,7 +7612,7 @@
         navContacts: 'CONTACTS',
         topBtn: 'Online Request',
         headline: '<span class="title-word-accent">High-yield</span> real estate you want to return to',
-        desc: 'Creating resort projects combining real estate, premium service and investment value in the Carpathians.',
+        desc: 'We don\'t just build cottages — we create a full-scale investment product in the hospitality industry.',
         ctaText: 'Learn More',
         ctaCircle: 'Learn<br>More',
         showcaseTitle: 'We are responsible for',
@@ -7563,18 +7649,17 @@
         mfP4Desc: 'Full guidance from selection to passive dividends',
 
         /* ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ */
-        stTitle: 'Mandra Invest in Numbers',
+        stTitleMain: 'Mandra Invest', stTitleBreak: 'in Numbers',
         stDesc: 'Our work embodies transparency, high implementation pace, and guaranteed returns for investors. The adjacent metrics demonstrate the dynamic company growth and steady demand for our developments.',
         stCtaText: 'Learn More',
-        st1Text: 'Apartments of various categories in the room stock',
-        st2Text: 'Years of experience in development and investment',
-        st3Text: 'Construction phases of the flagship Mandra Petrichor mountain resort',
-        st4Text: 'Million of raised investment',
-        st5Text: 'Investors who acquired fractional ownership or full residential units',
+        st1Text: 'Total room stock',
+        st2Text: 'Mandra Moments on the development market',
+        st4Text: 'Completed projects by developer Mandra Moments',
+        st5Text: 'Investors who became project partners',
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
         mpEyebrow: 'SCALE OF MANDRA PETRICHOR',
-        mpTitle: 'Investment Project Mandra Petrichor',
+        mpTitle: 'Scale of Mandra Petrichor',
         mpSubtitle: 'One complex. Three distinct vacation concepts.',
         mpDesc: 'Mandra Petrichor is an expansive country resort in a pine forest near Kyiv, developing as a unified territory with three independent concepts. Each phase is tailored to its distinct audience and creates its own vacation storyline. Together they forge an all-season destination resort.',
         mpPhaseNum: 'Phase III',
@@ -7630,7 +7715,7 @@
         ph1M1Desc: 'cottages in active operation',
         ph1M2Val: '100%',
         ph1M2Desc: 'cottages sold out',
-        ph1M3Val: '2,938',
+        ph1M3Val: '3,298',
         ph1M3Desc: 'guests hosted to date',
         ph1M4Val: '25%',
         ph1M4Desc: 'repeat bookings rate',
@@ -7646,47 +7731,54 @@
         investFlowLead: 'How investing with Mandra works: from property selection to steady quarterly dividend distributions.',
         investFlowCtaText: 'Learn more about investment terms',
         stepBadge1: 'Step 1',
-        stepTitle1: 'Select a property and sign the contract.',
-        stepDesc1: 'Everything is streamlined: you select the optimal unit, and we ensure secure legal execution.',
+        stepTitle1: 'From choosing a property to signing the contract.',
+        stepDesc1: 'We select the optimal offer for your investment goal and provide full support throughout the deal.',
         stepBadge2: 'Step 2',
         stepTitle2: 'Payment — lump sum or structured installment.',
-        stepDesc2: 'Comfort on your terms through flexible investing schedules and transparent payment milestones.',
+        stepDesc2: 'Choose a convenient payment format and plan your investment at a pace that\'s comfortable for you.',
         stepBadge3: 'Step 3',
         stepTitle3: 'Project realization and turn-key outfitting.',
         stepDesc3: 'The developer handles full construction, utility engineering, and commissioning readiness.',
         stepBadge4: 'Step 4',
         stepTitle4: 'Professional hotel management.',
-        stepDesc4: 'Your cottage becomes an integral part of the resort operating under Ribas Hotels Group hospitality standards.',
+        stepDesc4: 'Ribas Hotels Group takes on the full cycle of managing the complex — from day-to-day operations to service and standards control.',
         stepBadge5: 'Step 5',
-        stepTitle5: 'Predictable passive income & Ribas App control.',
-        stepDesc5: 'The owner receives scheduled quarterly yield in USD, with financial statements and performance metrics available 24/7.',
+        stepTitle5: 'Control your business from your smartphone.',
+        stepDesc5: 'The Ribas Investor app gives you analytics and reporting right on your smartphone.',
         stepBadge6: 'Step 6',
-        stepTitle6: 'Private vacation in your chalet with steaming hot tub.',
-        stepDesc6: 'Enjoy private retreats in your personal mountain chalet, relax in the outdoor hot tub, and access all 5-star resort services.',
+        stepTitle6: 'Not just an investment, but your own way to vacation.',
+        stepDesc6: 'Investors get 19 bonus days a year for personal stays at the complex without losing any profit.',
         /* SCREEN 11 — FAQ ACCORDION */
         faqTitle: 'Frequently Asked Questions',
-        faqQ1: 'What is Mandra Invest?',
-        faqA1: 'Mandra Invest is the dedicated investment division of developer Mandra Moments, specializing in creating and curating high-yield hospitality real estate in Ukraine. We guide investors through every step: from in-depth market research and bespoke chalet selection to turnkey handover, ongoing management by Ribas Hotels Group, and consistent passive quarterly dividend distributions in USD.',
-        faqQ2: 'What is Mandra Petrichor?',
-        faqA2: 'Mandra Petrichor is an expansive all-season destination resort nestled in a pristine forest sanctuary, conceived as an integrated ecosystem featuring three distinct leisure concepts: Phase I (Sanctuary of Serenity), Phase II (Family Wellness for parents & children), and Phase III (Adults Only retreat for dates). The resort features over 40 hectares of nature, a thermal SPA, heated swimming pools, signature dining, and scenic event pavilions.',
-        faqQ3: 'Is the resort currently operational?',
-        faqA3: 'Yes, Phase I of Mandra Petrichor is fully operational, commissioned, and actively hosting guests daily. All cottages in Phase I were completely sold out to private investors and demonstrate proven occupancy metrics (over 2,900 hosted guests, 4.9★ rating on Google Reviews). Prospective investors can visit, tour the active resort, and witness genuine daily operations before investing in new phases.',
-        faqQ4: 'Who manages the resort operations?',
-        faqA4: 'Day-to-day operations are handled exclusively by Ribas Hotels Group — a premier international hospitality management company managing 50+ hotel assets. Ribas orchestrates the complete operational lifecycle: global marketing, dynamic pricing, booking distributions, five-star guest services, continuous property maintenance, and comprehensive monthly investor reporting.',
-        faqQ5: 'Who designs the resort architecture?',
-        faqA5: 'The master plan, architectural forms, and interior aesthetics are crafted by internationally acclaimed hospitality design leaders: YOD Group and TEMO Hotel Design, working in tight synergy with the Mandra Moments development team. Every chalet adheres to biophilic, organic architecture principles, leveraging natural timber, local stone, and panoramic glass vistas overlooking the forest.',
-        faqQ6: 'Which units are currently available for purchase?',
-        faqA6: 'Sales are currently open for exclusive units in Phase II and Phase III of Mandra Petrichor (designer chalets and villas ranging from 42 to 110 m² featuring private heated decks, outdoor hot tubs, or plunge pools). We offer both full freehold ownership with land title and fractional investment models, supported by flexible 0% developer installment plans.',
+        faqQ1: 'Where is the Mandra Petrichor project located?',
+        faqA1: '',
+        faqQ2: 'Who manages the complex?',
+        faqA2: '',
+        faqQ3: 'How many construction phases does the project have?',
+        faqA3: '',
+        faqQ4: 'Which projects are currently available?',
+        faqA4: '',
+        faqQ5: 'What is the dividend payment schedule?',
+        faqA5: '',
+        faqQ6: 'What are the terms for dividend accrual?',
+        faqA6: '',
+        faqQ7: 'Is an installment plan available?',
+        faqA7: '',
+        faqQ8: 'Where is the complex situated?',
+        faqA8: '',
+        faqQ9: 'What are the advantages of the project?',
+        faqA9: '',
 
         /* SCREEN 12 — CONTACT FORM */
         contactsTitle: 'Need a Consultation?',
         contactsSubtitle: 'Our personal advisor will provide dedicated guidance free of charge',
         lblContactName: 'Your Name',
         lblContactPhone: 'Your Phone Number',
+        lblContactComment: 'Your Comment',
         txtContactSubmit: 'Get Consultation',
         contactsGuaranteeText: 'Privacy guaranteed • We respond within 10 minutes',
         consultantStatusText: 'Online Now',
-        consultantName: 'Ilona Omelchenko',
+        consultantName: 'Illona Omelchenko',
         consultantRole: 'Lead Investment Expert',
 
         /* FOOTER (NUMO STYLE) */
@@ -7779,8 +7871,8 @@
                   'mfFooterTitle','mfP1Name','mfP1Desc','mfP2Name','mfP2Desc',
                   'mfP3Name','mfP3Desc','mfP4Name','mfP4Desc',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
-                  'stTitle','stDesc','stCtaText',
-                  'st1Text','st2Text','st3Text','st4Text','st5Text',
+                  'stTitleMain','stTitleBreak','stDesc','stCtaText',
+                  'st1Text','st2Text','st4Text','st5Text',
                   /* ЕКРАН 5 — Мандра Петрікор */
                   'mpEyebrow','mpTitle','mpSubtitle','mpDesc',
                   'mpM1Lbl','mpM2Lbl','mpM3Lbl',
@@ -7811,10 +7903,10 @@
                   'synInvSubtag','synInvPeriod',
                   /* ЕКРАН 11 — НАЙЧАСТІШІ ПИТАННЯ */
                   'faqTitle',
-                  'faqQ1','faqQ2','faqQ3','faqQ4','faqQ5','faqQ6',
-                  'faqA1','faqA2','faqA3','faqA4','faqA5','faqA6',
+                  'faqQ1','faqQ2','faqQ3','faqQ4','faqQ5','faqQ6','faqQ7','faqQ8','faqQ9',
+                  'faqA1','faqA2','faqA3','faqA4','faqA5','faqA6','faqA7','faqA8','faqA9',
                   /* ЕКРАН 12 — КОНТАКТНА ФОРМА */
-                  'contactsTitle','contactsSubtitle','lblContactName','lblContactPhone',
+                  'contactsTitle','contactsSubtitle','lblContactName','lblContactPhone','lblContactComment',
                   'txtContactSubmit','contactsGuaranteeText','consultantStatusText',
                   'consultantName','consultantRole',
                   /* ФУТЕР (NUMO STYLE) */
@@ -7831,6 +7923,8 @@
       if (inpName) inpName.placeholder = lang === 'ua' ? 'Олександр' : 'Alexander';
       const inpPhone = document.getElementById('inpContactPhone');
       if (inpPhone) inpPhone.placeholder = lang === 'ua' ? '+380 (__) ___-__-__' : '+380 (__) ___-__-__';
+      const inpComment = document.getElementById('inpContactComment');
+      if (inpComment) inpComment.placeholder = lang === 'ua' ? 'Напишіть коментар' : 'Write a comment';
 
       /* Оновлення плашки деталей черги */
       if (typeof renderPhaseCard === 'function' && typeof mpPhasesData !== 'undefined') {
@@ -7955,14 +8049,6 @@
           document.getElementById('rngBtnScale').value = s.btnScale;
         }
 
-          // Завжди прибираємо "MANDRA Invest — " з тексту заголовка та капіталізуємо першу літеру
-          let cleanText = s.headlineText ? s.headlineText.replace(/MANDRA\s*Invest\s*—\s*/gi, '').replace(/<[^>]*>/g, '').trim() : '';
-          if (cleanText) cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
-          const defaultHeadlineText = 'Дохідна нерухомість, у яку хочеться повертатися';
-          const textToUse = cleanText || defaultHeadlineText;
-          document.getElementById('inpMainHeadline').value = textToUse;
-          const formatted = textToUse.replace(/^(Дохідна|High-yield)(\s+|$)/i, '<span class="title-word-accent">$1</span>$2');
-          document.getElementById('heroMainHeadline').innerHTML = formatted;
         if (s.headlineFx) {
           const btn = Array.from(document.querySelectorAll('#headlineFxGrid .fx-btn')).find(b => b.getAttribute('onclick').includes(s.headlineFx));
           setHeadlineEffect(s.headlineFx, btn);
@@ -8006,10 +8092,6 @@
           document.getElementById('rngTitleY').value = s.headlineY;
         }
 
-        if (s.subText) {
-          document.getElementById('inpMainDesc').value = s.subText;
-          document.getElementById('heroMainDesc').textContent = s.subText;
-        }
         if (s.subFx) {
           const btn = Array.from(document.querySelectorAll('#subheadlineFxGrid .fx-btn')).find(b => b.getAttribute('onclick').includes(s.subFx));
           setSubEffect(s.subFx, btn);
