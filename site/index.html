@@ -1562,6 +1562,47 @@
     border: none;
     box-sizing: border-box;
   }
+  /* Дзеркальний блік на наведення: тонка світлова смуга повільно проходить
+     по склу картки й гасне. Тільки цифри та плашки можливостей — нижня
+     горизонтальна смуга статусу лишається спокійною. */
+  .pi-card,
+  .pi-feature { position: relative; overflow: hidden; }
+  .pi-card::after,
+  .pi-feature::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    bottom: -60%;
+    left: 0;
+    width: 42%;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-160%) rotate(9deg);
+    background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.07) 42%,
+      rgba(255, 255, 255, 0.14) 50%,
+      rgba(255, 255, 255, 0.07) 58%,
+      rgba(255, 255, 255, 0) 100%);
+  }
+  /* Рівний спокійний прохід: різкий easeOut вистрілював на старті й доповзав
+     у кінці — блік читався як смикання, а не як світло. */
+  .pi-card:hover::after,
+  .pi-feature:hover::after { animation: piSheen 1.7s cubic-bezier(0.33, 0, 0.3, 1); }
+  @keyframes piSheen {
+    0%   { transform: translateX(-160%) rotate(9deg); opacity: 0; }
+    20%  { opacity: 0.9; }
+    70%  { opacity: 0.9; }
+    100% { transform: translateX(330%) rotate(9deg); opacity: 0; }
+  }
+  /* На залитій акцентом картці біле світло було б різким — гасимо вдвічі */
+  .pi-card-accent::after { opacity: 0; mix-blend-mode: soft-light; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pi-card:hover::after,
+    .pi-feature:hover::after { animation: none; }
+  }
+
   .pi-feature-icon {
     flex: none;
     width: clamp(20px, 1.35vw, 26px);
