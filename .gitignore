@@ -28,3 +28,6 @@ scratch/
 
 # Кадры героя для показа клиенту (не в деплой)
 /hero_frames/
+
+# Скріншоти перевірок Playwright
+/.playwright-mcp/

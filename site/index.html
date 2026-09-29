@@ -1407,6 +1407,144 @@
      по квадрантам в монолитную сетку. Токены наследуются.
      ============================================================ */
   /* ============================================================
+     ЕКРАН 3 — MANDRA PETRICHOR: КОМПЛЕКС У ЦИФРАХ
+     Текст ліворуч, чотири показники праворуч. Картки — скло без рамок,
+     опорна цифра залита фірмовим зеленим. Тег у кутку — тонкий контур
+     через inset-тінь, щоб на одному елементі не сходились заливка й рамка.
+     ============================================================ */
+  .section-petrichor-intro {
+    position: relative;
+    z-index: 3;
+    background: var(--bg-dark);
+    padding: clamp(72px, 8vh, 124px) 5vw;
+    box-sizing: border-box;
+  }
+  .pi-container {
+    width: 100%;
+    max-width: 1520px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(40px, 4.4vw, 88px);
+    align-items: start;
+  }
+  .pi-title {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(34px, 3.4vw, 64px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    color: #FFFFFF;
+    margin: 0 0 clamp(20px, 1.8vw, 34px);
+  }
+  .pi-lead {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(16px, 1.16vw, 21px);
+    font-weight: 500;
+    line-height: 1.6;
+    color: #FFFFFF;
+    margin: 0 0 clamp(16px, 1.2vw, 24px);
+    max-width: 33em;
+  }
+  .pi-body {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(15px, 1.02vw, 18px);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.64);
+    margin: 0 0 clamp(28px, 2.4vw, 44px);
+    max-width: 33em;
+  }
+  .pi-accent { color: var(--accent-color, #81B873); }
+
+  .pi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(12px, 1vw, 20px);
+  }
+  .pi-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: clamp(152px, 13vw, 218px);
+    padding: clamp(20px, 1.6vw, 30px);
+    border-radius: clamp(16px, 1.2vw, 22px);
+    background: rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: none;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .pi-card-tag {
+    position: absolute;
+    top: clamp(16px, 1.3vw, 24px);
+    right: clamp(16px, 1.3vw, 24px);
+    padding: 5px 13px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(10px, 0.62vw, 12px);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+  }
+  .pi-card-num {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(38px, 3.6vw, 68px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--accent-color, #81B873);
+    white-space: nowrap;
+  }
+  .pi-card-unit { font-size: 0.4em; font-weight: 700; letter-spacing: 0; }
+  .pi-card-text {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(13px, 0.86vw, 16px);
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.68);
+    margin: clamp(10px, 0.8vw, 16px) 0 0;
+  }
+  .pi-card-accent { background: var(--accent-color, #81B873); }
+  .pi-card-accent .pi-card-num { color: #0E1F0B; }
+  .pi-card-accent .pi-card-text { color: rgba(14, 31, 11, 0.78); }
+  .pi-card-accent .pi-card-tag {
+    box-shadow: inset 0 0 0 1px rgba(14, 31, 11, 0.3);
+    color: rgba(14, 31, 11, 0.8);
+  }
+  .pi-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: clamp(12px, 1vw, 20px);
+    padding: clamp(14px, 1vw, 20px) clamp(18px, 1.4vw, 28px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.055);
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(13px, 0.88vw, 16px);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .pi-status .pulse-dot { flex: none; }
+
+  @media (max-width: 992px) {
+    .pi-container { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  }
+  @media (max-width: 600px) {
+    .pi-grid { grid-template-columns: minmax(0, 1fr); }
+    .pi-status { border-radius: 20px; align-items: flex-start; }
+  }
+
+  /* ТИМЧАСОВО: showcase сховано, поки збирається блок вище. Повернути —
+     зняти атрибут hidden із секції та прибрати ці два правила. Від'ємний
+     відступ статистики тримався на висоті showcase, тож без нього обнуляємо. */
+  #showcase[hidden] { display: none; }
+  #showcase[hidden] ~ .section-stats-stack { margin-top: 100px; }
+
+  /* ============================================================
      SCREEN 2 - SCROLL SHOWCASE (4 QUADRANT SCRUB)
      ============================================================ */
   .section-scroll-showcase {
@@ -5854,9 +5992,63 @@
   </div><!-- /.hero-stage -->
 
   <!-- ============================================================
+       ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
+       ============================================================ -->
+  <section class="section-petrichor-intro" id="petrichor-intro">
+    <div class="pi-container">
+
+      <div class="pi-col-text">
+        <h2 class="pi-title">MANDRA <span class="pi-accent">PETRICHOR</span></h2>
+        <p class="pi-lead" id="piLead">Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.</p>
+        <p class="pi-body" id="piBody">Ресторан, SPA, простори для сімейного та дорослого відпочинку, природа та професійне готельне управління Ribas Hotels Group — усе в межах одного комплексу.</p>
+        <a class="stats-cta-btn" href="#petrichor">
+          <span id="piCtaText">Переглянути комплекс</span>
+          <span class="stats-cta-arrow">&#8599;</span>
+        </a>
+      </div>
+
+      <div class="pi-col-figures">
+        <div class="pi-grid">
+
+          <article class="pi-card">
+            <span class="pi-card-tag" id="piTag1">територія</span>
+            <span class="pi-card-num">10 <span class="pi-card-unit" id="piUnit1">га</span></span>
+            <p class="pi-card-text" id="piCard1">Території комплексу</p>
+          </article>
+
+          <article class="pi-card pi-card-accent">
+            <span class="pi-card-tag" id="piTag2">котеджі</span>
+            <span class="pi-card-num">101</span>
+            <p class="pi-card-text" id="piCard2">Котеджів у складі комплексу</p>
+          </article>
+
+          <article class="pi-card">
+            <span class="pi-card-tag" id="piTag3">концепції</span>
+            <span class="pi-card-num">3</span>
+            <p class="pi-card-text" id="piCard3">Концепції відпочинку</p>
+          </article>
+
+          <article class="pi-card">
+            <span class="pi-card-tag" id="piTag4">інфраструктура</span>
+            <span class="pi-card-num">4 000 <span class="pi-card-unit" id="piUnit4">м&#178;</span></span>
+            <p class="pi-card-text" id="piCard4">Інфраструктури комплексу</p>
+          </article>
+
+        </div>
+
+        <div class="pi-status">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="piStatus">Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
        ЕКРАН 3 — SCROLL SHOWCASE (4 квадранти)
        ============================================================ -->
-  <section class="section-scroll-showcase" id="showcase">
+  <section class="section-scroll-showcase" id="showcase" hidden>
     <div class="showcase-sticky">
 
       <div class="showcase-stage">
@@ -7462,6 +7654,16 @@
         headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
         desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
         heroBadge: 'Здача 2 вже цього року',
+        piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
+        piBody: 'Ресторан, SPA, простори для сімейного та дорослого відпочинку, природа та професійне готельне управління Ribas Hotels Group — усе в межах одного комплексу.',
+        piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
+        piCtaText: 'Переглянути комплекс',
+        piTag1: 'територія', piTag2: 'котеджі', piTag3: 'концепції', piTag4: 'інфраструктура',
+        piUnit1: 'га', piUnit4: 'м²',
+        piCard1: 'Території комплексу',
+        piCard2: 'Котеджів у складі комплексу',
+        piCard3: 'Концепції відпочинку',
+        piCard4: 'Інфраструктури комплексу',
         ctaText: 'Дізнатися більше',
         ctaCircle: 'Дізнатися<br>більше',
         showcaseTitle: 'Ми відповідаємо за',
@@ -7658,6 +7860,16 @@
         headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
         desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
         heroBadge: 'Stage 2 handover this year',
+        piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
+        piBody: 'A restaurant, a spa, spaces for family and adult leisure, nature and professional hotel management by Ribas Hotels Group — all within a single complex.',
+        piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
+        piCtaText: 'Explore the complex',
+        piTag1: 'territory', piTag2: 'cottages', piTag3: 'concepts', piTag4: 'infrastructure',
+        piUnit1: 'ha', piUnit4: 'm²',
+        piCard1: 'Hectares of the complex',
+        piCard2: 'Cottages within the complex',
+        piCard3: 'Leisure concepts',
+        piCard4: 'Of infrastructure',
         ctaText: 'Learn More',
         ctaCircle: 'Learn<br>More',
         showcaseTitle: 'We are responsible for',
@@ -7917,6 +8129,10 @@
                   'mfBadge','mfPart1','mfPart1b','mfPart2','mfPart3','mfPart3b','mfPart4','mfPart5',
                   'mfFooterTitle','mfP1Name','mfP1Desc','mfP2Name','mfP2Desc',
                   'mfP3Name','mfP3Desc','mfP4Name','mfP4Desc',
+                  /* ЕКРАН 3 — Mandra Petrichor: комплекс у цифрах */
+                  'piLead','piBody','piStatus','piCtaText',
+                  'piTag1','piTag2','piTag3','piTag4','piUnit1','piUnit4',
+                  'piCard1','piCard2','piCard3','piCard4',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
                   'stTitleMain','stTitleBreak','stDesc','stCtaText',
                   'st1Text','st2Text','st4Text','st5Text',
@@ -9317,7 +9533,7 @@
        ============================================================ */
     (function initShowcaseScrub() {
       const track = document.querySelector('.section-scroll-showcase');
-      if (!track) return;
+      if (!track || track.hasAttribute('hidden')) return;
       const items = Array.from(track.querySelectorAll('[data-q]'));
       if (!items.length) return;
 
@@ -9617,7 +9833,12 @@
         // коли скрол завершує розведення карток Шоукейсу, колода карток уже зафіксована,
         // тому перша картка при початку скролу залишається абсолютно статичною на своєму місці.
         const track = document.querySelector('.section-scroll-showcase');
-        if (track) {
+        /* Схований showcase має нульову висоту, і точка прильоту порахувалась би
+           з від'ємного треку — стос падав би на кілька тисяч пікселів нижче.
+           Немає треку — лишаємо посадку з CSS (176px). */
+        if (track && track.hasAttribute('hidden')) {
+          sticky.style.top = '';
+        } else if (track) {
           const showSticky = track.querySelector('.showcase-sticky');
           const showStickyTop = showSticky ? (parseFloat(getComputedStyle(showSticky).top) || 0) : 0;
           const trackTotal = track.offsetHeight - window.innerHeight;
