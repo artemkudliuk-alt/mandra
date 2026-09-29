@@ -1619,7 +1619,9 @@
     position: relative;
     z-index: 3;
     background: var(--bg-dark);
-    padding: clamp(64px, 7vh, 110px) 0 clamp(64px, 7vh, 110px);
+    /* Знизу відступу немає: нижня лінія сітки має стикуватись із картою
+       наступного екрана, без смуги фону між ними. */
+    padding: clamp(64px, 7vh, 110px) 0 0;
   }
   .why-head {
     max-width: 1520px;
