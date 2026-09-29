@@ -1607,6 +1607,60 @@
     .pi-features { grid-template-columns: minmax(0, 1fr); }
   }
 
+  /* ============================================================
+     ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
+     Без звуку, без контролів, без перемотки: ролик просто йде по колу.
+     Кнопка play з'являється тільки як запасний вихід — коли браузер
+     заблокував автостарт (буває на мобільних при економії трафіку).
+     ============================================================ */
+  .section-video-banner {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg-dark);
+  }
+  .vb-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Затемнення на 5% — рівно щоб зняти різкість білого тексту в ролику */
+  .vb-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+  }
+  .vb-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(64px, 5.4vw, 92px);
+    height: clamp(64px, 5.4vw, 92px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+  }
+  .vb-play.is-shown { display: inline-flex; }
+  .vb-play:hover { background: rgba(255, 255, 255, 0.2); transform: translate(-50%, -50%) scale(1.06); }
+  .vb-play svg { width: 42%; height: 42%; display: block; margin-left: 8%; }
+
   /* ТИМЧАСОВО: showcase сховано, поки збирається блок вище. Повернути —
      зняти атрибут hidden із секції та прибрати ці два правила. Від'ємний
      відступ статистики тримався на висоті showcase, тож без нього обнуляємо. */
@@ -6129,6 +6183,19 @@
       </div>
 
     </div>
+  </section>
+
+  <!-- ============================================================
+       ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
+       ============================================================ -->
+  <section class="section-video-banner" id="video-banner">
+    <video class="vb-video" id="videoBanner" muted loop playsinline preload="none"
+           poster="assets/video/mandra_banner_poster.webp"
+           data-src="assets/video/mandra_banner.mp4" aria-hidden="true"></video>
+    <div class="vb-mask" aria-hidden="true"></div>
+    <button class="vb-play" id="videoBannerPlay" type="button" aria-label="Відтворити відео">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.7-6.8a.6.6 0 0 0 0-1l-10.7-6.8A.6.6 0 0 0 8 5.2z"/></svg>
+    </button>
   </section>
 
   <!-- ============================================================
@@ -10732,6 +10799,49 @@
       else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
+
+    /* ============================================================
+       ЕКРАН 3.5 — ВІДЕОБАНЕР
+       Файл тягнемо не одразу: старт завантаження за пів екрана до входу
+       в кадр, щоб до банера ролик уже крутився, але й щоб він не змагався
+       за канал з першим екраном. Поза кадром ставимо на паузу — немає сенсу
+       гріти процесор під текстом нижче.
+       ============================================================ */
+    (function initVideoBanner() {
+      const video = document.getElementById('videoBanner');
+      if (!video) return;
+      const playBtn = document.getElementById('videoBannerPlay');
+
+      function showFallback() {
+        if (playBtn) playBtn.classList.add('is-shown');
+      }
+      function tryPlay() {
+        const r = video.play();
+        if (r && r.catch) r.catch(showFallback);   /* автостарт заблокований — лишаємо кнопку */
+      }
+
+      if (playBtn) {
+        playBtn.addEventListener('click', function () {
+          playBtn.classList.remove('is-shown');
+          video.play().catch(showFallback);
+        });
+      }
+
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            if (!video.src && video.dataset.src) {
+              video.src = video.dataset.src;
+              video.removeAttribute('data-src');
+            }
+            tryPlay();
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }, { rootMargin: '50% 0px' });
+      io.observe(video);
+    })();
 
     /* ============================================================
        LENIS — плавний скрол на весь сайт
