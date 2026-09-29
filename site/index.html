@@ -1580,6 +1580,8 @@
 
   .pi-status {
     display: flex;
+    flex: 1;                   /* добирає всю ширину, що лишилась після кнопки */
+    justify-content: center;   /* текст по центру плашки */
     align-items: center;
     gap: 12px;
     padding: clamp(14px, 1vw, 20px) clamp(18px, 1.4vw, 28px);
