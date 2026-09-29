@@ -1434,22 +1434,29 @@
   /* Верхній ряд — три опорні цифри */
   .pi-figure { grid-column: span 4; }
   .pi-col-text {
-    grid-column: span 4;
+    grid-column: span 5;
     padding: clamp(18px, 1.8vw, 34px) clamp(24px, 2vw, 40px) 0 0;
   }
   .pi-features {
-    grid-column: span 8;
+    grid-column: span 7;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(12px, 1vw, 20px);
   }
-  .pi-status { grid-column: 1 / -1; }
+  .pi-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: stretch;      /* статус тягнеться по висоті кнопки */
+    flex-wrap: wrap;
+    gap: clamp(12px, 1vw, 20px);
+    margin-top: clamp(8px, 0.8vw, 18px);
+  }
 
   .pi-title {
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(30px, 2.9vw, 54px);
+    font-size: clamp(30px, 2.7vw, 50px);
     font-weight: 800;
-    line-height: 1.06;
+    line-height: 1.05;
     letter-spacing: -0.025em;
     color: #FFFFFF;
     margin: 0 0 clamp(18px, 1.5vw, 28px);
@@ -1460,7 +1467,7 @@
     font-weight: 500;
     line-height: 1.62;
     color: rgba(255, 255, 255, 0.78);
-    margin: 0 0 clamp(24px, 2vw, 36px);
+    margin: 0;
   }
   .pi-accent { color: var(--accent-color, #81B873); }
 
@@ -1575,7 +1582,6 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: clamp(4px, 0.4vw, 10px);
     padding: clamp(14px, 1vw, 20px) clamp(18px, 1.4vw, 28px);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.055);
@@ -6077,12 +6083,6 @@
       <div class="pi-col-text">
         <h2 class="pi-title">MANDRA <span class="pi-accent">PETRICHOR</span></h2>
         <p class="pi-lead" id="piLead">Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.</p>
-        <a class="stats-cta-btn" href="#petrichor">
-          <span id="piCtaText">Переглянути комплекс</span>
-          <span class="pi-cta-arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </a>
       </div>
 
       <div class="pi-features">
@@ -6112,9 +6112,18 @@
           </article>
       </div>
 
-      <div class="pi-status">
-        <span class="pulse-dot" aria-hidden="true"></span>
-        <span id="piStatus">Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.</span>
+      <div class="pi-actions">
+        <a class="stats-cta-btn" href="#petrichor">
+          <span id="piCtaText">Переглянути комплекс</span>
+          <span class="pi-cta-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <div class="pi-status">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="piStatus">Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.</span>
+        </div>
       </div>
 
     </div>
