@@ -2090,6 +2090,7 @@
   .bl-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
     border-radius: clamp(16px, 1.2vw, 22px);
     background: rgba(255, 255, 255, 0.055);
     overflow: hidden;
@@ -2112,24 +2113,36 @@
   .bl-card:hover .bl-media img { transform: scale(1.04); }
   .bl-body {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(12px, 1vw, 18px);
+    flex: 1;
+    align-items: flex-end;      /* текст притиснуто донизу картки */
     padding: clamp(20px, 1.6vw, 30px);
   }
-  /* Дата однією капсулою: окреме велике число читалось як частина тексту */
+  /* Дата великими цифрами поверх фото, у правому верхньому куті.
+     Під нею косий затемнювач — інакше на світлому небі цифри зникають. */
   .bl-date {
-    display: inline-flex;
-    align-items: center;
-    padding: clamp(6px, 0.45vw, 9px) clamp(13px, 1vw, 18px);
-    border-radius: 999px;
-    background: var(--accent-color, #81B873);
-    color: #0E1F0B;
-    font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: clamp(12px, 0.82vw, 15px);
-    font-weight: 700;
-    letter-spacing: 0.01em;
+    position: absolute;
+    top: clamp(10px, 0.9vw, 18px);
+    right: clamp(14px, 1.1vw, 22px);
+    z-index: 2;
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(24px, 2.35vw, 44px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-color, #81B873);
     white-space: nowrap;
+    pointer-events: none;
+  }
+  .bl-media::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto auto;
+    width: 78%;
+    height: 46%;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(215deg, rgba(8, 12, 8, 0.82) 0%, rgba(8, 12, 8, 0.38) 45%, rgba(8, 12, 8, 0) 78%);
   }
   .bl-text {
     font-family: var(--sub-font, 'Manrope', sans-serif);
@@ -7503,9 +7516,9 @@
         <article class="bl-card">
           <div class="bl-media">
             <img src="assets/build/01_light.webp?v=2" alt="" loading="lazy" decoding="async">
+            <span class="bl-date" id="blD1">12.07.2026</span>
           </div>
           <div class="bl-body">
-            <span class="bl-date" id="blD1">12 липня 2026</span>
             <p class="bl-text" id="blT1">Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар</p>
           </div>
         </article>
@@ -7513,9 +7526,9 @@
         <article class="bl-card">
           <div class="bl-media">
             <img src="assets/build/02_found.webp?v=2" alt="" loading="lazy" decoding="async">
+            <span class="bl-date" id="blD2">25.06.2026</span>
           </div>
           <div class="bl-body">
-            <span class="bl-date" id="blD2">25 червня 2026</span>
             <p class="bl-text" id="blT2">Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах</p>
           </div>
         </article>
@@ -7523,9 +7536,9 @@
         <article class="bl-card">
           <div class="bl-media">
             <img src="assets/build/03_prep.webp?v=2" alt="" loading="lazy" decoding="async">
+            <span class="bl-date" id="blD3">11.05.2026</span>
           </div>
           <div class="bl-body">
-            <span class="bl-date" id="blD3">11 травня 2026</span>
             <p class="bl-text" id="blT3">Підготовка під заливку фундаменту для ресторана, СПА та івент-холу</p>
           </div>
         </article>
@@ -8483,7 +8496,7 @@
         bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
         blTitle: 'Хід будівництва',
         blAll: 'Усі записи',
-        blD1: '12 липня 2026', blD2: '25 червня 2026', blD3: '11 травня 2026',
+        blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
         blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
         blT2: 'Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах',
         blT3: 'Підготовка під заливку фундаменту для ресторана, СПА та івент-холу',
@@ -8708,7 +8721,7 @@
         bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
         blTitle: 'Construction progress',
         blAll: 'All updates',
-        blD1: '12 July 2026', blD2: '25 June 2026', blD3: '11 May 2026',
+        blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
         blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
         blT2: 'Foundation of the restaurant, spa and event hall finished. Active works on phases II and III',
         blT3: 'Ground prepared for the foundation pour of the restaurant, spa and event hall',
