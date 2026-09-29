@@ -1903,7 +1903,7 @@
   .bs-card {
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 1.1vw, 22px);
+    gap: clamp(12px, 0.9vw, 18px);
     padding: clamp(22px, 1.8vw, 34px);
     border-radius: clamp(16px, 1.2vw, 22px);
     background: rgba(255, 255, 255, 0.055);
@@ -1939,58 +1939,67 @@
     color: rgba(255, 255, 255, 0.6);
     margin: -8px 0 0;
   }
-  .bs-meter {
-    display: flex;
-    align-items: center;
-    gap: clamp(12px, 1vw, 18px);
-    margin-top: auto;
+  /* Смуги готовності живуть окремим рядом під картками — так само, як на
+     макеті замовника. Кожна вирівняна по своїй картці. */
+  .bs-bars {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 1.2vw, 24px);
+    margin-top: clamp(14px, 1.2vw, 24px);
   }
-  .bs-track {
+  .bs-bar {
     position: relative;
-    flex: 1;
-    height: 10px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.09);
+    height: clamp(34px, 2.6vw, 46px);
+    border-radius: clamp(8px, 0.7vw, 12px);
     overflow: hidden;
+    /* Незаповнений залишок — діагональна штриховка, вона ж «ще в роботі» */
+    background-color: rgba(255, 255, 255, 0.07);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.075) 0 10px,
+      rgba(255, 255, 255, 0) 10px 20px
+    );
+    background-size: 28.3px 28.3px;
   }
-  .bs-fill {
+  .bs-bar.is-done { background-image: none; }
+  /* Штриховка повзе — робота триває */
+  .bs-bar:not(.is-done) { animation: bsStripes 1.9s linear infinite; }
+  @keyframes bsStripes { to { background-position: 28.3px 0; } }
+
+  .bs-bar-fill {
     position: absolute;
     inset: 0 auto 0 0;
     width: 0;
-    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: clamp(5px, 0.4vw, 8px);
+    border-radius: inherit;
     background: var(--accent-color, #81B873);
+    box-sizing: border-box;
     transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  /* Кромка незавершеної смуги дихає — видно, що робота триває */
-  .bs-card:not(.is-done) .bs-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 34px;
-    background: linear-gradient(90deg, rgba(222, 247, 215, 0) 0%, rgba(222, 247, 215, 0.85) 100%);
-    animation: bsPulse 2.1s ease-in-out infinite;
-  }
-  @keyframes bsPulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+  /* Прапорець із відсотком їде разом із кромкою заливки */
   .bs-pct {
+    padding: clamp(4px, 0.32vw, 7px) clamp(10px, 0.8vw, 15px);
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #0E1F0B;
     font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(16px, 1.25vw, 23px);
+    font-size: clamp(11px, 0.78vw, 15px);
     font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #FFFFFF;
+    letter-spacing: -0.01em;
     font-variant-numeric: tabular-nums;
-    min-width: 3.4em;
-    text-align: right;
+    white-space: nowrap;
   }
-  .bs-card.is-done .bs-pct { color: var(--accent-color, #81B873); }
 
   @media (prefers-reduced-motion: reduce) {
-    .bs-fill { transition: none; }
-    .bs-card:not(.is-done) .bs-fill::after { animation: none; opacity: 0.7; }
+    .bs-bar-fill { transition: none; }
+    .bs-bar:not(.is-done) { animation: none; }
   }
   @media (max-width: 900px) {
-    .bs-grid { grid-template-columns: minmax(0, 1fr); }
+    .bs-grid, .bs-bars { grid-template-columns: minmax(0, 1fr); }
+    .bs-bars { gap: 10px; }
   }
 
   /* ============================================================
@@ -7405,35 +7414,37 @@
       <h2 class="bs-title" id="bsTitle">Етапи будівництва</h2>
 
       <div class="bs-grid">
-        <article class="bs-card is-done" data-pct="100">
+        <article class="bs-card">
           <span class="bs-queue" id="bsQ1">I черга</span>
           <p class="bs-name" id="bsN1">Ареал спокою</p>
           <p class="bs-count" id="bsC1">20 котеджів</p>
-          <div class="bs-meter">
-            <div class="bs-track"><span class="bs-fill"></span></div>
-            <span class="bs-pct">0%</span>
-          </div>
         </article>
 
-        <article class="bs-card" data-pct="85">
+        <article class="bs-card">
           <span class="bs-queue" id="bsQ2">II черга</span>
           <p class="bs-name" id="bsN2">Простір для свідомих батьків</p>
           <p class="bs-count" id="bsC2">40 котеджів</p>
-          <div class="bs-meter">
-            <div class="bs-track"><span class="bs-fill"></span></div>
-            <span class="bs-pct">0%</span>
-          </div>
         </article>
 
-        <article class="bs-card" data-pct="60">
+        <article class="bs-card">
           <span class="bs-queue" id="bsQ3">III черга</span>
           <p class="bs-name" id="bsN3">Місце твоїх ідеальних побачень</p>
           <p class="bs-count" id="bsC3">41 котедж</p>
-          <div class="bs-meter">
-            <div class="bs-track"><span class="bs-fill"></span></div>
-            <span class="bs-pct">0%</span>
-          </div>
         </article>
+      </div>
+
+      <div class="bs-bars">
+        <div class="bs-bar is-done" data-pct="100">
+          <span class="bs-bar-fill"><span class="bs-pct">0%</span></span>
+        </div>
+
+        <div class="bs-bar" data-pct="85">
+          <span class="bs-bar-fill"><span class="bs-pct">0%</span></span>
+        </div>
+
+        <div class="bs-bar" data-pct="60">
+          <span class="bs-bar-fill"><span class="bs-pct">0%</span></span>
+        </div>
       </div>
     </div>
   </section>
@@ -11479,15 +11490,15 @@
        CSS-перехід, а число рахуємо вручну під ту саму тривалість.
        ============================================================ */
     (function initBuildStages() {
-      const cards = Array.prototype.slice.call(document.querySelectorAll('.bs-card'));
-      if (!cards.length) return;
+      const bars = Array.prototype.slice.call(document.querySelectorAll('.bs-bar'));
+      if (!bars.length) return;
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const DUR = 1600;
 
-      function run(card) {
-        const pct = parseInt(card.dataset.pct, 10) || 0;
-        const fill = card.querySelector('.bs-fill');
-        const out = card.querySelector('.bs-pct');
+      function run(bar) {
+        const pct = parseInt(bar.dataset.pct, 10) || 0;
+        const fill = bar.querySelector('.bs-bar-fill');
+        const out = bar.querySelector('.bs-pct');
         if (fill) fill.style.width = pct + '%';
         if (!out) return;
         if (reduced) { out.textContent = pct + '%'; return; }
@@ -11507,7 +11518,7 @@
           io.unobserve(e.target);          /* наливається один раз */
         });
       }, { threshold: 0.35 });
-      cards.forEach(function (c) { io.observe(c); });
+      bars.forEach(function (b) { io.observe(b); });
     })();
 
     /* ============================================================
