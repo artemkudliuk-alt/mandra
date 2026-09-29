@@ -1871,6 +1871,234 @@
   #showcase[hidden] { display: none; }
   #showcase[hidden] ~ .section-stats-stack { margin-top: 100px; }
 
+  /* ============================================================
+     ЕКРАН 10 — ЕТАПИ БУДІВНИЦТВА
+     Три черги, у кожної смуга готовності. Смуга порожня, поки блок не
+     ввійшов у кадр; далі наливається до свого відсотка, а число рахується
+     разом із нею. Завершена черга завмирає, незавершені лишають рух по
+     краю заливки — робота триває.
+     ============================================================ */
+  .section-build-stages {
+    position: relative;
+    z-index: 3;
+    background: var(--bg-dark);
+    padding: clamp(64px, 7vh, 110px) 5vw clamp(48px, 5vh, 80px);
+    box-sizing: border-box;
+  }
+  .bs-container { max-width: 1520px; margin: 0 auto; }
+  .bs-title {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(28px, 2.7vw, 50px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    color: #FFFFFF;
+    margin: 0 0 clamp(32px, 3vw, 58px);
+  }
+  .bs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 1.2vw, 24px);
+  }
+  .bs-card {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.1vw, 22px);
+    padding: clamp(22px, 1.8vw, 34px);
+    border-radius: clamp(16px, 1.2vw, 22px);
+    background: rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: none;
+    box-sizing: border-box;
+  }
+  .bs-queue {
+    align-self: flex-start;
+    padding: 6px 15px;
+    border-radius: 999px;
+    background: var(--accent-color, #81B873);
+    color: #0E1F0B;
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(11px, 0.7vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bs-name {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(16px, 1.15vw, 21px);
+    font-weight: 600;
+    line-height: 1.3;
+    color: #FFFFFF;
+    margin: 0;
+  }
+  .bs-count {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(13px, 0.86vw, 16px);
+    color: rgba(255, 255, 255, 0.6);
+    margin: -8px 0 0;
+  }
+  .bs-meter {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 1vw, 18px);
+    margin-top: auto;
+  }
+  .bs-track {
+    position: relative;
+    flex: 1;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+    overflow: hidden;
+  }
+  .bs-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    border-radius: 999px;
+    background: var(--accent-color, #81B873);
+    transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Кромка незавершеної смуги дихає — видно, що робота триває */
+  .bs-card:not(.is-done) .bs-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 34px;
+    background: linear-gradient(90deg, rgba(222, 247, 215, 0) 0%, rgba(222, 247, 215, 0.85) 100%);
+    animation: bsPulse 2.1s ease-in-out infinite;
+  }
+  @keyframes bsPulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+  .bs-pct {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(16px, 1.25vw, 23px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+    min-width: 3.4em;
+    text-align: right;
+  }
+  .bs-card.is-done .bs-pct { color: var(--accent-color, #81B873); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bs-fill { transition: none; }
+    .bs-card:not(.is-done) .bs-fill::after { animation: none; opacity: 0.7; }
+  }
+  @media (max-width: 900px) {
+    .bs-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ============================================================
+     ЕКРАН 10.5 — ХІД БУДІВНИЦТВА: ТРИ ОСТАННІ ЗАПИСИ
+     ============================================================ */
+  .section-build-log {
+    position: relative;
+    z-index: 3;
+    background: var(--bg-dark);
+    padding: clamp(24px, 3vh, 48px) 5vw clamp(64px, 7vh, 110px);
+    box-sizing: border-box;
+  }
+  .bl-container { max-width: 1520px; margin: 0 auto; }
+  .bl-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 0 0 clamp(24px, 2.4vw, 40px);
+  }
+  .bl-title {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(24px, 2.2vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    margin: 0;
+  }
+  .bl-all {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(14px, 0.9vw, 17px);
+    font-weight: 600;
+    color: var(--accent-color, #81B873);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bl-all svg { width: 1em; height: 1em; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+  .bl-all:hover svg { transform: translate(2px, -2px); }
+  .bl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 1.2vw, 24px);
+  }
+  .bl-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: clamp(16px, 1.2vw, 22px);
+    background: rgba(255, 255, 255, 0.055);
+    overflow: hidden;
+    border: none;
+  }
+  .bl-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0E120E;
+  }
+  .bl-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bl-card:hover .bl-media img { transform: scale(1.04); }
+  .bl-body {
+    display: flex;
+    gap: clamp(14px, 1.2vw, 22px);
+    padding: clamp(20px, 1.6vw, 30px);
+  }
+  .bl-date { flex: none; text-align: left; }
+  .bl-day {
+    display: block;
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(34px, 3vw, 54px);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+  }
+  .bl-month {
+    display: block;
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(12px, 0.8vw, 15px);
+    font-weight: 600;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 8px;
+  }
+  .bl-text {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(14px, 0.95vw, 17px);
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.86);
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .bl-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ТИМЧАСОВО: блок «Ваш шлях інвестора» знято на прохання замовника.
+     Повернути — зняти атрибут hidden із секції та це правило. */
+  #invest-flow[hidden] { display: none; }
+
   /* ТИМЧАСОВО: блок «Як ми взаємодіємо» знято на прохання замовника.
      Секція лишається у файлі — повернути можна, знявши атрибут hidden
      із .synergy-stage та це правило. */
@@ -7170,11 +7398,107 @@
   </div>
 
   <!-- ============================================================
+       ЕКРАН 10 — ЕТАПИ БУДІВНИЦТВА
+       ============================================================ -->
+  <section class="section-build-stages" id="build-stages">
+    <div class="bs-container">
+      <h2 class="bs-title" id="bsTitle">Етапи будівництва</h2>
+
+      <div class="bs-grid">
+        <article class="bs-card is-done" data-pct="100">
+          <span class="bs-queue" id="bsQ1">I черга</span>
+          <p class="bs-name" id="bsN1">Ареал спокою</p>
+          <p class="bs-count" id="bsC1">20 котеджів</p>
+          <div class="bs-meter">
+            <div class="bs-track"><span class="bs-fill"></span></div>
+            <span class="bs-pct">0%</span>
+          </div>
+        </article>
+
+        <article class="bs-card" data-pct="85">
+          <span class="bs-queue" id="bsQ2">II черга</span>
+          <p class="bs-name" id="bsN2">Простір для свідомих батьків</p>
+          <p class="bs-count" id="bsC2">40 котеджів</p>
+          <div class="bs-meter">
+            <div class="bs-track"><span class="bs-fill"></span></div>
+            <span class="bs-pct">0%</span>
+          </div>
+        </article>
+
+        <article class="bs-card" data-pct="60">
+          <span class="bs-queue" id="bsQ3">III черга</span>
+          <p class="bs-name" id="bsN3">Місце твоїх ідеальних побачень</p>
+          <p class="bs-count" id="bsC3">41 котедж</p>
+          <div class="bs-meter">
+            <div class="bs-track"><span class="bs-fill"></span></div>
+            <span class="bs-pct">0%</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ЕКРАН 10.5 — ХІД БУДІВНИЦТВА
+       ============================================================ -->
+  <section class="section-build-log" id="build-log">
+    <div class="bl-container">
+      <div class="bl-head">
+        <h2 class="bl-title" id="blTitle">Хід будівництва</h2>
+        <a class="bl-all" href="https://www.mandra-petrichor.com.ua/construction" target="_blank" rel="noopener">
+          <span id="blAll">Усі записи</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="bl-grid">
+        <article class="bl-card">
+          <div class="bl-media">
+            <img src="assets/build/01_light.webp?v=2" alt="" loading="lazy" decoding="async">
+          </div>
+          <div class="bl-body">
+            <div class="bl-date">
+              <span class="bl-day">12</span>
+              <span class="bl-month" id="blM1">Липень<br>2026</span>
+            </div>
+            <p class="bl-text" id="blT1">Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар</p>
+          </div>
+        </article>
+
+        <article class="bl-card">
+          <div class="bl-media">
+            <img src="assets/build/02_found.webp?v=2" alt="" loading="lazy" decoding="async">
+          </div>
+          <div class="bl-body">
+            <div class="bl-date">
+              <span class="bl-day">25</span>
+              <span class="bl-month" id="blM2">Червень<br>2026</span>
+            </div>
+            <p class="bl-text" id="blT2">Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах</p>
+          </div>
+        </article>
+
+        <article class="bl-card">
+          <div class="bl-media">
+            <img src="assets/build/03_prep.webp?v=2" alt="" loading="lazy" decoding="async">
+          </div>
+          <div class="bl-body">
+            <div class="bl-date">
+              <span class="bl-day">11</span>
+              <span class="bl-month" id="blM3">Травень<br>2026</span>
+            </div>
+            <p class="bl-text" id="blT3">Підготовка під заливку фундаменту для ресторана, СПА та івент-холу</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
        ЕКРАН 10: ВАШ ШЛЯХ ІНВЕСТОРА (NUMO / RIBAS STYLE)
        Розтягнутий по ширині, без рамок, великі цифри з прапорцем-покажчиком,
        арочні фото праворуч, кнопка знизу, фоновий напис RIBAS із 4-го кроку
        ============================================================ -->
-  <section class="section-invest-flow" id="invest-flow">
+  <section class="section-invest-flow" id="invest-flow" hidden>
     <div class="invest-flow-container">
 
       <div class="flow-head">
@@ -8128,6 +8452,16 @@
         why4: 'Ключова інфраструктура від YOD Group',
         why5: '3 різні сценарії відпочинку',
         why6: 'Стабільний попит та зручна доступність',
+        bsTitle: 'Етапи будівництва',
+        bsQ1: 'I черга', bsN1: 'Ареал спокою', bsC1: '20 котеджів',
+        bsQ2: 'II черга', bsN2: 'Простір для свідомих батьків', bsC2: '40 котеджів',
+        bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
+        blTitle: 'Хід будівництва',
+        blAll: 'Усі записи',
+        blM1: 'Липень<br>2026', blM2: 'Червень<br>2026', blM3: 'Травень<br>2026',
+        blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
+        blT2: 'Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах',
+        blT3: 'Підготовка під заливку фундаменту для ресторана, СПА та івент-холу',
         piUnit1: 'га', piUnit4: 'м²',
         piCard1: 'Території комплексу',
         piCard2: 'Котеджів у складі комплексу',
@@ -8345,6 +8679,16 @@
         why4: 'Key infrastructure by YOD Group',
         why5: '3 different leisure scenarios',
         why6: 'Steady demand and easy access',
+        bsTitle: 'Construction stages',
+        bsQ1: 'Phase I', bsN1: 'A haven of calm', bsC1: '20 cottages',
+        bsQ2: 'Phase II', bsN2: 'A space for mindful parents', bsC2: '40 cottages',
+        bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
+        blTitle: 'Construction progress',
+        blAll: 'All updates',
+        blM1: 'July<br>2026', blM2: 'June<br>2026', blM3: 'May<br>2026',
+        blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
+        blT2: 'Foundation of the restaurant, spa and event hall finished. Active works on phases II and III',
+        blT3: 'Ground prepared for the foundation pour of the restaurant, spa and event hall',
         piUnit1: 'ha', piUnit4: 'm²',
         piCard1: 'Hectares of the complex',
         piCard2: 'Cottages within the complex',
@@ -8580,6 +8924,10 @@
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
       document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').textContent = t.desc;
+      ['blM1', 'blM2', 'blM3'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el && t[id]) el.innerHTML = t[id];
+      });
       const whyTitleEl = document.getElementById('whyTitle');
       if (whyTitleEl && t.whyTitle) whyTitleEl.innerHTML = t.whyTitle;
       const badgeText = document.getElementById('heroReleaseBadgeText');
@@ -8617,6 +8965,9 @@
                   'piF1','piF2','piF3','piF4','piF5','piF6',
                   /* ЕКРАН 4 — шість плиток */
                   'why1','why2','why3','why4','why5','why6',
+                  /* ЕКРАН 10 — етапи та хід будівництва */
+                  'bsTitle','bsQ1','bsN1','bsC1','bsQ2','bsN2','bsC2','bsQ3','bsN3','bsC3',
+                  'blTitle','blAll','blT1','blT2','blT3',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
                   'stTitleMain','stTitleBreak','stDesc','stCtaText',
                   'st1Text','st2Text','st4Text','st5Text',
@@ -11121,6 +11472,43 @@
       else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
+
+    /* ============================================================
+       ЕКРАН 10 — ЕТАПИ БУДІВНИЦТВА: НАЛИВ СМУГ
+       Смуги стоять порожні, поки блок не ввійшов у кадр. Далі ширину веде
+       CSS-перехід, а число рахуємо вручну під ту саму тривалість.
+       ============================================================ */
+    (function initBuildStages() {
+      const cards = Array.prototype.slice.call(document.querySelectorAll('.bs-card'));
+      if (!cards.length) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const DUR = 1600;
+
+      function run(card) {
+        const pct = parseInt(card.dataset.pct, 10) || 0;
+        const fill = card.querySelector('.bs-fill');
+        const out = card.querySelector('.bs-pct');
+        if (fill) fill.style.width = pct + '%';
+        if (!out) return;
+        if (reduced) { out.textContent = pct + '%'; return; }
+        const t0 = performance.now();
+        (function tick(now) {
+          const p = Math.min(1, (now - t0) / DUR);
+          const eased = 1 - Math.pow(1 - p, 3);
+          out.textContent = Math.round(pct * eased) + '%';
+          if (p < 1) requestAnimationFrame(tick);
+        })(t0);
+      }
+
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          run(e.target);
+          io.unobserve(e.target);          /* наливається один раз */
+        });
+      }, { threshold: 0.35 });
+      cards.forEach(function (c) { io.observe(c); });
+    })();
 
     /* ============================================================
        ЕКРАН 4 — ПЛИТКИ: ФОТО У ВІКНІ НА ДОТИКОВИХ ЕКРАНАХ
