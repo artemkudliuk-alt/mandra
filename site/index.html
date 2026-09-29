@@ -633,6 +633,43 @@
     display: inline;
   }
 
+  /* БЕЙДЖ ЗДАЧІ. Живе в правому нижньому куті текстового блоку, на одній
+     лінії з кнопкою: ліворуч читається текст, праворуч — статус. Матеріал той
+     самий, що в капсул шапки, — скло без рамки. */
+  .hero-release-badge {
+    position: absolute;
+    right: 0;
+    bottom: 0.3vw;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.62vw;
+    padding: 0.66vw 1.3vw;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: none;
+    box-shadow: none;
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(13px, 0.92vw, 17px);
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    color: #FFFFFF;
+    white-space: nowrap;
+  }
+  .hero-release-badge .pulse-dot { flex: none; }
+
+  /* На вузькому екрані праворуч місця немає — стає в потік під кнопку. */
+  @media (max-width: 900px) {
+    .hero-release-badge {
+      position: static;
+      align-self: flex-start;
+      margin-top: 2vh;
+      padding: 10px 18px;
+      gap: 9px;
+    }
+  }
+
   /* BLOCK 2: SUBTITLE / DESCRIPTION */
   .desc-wrapper {
     transform: translate(var(--sub-x), var(--sub-y));
@@ -5725,15 +5762,21 @@
         <!-- BLOCK 1: Main Headline -->
         <div class="title-wrapper">
           <h1 class="hero-main-headline fx-solid" id="heroMainHeadline">
-            <span class="title-word-accent">Дохідна</span> нерухомість, у яку хочеться повертатися
+            Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.
           </h1>
         </div>
 
         <!-- BLOCK 2: Subtitle / Description -->
         <div class="desc-wrapper">
           <p class="hero-main-desc fx-solid" id="heroMainDesc">
-            Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.
+            Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.
           </p>
+        </div>
+
+        <!-- BLOCK 2.5: БЕЙДЖ ЗДАЧІ — праворуч, на рівні кнопки -->
+        <div class="hero-release-badge" id="heroReleaseBadge">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="heroReleaseBadgeText">Здача 2 вже цього року</span>
         </div>
 
         <!-- BLOCK 3: CTA BUTTON (in-flow, directly under subtitle) -->
@@ -7416,8 +7459,9 @@
         navBuild: 'БУДІВНИЦТВО',
         navContacts: 'КОНТАКТИ',
         topBtn: 'Онлайн заявка',
-        headline: '<span class="title-word-accent">Дохідна</span> нерухомість, у яку хочеться повертатися',
-        desc: 'Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.',
+        headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
+        desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
+        heroBadge: 'Здача 2 вже цього року',
         ctaText: 'Дізнатися більше',
         ctaCircle: 'Дізнатися<br>більше',
         showcaseTitle: 'Ми відповідаємо за',
@@ -7611,8 +7655,9 @@
         navBuild: 'CONSTRUCTION',
         navContacts: 'CONTACTS',
         topBtn: 'Online Request',
-        headline: '<span class="title-word-accent">High-yield</span> real estate you want to return to',
-        desc: 'We don\'t just build cottages — we create a full-scale investment product in the hospitality industry.',
+        headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
+        desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
+        heroBadge: 'Stage 2 handover this year',
         ctaText: 'Learn More',
         ctaCircle: 'Learn<br>More',
         showcaseTitle: 'We are responsible for',
@@ -7844,6 +7889,8 @@
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
       document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').textContent = t.desc;
+      const badgeText = document.getElementById('heroReleaseBadgeText');
+      if (badgeText && t.heroBadge) badgeText.textContent = t.heroBadge;
       document.getElementById('inpMainDesc').value = t.desc;
 
       // Update CTA buttons
@@ -7942,7 +7989,7 @@
     /* Text & Font Handlers */
     function setMainHeadline(val) {
       const cleanVal = val.replace(/<[^>]*>/g, '');
-      const formatted = cleanVal.replace(/^(Дохідна|High-yield)(\s+|$)/i, '<span class="title-word-accent">$1</span>$2');
+      const formatted = cleanVal.replace(/\b(resort)\b/i, '<span class="title-word-accent">$1</span>');
       document.getElementById('heroMainHeadline').innerHTML = formatted;
       saveSettings();
     }
