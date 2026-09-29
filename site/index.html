@@ -2112,27 +2112,24 @@
   .bl-card:hover .bl-media img { transform: scale(1.04); }
   .bl-body {
     display: flex;
-    gap: clamp(14px, 1.2vw, 22px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(12px, 1vw, 18px);
     padding: clamp(20px, 1.6vw, 30px);
   }
-  .bl-date { flex: none; text-align: left; }
-  .bl-day {
-    display: block;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(34px, 3vw, 54px);
-    font-weight: 800;
-    line-height: 0.92;
-    letter-spacing: -0.04em;
-    color: #FFFFFF;
-  }
-  .bl-month {
-    display: block;
+  /* Дата однією капсулою: окреме велике число читалось як частина тексту */
+  .bl-date {
+    display: inline-flex;
+    align-items: center;
+    padding: clamp(6px, 0.45vw, 9px) clamp(13px, 1vw, 18px);
+    border-radius: 999px;
+    background: var(--accent-color, #81B873);
+    color: #0E1F0B;
     font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: clamp(12px, 0.8vw, 15px);
-    font-weight: 600;
-    line-height: 1.3;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 8px;
+    font-size: clamp(12px, 0.82vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
   }
   .bl-text {
     font-family: var(--sub-font, 'Manrope', sans-serif);
@@ -7508,10 +7505,7 @@
             <img src="assets/build/01_light.webp?v=2" alt="" loading="lazy" decoding="async">
           </div>
           <div class="bl-body">
-            <div class="bl-date">
-              <span class="bl-day">12</span>
-              <span class="bl-month" id="blM1">Липень<br>2026</span>
-            </div>
+            <span class="bl-date" id="blD1">12 липня 2026</span>
             <p class="bl-text" id="blT1">Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар</p>
           </div>
         </article>
@@ -7521,10 +7515,7 @@
             <img src="assets/build/02_found.webp?v=2" alt="" loading="lazy" decoding="async">
           </div>
           <div class="bl-body">
-            <div class="bl-date">
-              <span class="bl-day">25</span>
-              <span class="bl-month" id="blM2">Червень<br>2026</span>
-            </div>
+            <span class="bl-date" id="blD2">25 червня 2026</span>
             <p class="bl-text" id="blT2">Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах</p>
           </div>
         </article>
@@ -7534,10 +7525,7 @@
             <img src="assets/build/03_prep.webp?v=2" alt="" loading="lazy" decoding="async">
           </div>
           <div class="bl-body">
-            <div class="bl-date">
-              <span class="bl-day">11</span>
-              <span class="bl-month" id="blM3">Травень<br>2026</span>
-            </div>
+            <span class="bl-date" id="blD3">11 травня 2026</span>
             <p class="bl-text" id="blT3">Підготовка під заливку фундаменту для ресторана, СПА та івент-холу</p>
           </div>
         </article>
@@ -8495,7 +8483,7 @@
         bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
         blTitle: 'Хід будівництва',
         blAll: 'Усі записи',
-        blM1: 'Липень<br>2026', blM2: 'Червень<br>2026', blM3: 'Травень<br>2026',
+        blD1: '12 липня 2026', blD2: '25 червня 2026', blD3: '11 травня 2026',
         blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
         blT2: 'Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах',
         blT3: 'Підготовка під заливку фундаменту для ресторана, СПА та івент-холу',
@@ -8720,7 +8708,7 @@
         bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
         blTitle: 'Construction progress',
         blAll: 'All updates',
-        blM1: 'July<br>2026', blM2: 'June<br>2026', blM3: 'May<br>2026',
+        blD1: '12 July 2026', blD2: '25 June 2026', blD3: '11 May 2026',
         blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
         blT2: 'Foundation of the restaurant, spa and event hall finished. Active works on phases II and III',
         blT3: 'Ground prepared for the foundation pour of the restaurant, spa and event hall',
@@ -8957,8 +8945,7 @@
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
       document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').textContent = t.desc;
-      ['blM1', 'blM2', 'blM3',
-       'faqA1', 'faqA2', 'faqA3', 'faqA4', 'faqA5', 'faqA6', 'faqA7', 'faqA8'].forEach(function (id) {
+      ['faqA1', 'faqA2', 'faqA3', 'faqA4', 'faqA5', 'faqA6', 'faqA7', 'faqA8'].forEach(function (id) {
         const el = document.getElementById(id);
         if (el && t[id]) el.innerHTML = t[id];
       });
@@ -9001,7 +8988,7 @@
                   'why1','why2','why3','why4','why5','why6',
                   /* ЕКРАН 10 — етапи та хід будівництва */
                   'bsTitle','bsQ1','bsN1','bsC1','bsQ2','bsN2','bsC2','bsQ3','bsN3','bsC3',
-                  'blTitle','blAll','blT1','blT2','blT3',
+                  'blTitle','blAll','blD1','blD2','blD3','blT1','blT2','blT3',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
                   'stTitleMain','stTitleBreak','stDesc','stCtaText',
                   'st1Text','st2Text','st4Text','st5Text',
