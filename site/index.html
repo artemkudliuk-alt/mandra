@@ -1871,6 +1871,11 @@
   #showcase[hidden] { display: none; }
   #showcase[hidden] ~ .section-stats-stack { margin-top: 100px; }
 
+  /* ТИМЧАСОВО: блок «Як ми взаємодіємо» знято на прохання замовника.
+     Секція лишається у файлі — повернути можна, знявши атрибут hidden
+     із .synergy-stage та це правило. */
+  #synergyStage[hidden] { display: none; }
+
   /* ТИМЧАСОВО: блок «Mandra Invest в цифрах» знято на прохання замовника.
      Секція лишається в файлі цілком — повернути можна, знявши атрибут
      hidden із #stats та це правило. */
@@ -6741,266 +6746,6 @@
   </section>
 
   <!-- ============================================================
-       ЕКРАН 7 — ЗАСНОВНИКИ ТА ОБ'ЄКТИ
-       Темний фон у зв'язці з екраном 6, розгорнуто по всій ширині екрана
-       ============================================================ -->
-  <section class="section-founders" id="founders">
-    <div class="founders-container">
-      <!-- Верхня сітка: Хвойний блок + 2 засновники -->
-      <div class="founders-top-grid">
-        <!-- Лівий блок з цитатою на фоні хвої -->
-        <div class="founders-hero-card">
-          <h3 class="founders-hero-text" id="foundersHeroText">
-            Власний інвестиційний проєкт від засновників Mandra Moments та Ribas Hotels Group
-          </h3>
-        </div>
-
-        <!-- Картка Артура Лупашка -->
-        <article class="founder-profile-card">
-          <div class="founder-img-wrap">
-            <img src="assets/founders/artur_lupashko_v2.webp" alt="Артур Лупашко" class="founder-img" loading="lazy" decoding="async">
-          </div>
-          <div class="founder-info">
-            <h4 class="founder-name" id="founderName1">Артур Лупашко</h4>
-            <p class="founder-role" id="founderRole1">Засновник Ribas Hotels Group і співзасновник Mandra Moments</p>
-          </div>
-        </article>
-
-        <!-- Картка Сергія Боєва -->
-        <article class="founder-profile-card">
-          <div class="founder-img-wrap">
-            <img src="assets/founders/serhiy_boiev_v2.webp" alt="Сергій Боєв" class="founder-img" loading="lazy" decoding="async">
-          </div>
-          <div class="founder-info">
-            <h4 class="founder-name" id="founderName2">Сергій Боєв</h4>
-            <p class="founder-role" id="founderRole2">Співзасновник Mandra Moments</p>
-          </div>
-        </article>
-      </div>
-
-      <!-- Нижня сітка з 6 фотографіями реалізованих локацій -->
-      <div class="founders-gallery-grid">
-        <div class="founder-thumb-box" title="Тераса з видом на гори">
-          <img src="assets/founders/gallery_1_v2.webp" alt="Тераса з видом на гори" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Safari Glamping">
-          <img src="assets/founders/gallery_6_hq.webp" alt="Mandra Safari Glamping" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Басейн комплексу">
-          <img src="assets/founders/gallery_3_v2.webp" alt="Басейн комплексу" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Pool">
-          <img src="assets/founders/gallery_2_hq.webp" alt="Mandra Pool" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra A-frame Chalet">
-          <img src="assets/founders/gallery_5_v2.webp" alt="Mandra A-frame Chalet" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Terrace">
-          <img src="assets/founders/gallery_4_hq.webp" alt="Mandra Terrace" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       ЕКРАН 8 — СИНЕРГІЯ ПАРТНЕРСТВА ТА ДОХІДНІСТЬ ІНВЕСТОРА
-       Mandra Invest (Девелопер) + 3D Архітектурний стіл + Ribas Hotels Group (Оператор)
-       ============================================================ -->
-  <div class="synergy-stage">
-  <section class="section-synergy" id="synergy">
-    <div class="synergy-container">
-
-      <h2 class="synergy-section-title" id="synergyTitle">Як ми взаємодіємо</h2>
-
-      <!-- Головна триколонкова сітка -->
-      <div class="synergy-grid">
-        
-        <!-- ЛІВА КОЛОНКА: ДЕВЕЛОПЕР (Mandra Invest) -->
-        <div class="synergy-side-col developer-col">
-          <div class="syn-logo-plate" data-flow="l">
-            <img src="assets/logo_mandra_moments_synergy.webp" alt="Mandra Moments" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
-          </div>
-          <h3 class="synergy-col-title" id="synDevTitle">Mandra Moments</h3>
-          <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
-          <ul class="synergy-list">
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev1">Концепція</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev2">Реалізація проєкту</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev3">Будівництво</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev4">Розвиток території</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev5">Робота з інвесторами</span></li>
-          </ul>
-        </div>
-
-        <!-- ЦЕНТРАЛЬНА КОЛОНКА: 3D АРХІТЕКТУРНИЙ СТІЛ + ПОТОКИ МОНЕТ -->
-        <div class="synergy-center-col">
-          <!-- Схема потоку: два бренди -> вузол злиття -> капітал інвестора.
-               Усе векторне: штрихпунктир біжить через stroke-dashoffset, долари
-               рухає rAF по getPointAtLength, тому швидкість можна плавно
-               підганяти на ховері без ривка. -->
-          <div class="synergy-flow" id="synFlow">
-            <svg class="syn-flow-svg" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <filter id="synGlowGold" x="-60%" y="-60%" width="220%" height="220%">
-                  <feGaussianBlur stdDeviation="2.6" result="b"/>
-                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-                <filter id="synBokehBlur" x="-100%" y="-100%" width="300%" height="300%">
-                  <feGaussianBlur stdDeviation="22"/>
-                </filter>
-              </defs>
-
-              <path id="synPathL" fill="none"/>
-              <path id="synPathR" fill="none"/>
-              <path id="synPathD" fill="none"/>
-
-              <g class="syn-line" data-line="l">
-                <use href="#synPathL" class="syn-base"/>
-                <use href="#synPathL" class="syn-dash"/>
-                <use href="#synPathL" class="syn-pulse"/>
-              </g>
-              <g class="syn-line" data-line="r">
-                <use href="#synPathR" class="syn-base"/>
-                <use href="#synPathR" class="syn-dash"/>
-                <use href="#synPathR" class="syn-pulse"/>
-              </g>
-              <g class="syn-line" data-line="d">
-                <use href="#synPathD" class="syn-base"/>
-                <use href="#synPathD" class="syn-dash"/>
-                <use href="#synPathD" class="syn-pulse"/>
-              </g>
-
-              <!-- Вузол злиття -->
-              <!-- Квадратики (l) і кружечки (r) заходять ПІД іконку; монетки (d) лишаються поверх -->
-              <g class="syn-glyphs" id="synGlyphsBack"></g>
-
-              <g class="syn-node" id="synNode">
-                <!-- Растрове фото картки, 3х більше за попередню спробу.
-                     Свічення — не по силуету (то виходило суцільною плямою,
-                     бо розмиття з'їдало прямокутну форму), а два м'які
-                     розмиті бліки за картинкою: зелений зліва, синій справа. -->
-                <ellipse class="syn-node-halo" cx="-90" cy="-9" rx="90" ry="70" fill="#6BDB9C"/>
-                <ellipse class="syn-node-halo" cx="90" cy="-9" rx="90" ry="70" fill="#5FACFF"/>
-                <g class="syn-node-icon" id="synNodeIcon">
-                  <image href="assets/synergy_house_icon.webp" x="-180" y="-82.2" width="360" height="145.9" preserveAspectRatio="xMidYMid meet"/>
-                </g>
-              </g>
-
-              <g class="syn-glyphs" id="synGlyphs"></g>
-            </svg>
-          </div>
-
-          <!-- Архітектурна метрика Інвестора (без AI-плашки-пігулки) -->
-          <div class="synergy-investor-stat" id="synInvestorPlate">
-            <div class="investor-stat-header">
-              <span class="investor-stat-tag" id="synInvBadge">ІНВЕСТОР</span>
-            </div>
-            <div class="investor-stat-main">
-              <span class="investor-stat-num" id="synInvAmount">до 35 892 $</span>
-              <span class="investor-stat-period" id="synInvPeriod">/ на рік</span>
-            </div>
-            <div class="investor-stat-desc" id="synInvLabel">Стабільний прогнозований прибуток інвестора з щоквартальними виплатами</div>
-          </div>
-        </div>
-
-        <!-- ПРАВА КОЛОНКА: ГОТЕЛЬНЕ УПРАВЛІННЯ (Ribas Hotels Group) -->
-        <div class="synergy-side-col operator-col">
-          <div class="syn-logo-plate" data-flow="r">
-            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="syn-logo-img syn-logo-ribas" loading="lazy" decoding="async">
-          </div>
-          <h3 class="synergy-col-title" id="synRibasTitle">Ribas Hotels Group</h3>
-          <div class="synergy-col-subtitle" id="synRibasSubtitle">Готельне управління</div>
-          <ul class="synergy-list">
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas1">Операційна модель</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas2">Стандарти сервісу</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas3">Продажі та маркетинг</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas4">Управління комплексом</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas5">Фінансова результативність</span></li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-  </div><!-- /.synergy-stage -->
-
-  <!-- ============================================================
-       ЕКРАН 8.5 — ПАРТНЕРИ МАНДРА ІНВЕСТ
-       Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
-       ============================================================ -->
-  <section class="section-partners" id="partners">
-    <div class="partners-top-container">
-      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
-    </div>
-
-    <!-- Нескінченна біжуча стрічка логотипів -->
-    <div class="partners-marquee-wrap">
-      <div class="partners-marquee">
-        <div class="marquee-track">
-          <!-- Комплект 1 -->
-          <div class="partner-logo-box" title="Mandra Moments">
-            <img src="assets/partners/logo_mandra.webp" alt="Mandra Moments" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group">
-            <img src="assets/partners/logo_yod.webp" alt="YOD Group" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka">
-            <img src="assets/partners/logo_ekopark.webp" alt="Ekopark Kovalivka" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group">
-            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time">
-            <img src="assets/partners/logo_happy_time.webp" alt="Happy Time" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design">
-            <img src="assets/partners/logo_temo.svg" alt="TEMO Hotel Design" class="partner-img logo-temo" decoding="async">
-          </div>
-
-          <!-- Комплект 2 (безперервний безшовний цикл) -->
-          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
-            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
-            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
-            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
-            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
-            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
-            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
-          </div>
-
-          <!-- Комплект 3 (запас для надшироких екранів 2K/4K) -->
-          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
-            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
-            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
-            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
-            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
-            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
-          </div>
-          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
-            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
        ЕКРАН 9 — ПЕРША ЧЕРГА MANDRA PETRICHOR УЖЕ ПРАЦЮЄ
        Стилістика NUMO Development: глибокий темний фон, оливкові кольори
        ============================================================ -->
@@ -7152,6 +6897,266 @@
       </div>
     </div>
   </section>
+
+  <!-- ============================================================
+       ЕКРАН 7 — ЗАСНОВНИКИ ТА ОБ'ЄКТИ
+       Темний фон у зв'язці з екраном 6, розгорнуто по всій ширині екрана
+       ============================================================ -->
+  <section class="section-founders" id="founders">
+    <div class="founders-container">
+      <!-- Верхня сітка: Хвойний блок + 2 засновники -->
+      <div class="founders-top-grid">
+        <!-- Лівий блок з цитатою на фоні хвої -->
+        <div class="founders-hero-card">
+          <h3 class="founders-hero-text" id="foundersHeroText">
+            Власний інвестиційний проєкт від засновників Mandra Moments та Ribas Hotels Group
+          </h3>
+        </div>
+
+        <!-- Картка Артура Лупашка -->
+        <article class="founder-profile-card">
+          <div class="founder-img-wrap">
+            <img src="assets/founders/artur_lupashko_v2.webp" alt="Артур Лупашко" class="founder-img" loading="lazy" decoding="async">
+          </div>
+          <div class="founder-info">
+            <h4 class="founder-name" id="founderName1">Артур Лупашко</h4>
+            <p class="founder-role" id="founderRole1">Засновник Ribas Hotels Group і співзасновник Mandra Moments</p>
+          </div>
+        </article>
+
+        <!-- Картка Сергія Боєва -->
+        <article class="founder-profile-card">
+          <div class="founder-img-wrap">
+            <img src="assets/founders/serhiy_boiev_v2.webp" alt="Сергій Боєв" class="founder-img" loading="lazy" decoding="async">
+          </div>
+          <div class="founder-info">
+            <h4 class="founder-name" id="founderName2">Сергій Боєв</h4>
+            <p class="founder-role" id="founderRole2">Співзасновник Mandra Moments</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- Нижня сітка з 6 фотографіями реалізованих локацій -->
+      <div class="founders-gallery-grid">
+        <div class="founder-thumb-box" title="Тераса з видом на гори">
+          <img src="assets/founders/gallery_1_v2.webp" alt="Тераса з видом на гори" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Mandra Safari Glamping">
+          <img src="assets/founders/gallery_6_hq.webp" alt="Mandra Safari Glamping" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Басейн комплексу">
+          <img src="assets/founders/gallery_3_v2.webp" alt="Басейн комплексу" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Mandra Pool">
+          <img src="assets/founders/gallery_2_hq.webp" alt="Mandra Pool" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Mandra A-frame Chalet">
+          <img src="assets/founders/gallery_5_v2.webp" alt="Mandra A-frame Chalet" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+        <div class="founder-thumb-box" title="Mandra Terrace">
+          <img src="assets/founders/gallery_4_hq.webp" alt="Mandra Terrace" class="founder-thumb-img" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ЕКРАН 8.5 — ПАРТНЕРИ МАНДРА ІНВЕСТ
+       Темний фон, заголовок по центру, нескінченна рухома стрічка логотипів (hover: pause + scale)
+       ============================================================ -->
+  <section class="section-partners" id="partners">
+    <div class="partners-top-container">
+      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
+    </div>
+
+    <!-- Нескінченна біжуча стрічка логотипів -->
+    <div class="partners-marquee-wrap">
+      <div class="partners-marquee">
+        <div class="marquee-track">
+          <!-- Комплект 1 -->
+          <div class="partner-logo-box" title="Mandra Moments">
+            <img src="assets/partners/logo_mandra.webp" alt="Mandra Moments" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group">
+            <img src="assets/partners/logo_yod.webp" alt="YOD Group" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka">
+            <img src="assets/partners/logo_ekopark.webp" alt="Ekopark Kovalivka" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group">
+            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time">
+            <img src="assets/partners/logo_happy_time.webp" alt="Happy Time" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design">
+            <img src="assets/partners/logo_temo.svg" alt="TEMO Hotel Design" class="partner-img logo-temo" decoding="async">
+          </div>
+
+          <!-- Комплект 2 (безперервний безшовний цикл) -->
+          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
+            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
+            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
+            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
+            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
+            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
+            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
+          </div>
+
+          <!-- Комплект 3 (запас для надшироких екранів 2K/4K) -->
+          <div class="partner-logo-box" title="Mandra Moments" aria-hidden="true">
+            <img src="assets/partners/logo_mandra.webp" alt="" class="partner-img logo-mandra" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="YOD Group" aria-hidden="true">
+            <img src="assets/partners/logo_yod.webp" alt="" class="partner-img logo-yod" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ekopark Kovalivka" aria-hidden="true">
+            <img src="assets/partners/logo_ekopark.webp" alt="" class="partner-img logo-ekopark" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Ribas Hotels Group" aria-hidden="true">
+            <img src="assets/partners/logo_ribas.svg" alt="" class="partner-img logo-ribas" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="Happy Time" aria-hidden="true">
+            <img src="assets/partners/logo_happy_time.webp" alt="" class="partner-img logo-happytime" decoding="async">
+          </div>
+          <div class="partner-logo-box" title="TEMO Hotel Design" aria-hidden="true">
+            <img src="assets/partners/logo_temo.svg" alt="" class="partner-img logo-temo" decoding="async">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ЕКРАН 8 — СИНЕРГІЯ ПАРТНЕРСТВА ТА ДОХІДНІСТЬ ІНВЕСТОРА
+       Mandra Invest (Девелопер) + 3D Архітектурний стіл + Ribas Hotels Group (Оператор)
+       ============================================================ -->
+  <div class="synergy-stage" id="synergyStage" hidden>
+  <section class="section-synergy" id="synergy">
+    <div class="synergy-container">
+
+      <h2 class="synergy-section-title" id="synergyTitle">Як ми взаємодіємо</h2>
+
+      <!-- Головна триколонкова сітка -->
+      <div class="synergy-grid">
+        
+        <!-- ЛІВА КОЛОНКА: ДЕВЕЛОПЕР (Mandra Invest) -->
+        <div class="synergy-side-col developer-col">
+          <div class="syn-logo-plate" data-flow="l">
+            <img src="assets/logo_mandra_moments_synergy.webp" alt="Mandra Moments" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
+          </div>
+          <h3 class="synergy-col-title" id="synDevTitle">Mandra Moments</h3>
+          <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
+          <ul class="synergy-list">
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev1">Концепція</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev2">Реалізація проєкту</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev3">Будівництво</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev4">Розвиток території</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev5">Робота з інвесторами</span></li>
+          </ul>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНА КОЛОНКА: 3D АРХІТЕКТУРНИЙ СТІЛ + ПОТОКИ МОНЕТ -->
+        <div class="synergy-center-col">
+          <!-- Схема потоку: два бренди -> вузол злиття -> капітал інвестора.
+               Усе векторне: штрихпунктир біжить через stroke-dashoffset, долари
+               рухає rAF по getPointAtLength, тому швидкість можна плавно
+               підганяти на ховері без ривка. -->
+          <div class="synergy-flow" id="synFlow">
+            <svg class="syn-flow-svg" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <filter id="synGlowGold" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="2.6" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="synBokehBlur" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="22"/>
+                </filter>
+              </defs>
+
+              <path id="synPathL" fill="none"/>
+              <path id="synPathR" fill="none"/>
+              <path id="synPathD" fill="none"/>
+
+              <g class="syn-line" data-line="l">
+                <use href="#synPathL" class="syn-base"/>
+                <use href="#synPathL" class="syn-dash"/>
+                <use href="#synPathL" class="syn-pulse"/>
+              </g>
+              <g class="syn-line" data-line="r">
+                <use href="#synPathR" class="syn-base"/>
+                <use href="#synPathR" class="syn-dash"/>
+                <use href="#synPathR" class="syn-pulse"/>
+              </g>
+              <g class="syn-line" data-line="d">
+                <use href="#synPathD" class="syn-base"/>
+                <use href="#synPathD" class="syn-dash"/>
+                <use href="#synPathD" class="syn-pulse"/>
+              </g>
+
+              <!-- Вузол злиття -->
+              <!-- Квадратики (l) і кружечки (r) заходять ПІД іконку; монетки (d) лишаються поверх -->
+              <g class="syn-glyphs" id="synGlyphsBack"></g>
+
+              <g class="syn-node" id="synNode">
+                <!-- Растрове фото картки, 3х більше за попередню спробу.
+                     Свічення — не по силуету (то виходило суцільною плямою,
+                     бо розмиття з'їдало прямокутну форму), а два м'які
+                     розмиті бліки за картинкою: зелений зліва, синій справа. -->
+                <ellipse class="syn-node-halo" cx="-90" cy="-9" rx="90" ry="70" fill="#6BDB9C"/>
+                <ellipse class="syn-node-halo" cx="90" cy="-9" rx="90" ry="70" fill="#5FACFF"/>
+                <g class="syn-node-icon" id="synNodeIcon">
+                  <image href="assets/synergy_house_icon.webp" x="-180" y="-82.2" width="360" height="145.9" preserveAspectRatio="xMidYMid meet"/>
+                </g>
+              </g>
+
+              <g class="syn-glyphs" id="synGlyphs"></g>
+            </svg>
+          </div>
+
+          <!-- Архітектурна метрика Інвестора (без AI-плашки-пігулки) -->
+          <div class="synergy-investor-stat" id="synInvestorPlate">
+            <div class="investor-stat-header">
+              <span class="investor-stat-tag" id="synInvBadge">ІНВЕСТОР</span>
+            </div>
+            <div class="investor-stat-main">
+              <span class="investor-stat-num" id="synInvAmount">до 35 892 $</span>
+              <span class="investor-stat-period" id="synInvPeriod">/ на рік</span>
+            </div>
+            <div class="investor-stat-desc" id="synInvLabel">Стабільний прогнозований прибуток інвестора з щоквартальними виплатами</div>
+          </div>
+        </div>
+
+        <!-- ПРАВА КОЛОНКА: ГОТЕЛЬНЕ УПРАВЛІННЯ (Ribas Hotels Group) -->
+        <div class="synergy-side-col operator-col">
+          <div class="syn-logo-plate" data-flow="r">
+            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="syn-logo-img syn-logo-ribas" loading="lazy" decoding="async">
+          </div>
+          <h3 class="synergy-col-title" id="synRibasTitle">Ribas Hotels Group</h3>
+          <div class="synergy-col-subtitle" id="synRibasSubtitle">Готельне управління</div>
+          <ul class="synergy-list">
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas1">Операційна модель</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas2">Стандарти сервісу</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas3">Продажі та маркетинг</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas4">Управління комплексом</span></li>
+            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas5">Фінансова результативність</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  </div><!-- /.synergy-stage -->
 
   <!-- Модальне вікно перегляду відео курорту -->
   <div class="phase1-video-modal" id="phase1VideoModal" onclick="closePhase1Video(event)">
