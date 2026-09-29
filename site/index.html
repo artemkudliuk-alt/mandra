@@ -637,13 +637,11 @@
      лінії з кнопкою: ліворуч читається текст, праворуч — статус. Матеріал той
      самий, що в капсул шапки, — скло без рамки. */
   .hero-release-badge {
-    position: absolute;
-    right: 0;
-    bottom: 0.3vw;
+    align-self: stretch;
     display: inline-flex;
     align-items: center;
     gap: 0.62vw;
-    padding: 0.66vw 1.3vw;
+    padding: 0 1.5vw;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px);
@@ -651,21 +649,20 @@
     border: none;
     box-shadow: none;
     font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: clamp(13px, 0.92vw, 17px);
-    font-weight: 600;
+    font-size: 0.88vw;
+    font-weight: 700;
     letter-spacing: 0.005em;
     color: #FFFFFF;
     white-space: nowrap;
   }
   .hero-release-badge .pulse-dot { flex: none; }
 
-  /* На вузькому екрані праворуч місця немає — стає в потік під кнопку. */
+  /* На вузькому екрані поруч місця немає — переноситься під кнопку. */
   @media (max-width: 900px) {
     .hero-release-badge {
-      position: static;
       align-self: flex-start;
-      margin-top: 2vh;
-      padding: 10px 18px;
+      padding: 11px 18px;
+      font-size: 13px;
       gap: 9px;
     }
   }
@@ -749,6 +746,10 @@
      ------------------------------------------------------------- */
   .free-floating-cta {
     position: relative;
+    display: flex;
+    align-items: stretch;      /* бейдж тягнеться по висоті кнопки — без підбору padding */
+    flex-wrap: wrap;
+    gap: 0.9vw;
     margin-top: 1.6vw;
     z-index: 50;
     transform: scale(var(--btn-scale));
@@ -1455,6 +1456,27 @@
     max-width: 33em;
   }
   .pi-accent { color: var(--accent-color, #81B873); }
+
+  /* Стрілка кнопки — та сама векторна, що на кнопці героя, а не гліф з клавіатури */
+  .pi-cta-arrow {
+    display: inline-flex;
+    width: 1.15em;
+    height: 1.15em;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .pi-cta-arrow svg { width: 100%; height: 100%; }
+  /* Та сама стрілка в решті кнопок: три запасні стилі кнопки героя і кнопка
+     блоку статистики. Розмір веде шрифт кнопки, колір — currentColor. */
+  .arrow-box svg,
+  .soft-badge svg,
+  .glass-icon-circle svg,
+  .stats-cta-arrow svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+  }
+  .stats-cta-arrow { display: inline-flex; align-items: center; }
+  .stats-cta-btn:hover .pi-cta-arrow { transform: translate(2px, -2px); }
 
   .pi-grid {
     display: grid;
@@ -5911,12 +5933,6 @@
           </p>
         </div>
 
-        <!-- BLOCK 2.5: БЕЙДЖ ЗДАЧІ — праворуч, на рівні кнопки -->
-        <div class="hero-release-badge" id="heroReleaseBadge">
-          <span class="pulse-dot" aria-hidden="true"></span>
-          <span id="heroReleaseBadgeText">Здача 2 вже цього року</span>
-        </div>
-
         <!-- BLOCK 3: CTA BUTTON (in-flow, directly under subtitle) -->
         <div class="free-floating-cta" id="freeCta">
       <!-- 1. NUMO Style (Unified Capsule with Internal Flip Arrow) -->
@@ -5944,20 +5960,24 @@
       <!-- 3. Geometric Square (Геометрична квадратна) -->
       <a class="cta-btn-square" id="btnStyleSquare" href="#invest" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
-        <span class="arrow-box">↗</span>
+        <span class="arrow-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
       <!-- 4. Luxury Soft Rectangle (Преміум скруглений прямокутник) -->
       <a class="cta-btn-soft" id="btnStyleSoft" href="#invest" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
-        <span class="soft-badge">↗</span>
+        <span class="soft-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
       <!-- 5. Glass Neomorphic Capsule (Скляна нео-капсула) -->
       <a class="cta-btn-glass" id="btnStyleGlass" href="#invest" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
-        <span class="glass-icon-circle">↗</span>
+        <span class="glass-icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
+      <div class="hero-release-badge" id="heroReleaseBadge">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <span id="heroReleaseBadgeText">Здача 2 вже цього року</span>
+      </div>
         </div>
       </main>
 
@@ -6003,7 +6023,9 @@
         <p class="pi-body" id="piBody">Ресторан, SPA, простори для сімейного та дорослого відпочинку, природа та професійне готельне управління Ribas Hotels Group — усе в межах одного комплексу.</p>
         <a class="stats-cta-btn" href="#petrichor">
           <span id="piCtaText">Переглянути комплекс</span>
-          <span class="stats-cta-arrow">&#8599;</span>
+          <span class="pi-cta-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </a>
       </div>
 
@@ -6123,7 +6145,7 @@
         <div class="stats-cta-wrap">
           <a class="stats-cta-btn" href="#invest" id="stCta">
             <span id="stCtaText">Дізнатися більше</span>
-            <span class="stats-cta-arrow">↗</span>
+            <span class="stats-cta-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a>
         </div>
       </div>
