@@ -1608,6 +1608,194 @@
   }
 
   /* ============================================================
+     ЕКРАН 4 — ШІСТЬ ПЛИТОК «ЧОМУ MANDRA PETRICHOR»
+     Сітка 3x2 на всю ширину, розділювачі — волосяні лінії через фон сітки.
+     У спокої плитка темна: заголовок і авторський знак, що живе повільною
+     анімацією. На наведення проявляється фотографія.
+     На дотику наведення немає: фото видно одразу приглушеним, тап відкриває
+     його у власному вікні браузера (<dialog>) з хрестиком.
+     ============================================================ */
+  .section-why-tiles {
+    position: relative;
+    z-index: 3;
+    background: var(--bg-dark);
+    padding: clamp(64px, 7vh, 110px) 0 clamp(64px, 7vh, 110px);
+  }
+  .why-head {
+    max-width: 1520px;
+    margin: 0 auto clamp(32px, 3vw, 58px);
+    padding: 0 5vw;
+  }
+  .why-title {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(28px, 2.7vw, 50px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    color: #FFFFFF;
+    margin: 0;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.1);      /* лінії між плитками */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .why-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: clamp(230px, 21vw, 330px);
+    padding: clamp(20px, 1.9vw, 34px);
+    background: var(--bg-dark);
+    overflow: hidden;
+    isolation: isolate;
+    box-sizing: border-box;
+    text-align: left;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: default;
+  }
+  .why-tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.06);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -2;
+  }
+  /* Затемнення поверх фото — щоб заголовок лишався читабельним */
+  .why-tile-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 12, 10, 0.72) 0%, rgba(10, 12, 10, 0.34) 46%, rgba(10, 12, 10, 0.68) 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: -1;
+  }
+  .why-tile:hover .why-tile-img,
+  .why-tile:focus-visible .why-tile-img { opacity: 1; transform: scale(1); }
+  .why-tile:hover .why-tile-scrim,
+  .why-tile:focus-visible .why-tile-scrim { opacity: 1; }
+
+  .why-tile-text {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(15px, 1.05vw, 20px);
+    font-weight: 600;
+    line-height: 1.34;
+    letter-spacing: -0.005em;
+    color: #FFFFFF;
+    margin: 0;
+    max-width: 15em;
+  }
+  .why-tile-mark {
+    align-self: flex-end;
+    width: clamp(46px, 3.6vw, 66px);
+    height: clamp(46px, 3.6vw, 66px);
+    color: var(--accent-color, #81B873);
+    opacity: 0.85;
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .why-tile-mark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .why-tile:hover .why-tile-mark { opacity: 0; transform: translateY(6px); }
+
+  /* --- рух знаків: повільний, без ривків, кожен про свою плитку --- */
+  @keyframes whySpin { to { transform: rotate(360deg); } }
+  @keyframes whyRise { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.2px); } }
+  @keyframes whyBreathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.09); opacity: 0.55; } }
+  @keyframes whyFill { 0%, 100% { opacity: 0.28; } 50% { opacity: 1; } }
+  @keyframes whyDraw { 0% { stroke-dashoffset: 46; } 55%, 100% { stroke-dashoffset: 0; } }
+  @keyframes whyTravel { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+  /* 01 — доба й сезони: світило обходить коло */
+  .wm-orbit { transform-origin: 32px 32px; animation: whySpin 14s linear infinite; }
+  /* 02 — шість форм: дахи підіймаються по черзі */
+  .wm-roof { animation: whyRise 3.4s ease-in-out infinite; }
+  .wm-roof:nth-of-type(2) { animation-delay: 0.28s; }
+  .wm-roof:nth-of-type(3) { animation-delay: 0.56s; }
+  .wm-roof:nth-of-type(4) { animation-delay: 0.84s; }
+  .wm-roof:nth-of-type(5) { animation-delay: 1.12s; }
+  .wm-roof:nth-of-type(6) { animation-delay: 1.4s; }
+  /* 03 — управління: кільце дихає навколо ядра */
+  .wm-ring { transform-origin: 32px 32px; animation: whyBreathe 4.2s ease-in-out infinite; }
+  /* 04 — інфраструктура: поверхи набираються знизу вгору */
+  .wm-bar { animation: whyFill 3.6s ease-in-out infinite; }
+  .wm-bar:nth-of-type(2) { animation-delay: 0.4s; }
+  .wm-bar:nth-of-type(3) { animation-delay: 0.8s; }
+  /* 05 — три сценарії: промені прокреслюються з однієї точки */
+  .wm-ray { stroke-dasharray: 46; animation: whyDraw 4.6s ease-in-out infinite; }
+  .wm-ray:nth-of-type(2) { animation-delay: 0.5s; }
+  .wm-ray:nth-of-type(3) { animation-delay: 1s; }
+  /* 06 — доступність: точка йде маршрутом до місця */
+  .wm-dot { offset-path: path('M8 56 C 20 44, 18 30, 32 26 S 46 24, 48 29'); animation: whyTravel 5.2s ease-in-out infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wm-orbit, .wm-roof, .wm-ring, .wm-bar, .wm-ray, .wm-dot { animation: none; }
+  }
+
+  /* --- дотик: наведення не існує, тому фото видно одразу --- */
+  @media (hover: none) {
+    .why-tile { cursor: pointer; }
+    .why-tile-img { opacity: 0.5; transform: none; }
+    .why-tile-scrim { opacity: 1; }
+    .why-tile-mark { display: none; }
+  }
+  @media (max-width: 1100px) {
+    .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .why-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* --- вікно з фотографією для дотику --- */
+  .why-lightbox {
+    width: min(94vw, 1200px);
+    max-width: 94vw;
+    padding: 0;
+    border: none;
+    border-radius: clamp(14px, 1.2vw, 20px);
+    background: #101210;
+    overflow: hidden;
+  }
+  .why-lightbox::backdrop { background: rgba(8, 10, 8, 0.82); }
+  .why-lightbox img { display: block; width: 100%; height: auto; }
+  .why-lightbox-cap {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: 15px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.86);
+    padding: 16px 56px 18px 20px;
+    margin: 0;
+  }
+  .why-lightbox-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(12, 14, 12, 0.6);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+  .why-lightbox-close svg { width: 18px; height: 18px; display: block; }
+
+  /* ============================================================
      ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
      Без звуку, без контролів, без перемотки: ролик просто йде по колу.
      Кнопка play з'являється тільки як запасний вихід — коли браузер
@@ -1680,6 +1868,11 @@
      відступ статистики тримався на висоті showcase, тож без нього обнуляємо. */
   #showcase[hidden] { display: none; }
   #showcase[hidden] ~ .section-stats-stack { margin-top: 100px; }
+
+  /* ТИМЧАСОВО: блок «Mandra Invest в цифрах» знято на прохання замовника.
+     Секція лишається в файлі цілком — повернути можна, знявши атрибут
+     hidden із #stats та це правило. */
+  #stats[hidden] { display: none; }
 
   /* ============================================================
      SCREEN 2 - SCROLL SHOWCASE (4 QUADRANT SCRUB)
@@ -6275,9 +6468,98 @@
   </section>
 
   <!-- ============================================================
+       ЕКРАН 4 — ШІСТЬ ПЛИТОК «ЧОМУ MANDRA PETRICHOR»
+       ============================================================ -->
+  <section class="section-why-tiles" id="why">
+    <div class="why-head">
+      <h2 class="why-title" id="whyTitle">Чому <span class="pi-accent">Mandra Petrichor</span></h2>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-tile" data-img="assets/tiles/01_season.webp?v=1">
+        <p class="why-tile-text" id="why1">Комплекс 365 днів на рік</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="32" cy="32" r="21"/>
+        <g class="wm-orbit"><circle cx="32" cy="11" r="4.4" fill="currentColor" stroke="none"/></g>
+        <path d="M32 24.5a7.5 7.5 0 0 0 0 15 7.5 7.5 0 0 1 0-15z" fill="currentColor" stroke="none" opacity="0.55"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/01_season.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+
+      <div class="why-tile" data-img="assets/tiles/02_architecture.webp?v=1">
+        <p class="why-tile-text" id="why2">6 різних архітектурних рішень</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+        <path class="wm-roof" d="M6 28l7-12 7 12"/>
+        <path class="wm-roof" d="M25 28l7-9 7 9"/>
+        <path class="wm-roof" d="M44 28l7-14 7 14"/>
+        <path class="wm-roof" d="M6 54l7-9 7 9"/>
+        <path class="wm-roof" d="M25 54l7-13 7 13"/>
+        <path class="wm-roof" d="M44 54l7-10 7 10"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/02_architecture.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+
+      <div class="why-tile" data-img="assets/tiles/03_service.webp?v=1">
+        <p class="why-tile-text" id="why3">Керуюча компанія Ribas Hotels Group</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2">
+        <g class="wm-ring"><path d="M32 9l19.9 11.5v23L32 55 12.1 43.5v-23z"/></g>
+        <circle cx="32" cy="32" r="7" fill="currentColor" stroke="none" opacity="0.9"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/03_service.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+
+      <div class="why-tile" data-img="assets/tiles/04_infrastructure.webp?v=1">
+        <p class="why-tile-text" id="why4">Ключова інфраструктура від YOD Group</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+        <rect class="wm-bar" x="9" y="43" width="46" height="11" rx="2.5"/>
+        <rect class="wm-bar" x="15" y="29" width="34" height="11" rx="2.5"/>
+        <rect class="wm-bar" x="21" y="15" width="22" height="11" rx="2.5"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/04_infrastructure.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+
+      <div class="why-tile" data-img="assets/tiles/05_scenarios.webp?v=1">
+        <p class="why-tile-text" id="why5">3 різні сценарії відпочинку</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="32" cy="54" r="4.2" fill="currentColor" stroke="none"/>
+        <path class="wm-ray" d="M32 50V12"/>
+        <path class="wm-ray" d="M29 50L11 20"/>
+        <path class="wm-ray" d="M35 50l18-30"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/05_scenarios.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+
+      <div class="why-tile" data-img="assets/tiles/06_access.webp?v=1">
+        <p class="why-tile-text" id="why6">Стабільний попит та зручна доступність</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M8 56C20 44 18 30 32 26S46 24 48 29" stroke-dasharray="5 6" opacity="0.55"/>
+        <path d="M48 8c-4.2 0-7.6 3.4-7.6 7.6 0 5.6 7.6 13 7.6 13s7.6-7.4 7.6-13C55.6 11.4 52.2 8 48 8z"/>
+        <circle cx="48" cy="15.6" r="2.6" fill="currentColor" stroke="none"/>
+        <circle class="wm-dot" cx="0" cy="0" r="3.2" fill="currentColor" stroke="none"/>
+      </svg></span>
+        <img class="why-tile-img" src="assets/tiles/06_access.webp?v=1" alt="" loading="lazy" decoding="async">
+        <span class="why-tile-scrim" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <dialog class="why-lightbox" id="whyLightbox">
+      <button class="why-lightbox-close" id="whyLightboxClose" type="button" aria-label="Закрити">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <img id="whyLightboxImg" src="" alt="">
+      <p class="why-lightbox-cap" id="whyLightboxCap"></p>
+    </dialog>
+  </section>
+
+  <!-- ============================================================
        ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ (withasa.com card stack)
        ============================================================ -->
-  <section class="section-stats-stack" id="stats">
+  <section class="section-stats-stack" id="stats" hidden>
     <div class="stats-container">
 
       <!-- Ліва колонка: інформація за макетом (без плашки зверху) -->
@@ -7832,6 +8114,13 @@
         piF4: 'Простори для дорослого відпочинку',
         piF5: 'Три концепції відпочинку',
         piF6: 'Готельне управління Ribas Hotels Group',
+        whyTitle: 'Чому <span class="pi-accent">Mandra Petrichor</span>',
+        why1: 'Комплекс 365 днів на рік',
+        why2: '6 різних архітектурних рішень',
+        why3: 'Керуюча компанія Ribas Hotels Group',
+        why4: 'Ключова інфраструктура від YOD Group',
+        why5: '3 різні сценарії відпочинку',
+        why6: 'Стабільний попит та зручна доступність',
         piUnit1: 'га', piUnit4: 'м²',
         piCard1: 'Території комплексу',
         piCard2: 'Котеджів у складі комплексу',
@@ -8042,6 +8331,13 @@
         piF4: 'Spaces for adult leisure',
         piF5: 'Three leisure concepts',
         piF6: 'Hotel management by Ribas Hotels Group',
+        whyTitle: 'Why <span class="pi-accent">Mandra Petrichor</span>',
+        why1: 'A resort open 365 days a year',
+        why2: '6 different architectural solutions',
+        why3: 'Managed by Ribas Hotels Group',
+        why4: 'Key infrastructure by YOD Group',
+        why5: '3 different leisure scenarios',
+        why6: 'Steady demand and easy access',
         piUnit1: 'ha', piUnit4: 'm²',
         piCard1: 'Hectares of the complex',
         piCard2: 'Cottages within the complex',
@@ -8277,6 +8573,8 @@
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
       document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').textContent = t.desc;
+      const whyTitleEl = document.getElementById('whyTitle');
+      if (whyTitleEl && t.whyTitle) whyTitleEl.innerHTML = t.whyTitle;
       const badgeText = document.getElementById('heroReleaseBadgeText');
       if (badgeText && t.heroBadge) badgeText.textContent = t.heroBadge;
       document.getElementById('inpMainDesc').value = t.desc;
@@ -8310,6 +8608,8 @@
                   'piTag1','piTag2','piTag4','piUnit1','piUnit4',
                   'piCard1','piCard2','piCard4',
                   'piF1','piF2','piF3','piF4','piF5','piF6',
+                  /* ЕКРАН 4 — шість плиток */
+                  'why1','why2','why3','why4','why5','why6',
                   /* ЕКРАН 4 — Мандра Інвест в цифрах */
                   'stTitleMain','stTitleBreak','stDesc','stCtaText',
                   'st1Text','st2Text','st4Text','st5Text',
@@ -10814,6 +11114,38 @@
       else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
+
+    /* ============================================================
+       ЕКРАН 4 — ПЛИТКИ: ФОТО У ВІКНІ НА ДОТИКОВИХ ЕКРАНАХ
+       На миші все робить CSS. Тут лише те, чого CSS не вміє: відкрити
+       фотографію на тап там, де наведення не існує.
+       ============================================================ */
+    (function initWhyTiles() {
+      const dlg = document.getElementById('whyLightbox');
+      if (!dlg || typeof dlg.showModal !== 'function') return;   /* старий браузер — плитки просто лишаються з фото */
+      const img = document.getElementById('whyLightboxImg');
+      const cap = document.getElementById('whyLightboxCap');
+      const closeBtn = document.getElementById('whyLightboxClose');
+      const coarse = window.matchMedia('(hover: none)');
+
+      document.querySelectorAll('.why-tile').forEach(function (tile) {
+        tile.addEventListener('click', function () {
+          if (!coarse.matches) return;          /* на миші достатньо наведення */
+          const src = tile.dataset.img;
+          const text = tile.querySelector('.why-tile-text');
+          if (!src) return;
+          img.src = src;
+          img.alt = text ? text.textContent : '';
+          cap.textContent = text ? text.textContent : '';
+          dlg.showModal();
+        });
+      });
+
+      closeBtn.addEventListener('click', function () { dlg.close(); });
+      /* Клік по підкладці поза картинкою теж закриває */
+      dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener('close', function () { img.src = ''; });
+    })();
 
     /* ============================================================
        ЕКРАН 3.5 — ВІДЕОБАНЕР
