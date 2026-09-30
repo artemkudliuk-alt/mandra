@@ -5800,7 +5800,7 @@
     position: relative;
     background: #0A0F0C;
     color: #FFFFFF;
-    padding: 45px 5vw 130px;
+    padding: 45px 5vw 50px;           /* ліс футера підходить ближче: боки форми лишаються над верхівками */
     z-index: 10;
     overflow: hidden;
     box-sizing: border-box;
@@ -10093,7 +10093,7 @@
         const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height * 0.5)));
         const isMobile = window.innerWidth <= 900;
         const farTravel = isMobile ? 30 : 60;
-        const nearTravel = isMobile ? 260 : 510;
+        const nearTravel = isMobile ? 130 : 255;   /* темний план ближче до зеленого: хід удвічі менший */
         const nearFinal = isMobile ? -65 : -130;
 
         /* Цілі пікселі: дробове зміщення масок під час скролу щокадру
