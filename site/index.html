@@ -182,7 +182,7 @@
   /* Затемнення героя проявляється разом із переходом у цикл: під час інтро
      кадр чистий, текст ще схований, темнити нема чого. */
   .bg-scrim,
-  .bg-left-scrim { transition: opacity 0.6s ease; }
+  .bg-left-scrim { transition: opacity 1.2s ease; }
   body.intro-running .bg-scrim,
   body.intro-running .bg-left-scrim { opacity: 0; }
 
@@ -198,24 +198,32 @@
      кнопки, ні скролу. На 4.5с ролика вони піднімаються знизу одне за одним,
      тим самим почерком, що підписи на картках. Власний клас, бо hide-ui вже
      зайнятий ручним перемикачем у панелі. */
-  .ui-layer,
-  .top-navbar,
-  .free-floating-cta,
-  .scroll-indicator {
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  body.intro-running .ui-layer,
+  /* Появу ведемо не цілим шаром, а по елементах — м'якою хвилею згори вниз.
+     Це анімація з fill: backwards, а не transition: у шапки, кнопки й SCROLL
+     свої переходи (підсвітка при скролі, наведення) — анімація їх не чіпає і
+     не лишає затримок після появи. Рухаємо властивістю translate, бо transform
+     у цих елементів зайнятий (позиція, масштаб, центрування). */
   body.intro-running .top-navbar,
+  body.intro-running .title-wrapper,
+  body.intro-running .desc-wrapper,
   body.intro-running .free-floating-cta,
+  body.intro-running .hero-release-badge,
   body.intro-running .scroll-indicator {
     opacity: 0;
-    transform: translate3d(0, 20px, 0);
     pointer-events: none;
   }
-  body.intro-done .top-navbar        { transition-delay: 0.1s; }
-  body.intro-done .free-floating-cta { transition-delay: 0.18s; }
-  body.intro-done .scroll-indicator  { transition-delay: 0.34s; }
+  @keyframes heroRise { from { opacity: 0; translate: 0 14px; } }
+  @media (prefers-reduced-motion: no-preference) {
+    body.intro-done .top-navbar        { animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0s backwards; }
+    body.intro-done .title-wrapper     { animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0.15s backwards; }
+    body.intro-done .desc-wrapper      { animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0.32s backwards; }
+    body.intro-done .free-floating-cta { animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0.48s backwards; }
+    body.intro-done .scroll-indicator  { animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0.85s backwards; }
+    body.intro-done .hero-release-badge {
+      animation: heroRise 1.6s cubic-bezier(0.33, 1, 0.68, 1) 0.64s backwards,
+                 stickerSway 6.65s ease-in-out infinite;
+    }
+  }
 
   /* Повне блокування скролу сторінки під час програвання інтро-відео */
   html.intro-running,
@@ -1966,14 +1974,13 @@
     background: rgba(0, 0, 0, 0.05);
     pointer-events: none;
   }
-  /* Заголовок над банером — звичайний заголовок секції (клас .why-title).
-     Сітка — як у блоку Petrichor просто над ним (5vw поля + 1520 всередині),
-     щоб лівий край ішов однією лінією з його текстом. */
+  /* Заголовок над банером — звичайний заголовок секції (клас .why-title),
+     по центру над відео. */
   .vb-head {
     background: var(--bg-dark);
     padding: 0 5vw clamp(32px, 3vw, 58px);
   }
-  .vb-head > .why-title { max-width: 1520px; margin: 0 auto; }
+  .vb-head > .why-title { max-width: 1520px; margin: 0 auto; text-align: center; }
   .vb-play {
     position: absolute;
     left: 50%;
@@ -6519,9 +6526,12 @@
 <link rel="preload" as="image" href="assets/hero_intro_poster_v7.webp">
 <noscript><style>
   /* Без JS інтро не зіграє ніколи, тож інтерфейс має бути видимий одразу. */
-  body.intro-running .ui-layer,
+  body.intro-running .top-navbar,
+  body.intro-running .title-wrapper,
+  body.intro-running .desc-wrapper,
   body.intro-running .free-floating-cta,
-  body.intro-running .scroll-indicator { opacity: 1; transform: none; pointer-events: auto; }
+  body.intro-running .hero-release-badge,
+  body.intro-running .scroll-indicator { opacity: 1; pointer-events: auto; }
   body.intro-running .bg-photo { background-image: url('assets/hero_day_v7.webp'); }
 </style></noscript>
 </head>
