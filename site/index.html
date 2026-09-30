@@ -2094,6 +2094,8 @@
   .bs-card {
     position: relative;
     isolation: isolate;
+    backdrop-filter: none;             /* фото закриває картку повністю — розмиття під ним лише їло кадри */
+    -webkit-backdrop-filter: none;
     justify-content: flex-end;
     min-height: clamp(210px, 14.5vw, 280px);
     background: rgba(255, 255, 255, 0.04);
@@ -3690,17 +3692,28 @@
     46%      { opacity: 1;    }
     54%      { opacity: 0.92; }
   }
-  .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-zone {
+  /* Ореол «запечено» в окремі картинки (mp_plan_glowN.webp — лише світло
+     зовні контуру черги, кольором черги). Живий drop-shadow тричі розмивав
+     повнокадрові шари щокадру і на скролі давав ривки до 200 мс; тепер браузер
+     анімує тільки прозорість готової картинки — це робота композитора. */
+  .mp-glow {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-glow {
     opacity: 1;
-    filter: drop-shadow(0 0 2px var(--mp-glow)) drop-shadow(0 0 6px var(--mp-glow)) drop-shadow(0 0 15px var(--mp-glow));
-    will-change: opacity;
     animation: mpEdgeBlink 3.6s ease-in-out infinite;
   }
-  .mp-zone[data-phase="1"] { --mp-glow: rgba(151, 214, 133, 1); animation-delay: 0s;    }
-  .mp-zone[data-phase="2"] { --mp-glow: rgba(112, 174, 255, 1); animation-delay: -1.2s; }
-  .mp-zone[data-phase="3"] { --mp-glow: rgba(255, 206, 82, 1);  animation-delay: -2.4s; }
+  .mp-glow[data-phase="2"] { animation-delay: -1.2s; }
+  .mp-glow[data-phase="3"] { animation-delay: -2.4s; }
   @media (prefers-reduced-motion: reduce) {
-    .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-zone {
+    .section-masterplan-clean.is-visible .mp-plan:not(.is-hot) .mp-glow {
       animation: none;
       opacity: 0.9;
     }
@@ -6621,7 +6634,7 @@
   .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
   .lenis.lenis-stopped { overflow: hidden; }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
 <!-- Постер інтро — це перший намальований піксель сторінки, тож тягнемо його
      найпершим. Без preload у кадр встигав фон героя, тобто зовсім інша сцена. -->
 <link rel="preload" as="image" href="assets/hero_intro_poster_v7.webp">
@@ -7154,6 +7167,9 @@
         <img class="mp-zone" data-phase="1" src="assets/mp_plan_zone1.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
         <img class="mp-zone" data-phase="2" src="assets/mp_plan_zone2.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
         <img class="mp-zone" data-phase="3" src="assets/mp_plan_zone3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="mp-glow" data-phase="1" src="assets/mp_plan_glow1.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="mp-glow" data-phase="2" src="assets/mp_plan_glow2.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+        <img class="mp-glow" data-phase="3" src="assets/mp_plan_glow3.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </div>
 
       <!-- Спільні video/img для прольоту в будь-яку чергу з відео в PHASES
@@ -12033,9 +12049,11 @@
       if (typeof Lenis === 'undefined') return;              // CDN не піднявся — лишається нативний скрол
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+      /* Як у codex: важчий, «соковитіший» скрол — довгий м'який вибіг після
+         коліщатка (lerp 0.06) і трохи коротший крок (0.9). */
       const lenis = new Lenis({
-        lerp: 0.09,          // менше — довший вибіг; 0.09 ≈ м'яко, але без «мила»
-        wheelMultiplier: 1,
+        lerp: 0.06,
+        wheelMultiplier: 0.9,
         smoothWheel: true    // syncTouch лишаємо вимкненим (дефолт):
                              // на тачі рідна інерція системи краща за емуляцію
       });
