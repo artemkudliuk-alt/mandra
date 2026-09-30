@@ -99,12 +99,12 @@
 
     /* 2. SUBTITLE / DESCRIPTION (БЛОК 2) */
     --sub-font: 'Manrope', sans-serif;
-    --sub-size: 1.38vw;
+    --sub-size: 1.44vw;
     --sub-weight: 400;
     --sub-lh: 1.6;
     --sub-ls: 0em;
     --sub-opacity: 0.85;
-    --sub-max-w: 43vw;
+    --sub-max-w: 45vw;
     --sub-x: 0vw;
     --sub-y: 0vh;
 
@@ -8470,8 +8470,8 @@
 
         <div class="section-label">Параметри підзаголовка</div>
         <div class="control-row">
-          <div class="control-top"><span>Розмір тексту (Size)</span><span class="control-val" id="valSubSize">1.38vw</span></div>
-          <input type="range" id="rngSubSize" min="0.75" max="2.6" step="0.05" value="1.38" oninput="updateVar('--sub-size', this.value + 'vw', 'valSubSize')">
+          <div class="control-top"><span>Розмір тексту (Size)</span><span class="control-val" id="valSubSize">1.44vw</span></div>
+          <input type="range" id="rngSubSize" min="0.75" max="2.6" step="0.01" value="1.44" oninput="updateVar('--sub-size', this.value + 'vw', 'valSubSize')">
         </div>
         <div class="control-row">
           <div class="control-top"><span>Товщина (Weight)</span><span class="control-val" id="valSubWeight">400</span></div>
@@ -8486,8 +8486,8 @@
           <input type="range" id="rngSubLs" min="-0.03" max="0.15" step="0.005" value="0" oninput="updateVar('--sub-ls', this.value + 'em', 'valSubLs')">
         </div>
         <div class="control-row">
-          <div class="control-top"><span>Ширина блоку підзаголовка</span><span class="control-val" id="valSubMaxW">43vw</span></div>
-          <input type="range" id="rngSubMaxW" min="20" max="75" step="1" value="43" oninput="updateVar('--sub-max-w', this.value + 'vw', 'valSubMaxW')">
+          <div class="control-top"><span>Ширина блоку підзаголовка</span><span class="control-val" id="valSubMaxW">45vw</span></div>
+          <input type="range" id="rngSubMaxW" min="20" max="75" step="1" value="45" oninput="updateVar('--sub-max-w', this.value + 'vw', 'valSubMaxW')">
         </div>
         <div class="control-row">
           <div class="control-top"><span>Прозорість (Opacity)</span><span class="control-val" id="valSubOpacity">0.85</span></div>
@@ -9359,10 +9359,8 @@
             c.classList.toggle('active', c.getAttribute('data-font') === fName);
           });
         }
-        if (s.subSize) {
-          updateVar('--sub-size', s.subSize + 'vw', 'valSubSize');
-          document.getElementById('rngSubSize').value = s.subSize;
-        }
+        /* розмір і ширина підзаголовка — лише з CSS: збережений стан у
+           браузері перебивав зміни, внесені в код */
         if (s.subWeight) {
           updateVar('--sub-weight', s.subWeight, 'valSubWeight');
           document.getElementById('rngSubWeight').value = s.subWeight;
@@ -9374,10 +9372,6 @@
         if (s.subLs) {
           updateVar('--sub-ls', s.subLs + 'em', 'valSubLs');
           document.getElementById('rngSubLs').value = s.subLs;
-        }
-        if (s.subMaxW) {
-          updateVar('--sub-max-w', s.subMaxW + 'vw', 'valSubMaxW');
-          document.getElementById('rngSubMaxW').value = s.subMaxW;
         }
         if (s.subOpacity) {
           updateVar('--sub-opacity', s.subOpacity, 'valSubOpacity');
