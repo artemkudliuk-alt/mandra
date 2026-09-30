@@ -2088,6 +2088,46 @@
     border: none;
     box-sizing: border-box;
   }
+  /* Фото черги: будинок праворуч, ліворуч під текстом — затемнення.
+     На наведення фото трохи темнішає і «виїжджає» з картки вгору на 20%
+     її висоти — сітка при цьому не рухається, росте лише шар фото. */
+  .bs-card {
+    position: relative;
+    isolation: isolate;
+    min-height: clamp(210px, 14.5vw, 280px);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .bs-card-img,
+  .bs-card-shade {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transition: top 0.8s cubic-bezier(0.33, 1, 0.68, 1), height 0.8s cubic-bezier(0.33, 1, 0.68, 1),
+                background 0.8s ease;
+  }
+  /* у картинки ростом керує висота (притиснута донизу) — top для неї не тягне розмір */
+  .bs-card-img {
+    z-index: -2;
+    top: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 58%;
+  }
+  .bs-card-shade {
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(10, 12, 10, 0.86) 0%, rgba(10, 12, 10, 0.6) 34%,
+                rgba(10, 12, 10, 0.12) 66%, rgba(10, 12, 10, 0) 100%);
+  }
+  .bs-card:hover .bs-card-img { height: 120%; }
+  .bs-card:hover .bs-card-shade { top: -20%; }
+  .bs-card:hover .bs-card-shade {
+    background: linear-gradient(90deg, rgba(10, 12, 10, 0.9) 0%, rgba(10, 12, 10, 0.68) 34%,
+                rgba(10, 12, 10, 0.28) 66%, rgba(10, 12, 10, 0.18) 100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bs-card-img, .bs-card-shade { transition: none; }
+  }
   .bs-queue {
     align-self: flex-start;
     padding: 6px 15px;
@@ -7597,18 +7637,24 @@
 
       <div class="bs-grid">
         <article class="bs-card">
+          <img class="bs-card-img" src="assets/build/stage1.webp" alt="" loading="lazy" decoding="async">
+          <span class="bs-card-shade" aria-hidden="true"></span>
           <span class="bs-queue" id="bsQ1">I черга</span>
           <p class="bs-name" id="bsN1">Ареал спокою</p>
           <p class="bs-count" id="bsC1">20 котеджів</p>
         </article>
 
         <article class="bs-card">
+          <img class="bs-card-img" src="assets/build/stage2.webp" alt="" loading="lazy" decoding="async">
+          <span class="bs-card-shade" aria-hidden="true"></span>
           <span class="bs-queue" id="bsQ2">II черга</span>
           <p class="bs-name" id="bsN2">Простір для свідомих батьків</p>
           <p class="bs-count" id="bsC2">40 котеджів</p>
         </article>
 
         <article class="bs-card">
+          <img class="bs-card-img" src="assets/build/stage3.webp" alt="" loading="lazy" decoding="async">
+          <span class="bs-card-shade" aria-hidden="true"></span>
           <span class="bs-queue" id="bsQ3">III черга</span>
           <p class="bs-name" id="bsN3">Місце твоїх ідеальних побачень</p>
           <p class="bs-count" id="bsC3">41 котедж</p>
