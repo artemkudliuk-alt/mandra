@@ -148,7 +148,7 @@
   .bg-photo {
     position: absolute;
     inset: 0;
-    background: url('assets/bg_hero.webp') center 36% / cover no-repeat;
+    background: url('assets/hero_day_v3.webp') center 36% / cover no-repeat;
     z-index: 1;
     transform: scale(1.02);
   }
@@ -174,35 +174,23 @@
     /* Жодного transition на opacity: інтро має з'являтись і зникати миттєво,
        без власної розчинки. Перехід у цикл роблять не opacity-крос-фейдом
        (це давало «стик картинок» — дві різні сцени буквально просвічували
-       одна крізь одну), а короткою вуаллю-темнінням поверх обох шарів,
-       див. #heroHandoffVeil і initHeroIntro нижче. */
+       одна крізь одну). Розчиняється лише на виході — див. .is-fading. */
   }
 
-  /* Коротка вуаль для передачі кадру інтро → цикл: гасить світло, під
-     прикриттям темряви міняє шари миттєво (без розчинки контенту одне в
-     одне), світлішає назад. Пік навмисно неглибокий (0.22) — ролики від
-     09.09 вже сходяться майже кадр у кадр, тож ховати нема чого, потрібне
-     лише відчуття «моргання», а не затемнення на всю глибину. */
-  #heroHandoffVeil {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    background: #0B0F0C;
-    opacity: 0;
-    pointer-events: none;
+  /* Передача інтро → цикл: інтро розчиняється в перший кадр циклу, що вже
+     грає під ним. Кадри сходяться (заміряно: зсув 2px), тож кросфейд не дає
+     «двох сцен одна крізь одну» — лише м'яко зводить різницю в експозиції.
+     Transition вмикається тільки на виході: з'являється інтро миттєво. */
+  #heroIntro.is-fading {
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  /* Один keyframes-цикл замість двох послідовних inline-transition через
-     setTimeout: два окремих переходи одне за одним смикались і уривались —
-     заміряно на записі, провал яскравості виходив 70-80ms замість заданих
-     300ms. Анімація тепер веде себе сама, без залежності від таймингу JS. */
-  @keyframes heroHandoffPulse {
-    0%   { opacity: 0; }
-    50%  { opacity: 0.22; }
-    100% { opacity: 0; }
-  }
-  #heroHandoffVeil.is-active {
-    animation: heroHandoffPulse 0.3s ease-in-out;
-  }
+
+  /* Затемнення героя проявляється разом із переходом у цикл: під час інтро
+     кадр чистий, текст ще схований, темнити нема чого. */
+  .bg-scrim,
+  .bg-left-scrim { transition: opacity 0.6s ease; }
+  body.intro-running .bg-scrim,
+  body.intro-running .bg-left-scrim { opacity: 0; }
 
   /* Під час інтро підкладки-картинки під відео більше нема: раніше тут малювався
      постер і відео проявлялось поверх нього власною розчинкою — вихід був
@@ -6412,13 +6400,13 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <!-- Постер інтро — це перший намальований піксель сторінки, тож тягнемо його
      найпершим. Без preload у кадр встигав фон героя, тобто зовсім інша сцена. -->
-<link rel="preload" as="image" href="assets/hero_intro_poster.webp?v=5">
+<link rel="preload" as="image" href="assets/hero_intro_poster_v3.webp">
 <noscript><style>
   /* Без JS інтро не зіграє ніколи, тож інтерфейс має бути видимий одразу. */
   body.intro-running .ui-layer,
   body.intro-running .free-floating-cta,
   body.intro-running .scroll-indicator { opacity: 1; transform: none; pointer-events: auto; }
-  body.intro-running .bg-photo { background-image: url('assets/bg_hero.webp'); }
+  body.intro-running .bg-photo { background-image: url('assets/hero_day_v3.webp'); }
 </style></noscript>
 </head>
 <!-- intro-running стоїть прямо в розмітці: раніше його вішав скрипт у самому
@@ -6510,9 +6498,8 @@
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
-           poster="assets/hero_intro_poster.webp?v=5" src="assets/hero_intro.mp4?v=6"></video>
+           poster="assets/hero_intro_poster_v3.webp" src="assets/hero_intro_v3.mp4"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
-    <div id="heroHandoffVeil" aria-hidden="true"></div>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
 
@@ -11392,27 +11379,25 @@
        якщо ролик почне грати із затримкою через мережу, текст усе одно
        з'явиться на потрібному кадрі, а не над порожнім екраном.
 
-       Стик інтро з циклом ховає коротка вуаль-темнінням (#heroHandoffVeil):
-       ролики від 09.09 сходяться майже кадр у кадр (заміряно — різниця на
-       рівні шумового підлоги), тож ховати різницю кросфейдом уже нема
-       потреби. Замість розчинення контенту одне в інше — швидке "моргання":
-       вуаль темніє, під нею шари міняються миттєво, вуаль світлішає. */
+       Стик: інтро розчиняється в перший кадр циклу за FADE. Ролики 30.09
+       сходяться геометрично (зсув 2px), але різняться експозицією — кросфейд
+       зводить її м'яко, без моргання. Цикл змонтовано так, що його кінець
+       сходиться в його ж перший кадр, тож коло теж без шва. */
     (function initHeroIntro() {
       const intro = document.getElementById('heroIntro');
       const cycle = document.getElementById('heroVideo');
-      const veil = document.getElementById('heroHandoffVeil');
       if (!intro || !cycle) return;
 
-      const DIP = 0.3;          // секунди на весь цикл темнішання+світлішання, лежить в CSS keyframes нижче
+      const FADE = 0.6;         // тривалість розчинення інтро в цикл, та сама, що в CSS .is-fading
 
       /* Момент появи інтерфейсу рахуємо від довжини ролика, а не константою:
          інтро вже різали кілька разів, і зашита секунда просто не спрацювала б
          на новому монтажі — інтерфейс виїжджав би аж на 'ended'. Тепер будь-
          який новий монтаж підхоплюється сам. LEAD — наскільки раніше за
-         передачу кадру з'явиться інтерфейс, щоб він устиг стати до вуалі. */
+         передачу кадру з'явиться інтерфейс, щоб він устиг стати до переходу. */
       const LEAD = 0.14;
       function revealAt() {
-        return intro.duration ? Math.max(0.4, intro.duration - DIP - LEAD) : 1.06;
+        return intro.duration ? Math.max(0.4, intro.duration - FADE - LEAD) : 1.06;
       }
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -11457,31 +11442,34 @@
          інтерфейс мусить з'явитись сам, а не залишитись схованим назавжди. */
       failSafe = setTimeout(revealUi, 6000);
 
-      /* Вуаль стартує за DIP до кінця інтро, тож на піку темряви обидва
-         ролики ще РУХАЮТЬСЯ — інтро не встигає застигнути на останньому
-         кадрі. Заміна шарів відбувається миттєво (без transition на opacity
-         відео) саме в піковий момент, під прикриттям темряви. */
+      /* Розчинення стартує за FADE до кінця інтро: інтро догравує свої
+         останні кадри вже напівпрозорим, під ним цикл іде з першого кадру.
+         Якщо цикл ще не готовий — інтро чекає на останньому кадрі (він і є
+         та сама денна сцена), а не розчиняється в порожнечу. */
       function startCycle() {
         if (handed) return;
         handed = true;
-        if (veil) veil.classList.add('is-active');   // весь цикл темнінь-світлішання веде CSS keyframes
-        setTimeout(function () {
-          cycle.play().catch(function () {});
+        function crossfade() {
+          cycle.currentTime = 0;
           cycle.classList.add('is-ready');
+          cycle.play().catch(function () {});
+          intro.classList.add('is-fading');
           intro.classList.remove('is-ready');
-          intro.pause();
-        }, (DIP / 2) * 1000);   // рівно в піку — саме тут ховаємо заміну шарів
+        }
+        if (cycle.readyState >= 3) crossfade();
+        else cycle.addEventListener('canplay', crossfade, { once: true });
       }
 
       function tick() {
         if (intro.currentTime >= revealAt()) revealUi();
-        if (intro.duration && intro.currentTime >= intro.duration - DIP) startCycle();
+        if (intro.duration && intro.currentTime >= intro.duration - FADE) startCycle();
         if (!intro.ended && !handed) requestAnimationFrame(tick);
       }
 
       intro.addEventListener('canplay', function () {
         /* Стартуємо не одразу, а коли прелоадер віддасть екран */
         (window.__preloadGate || Promise.resolve()).then(function () {
+        preloadCycle();          /* інтро вже в буфері — цикл не спорить із ним за канал */
         intro.play().then(function () {
           intro.classList.add('is-ready');
           requestAnimationFrame(tick);
@@ -11491,18 +11479,17 @@
 
       intro.addEventListener('ended', function () {
         revealUi();
-        startCycle();
-        intro.classList.remove('is-ready');
+        startCycle();            /* зникнення інтро веде startCycle, не 'ended' */
       });
 
-      /* Цикл тягнемо фоном, поки грає інтро: до передачі він має бути готовий,
-         але змагатися з інтро за канал на першому екрані йому нічого. */
+      /* Цикл тягнемо, щойно прелоадер віддав екран: інтро на той момент уже
+         в буфері, тож за канал вони не змагаються. Чекати 'load' (усі картинки
+         першого екрана) не можна — інтро коротке, цикл не встигав би. */
       function preloadCycle() {
-        cycle.src = 'assets/hero_cycle.mp4?v=5';
+        if (cycle.src) return;
+        cycle.src = 'assets/hero_loop_v3.mp4';
         cycle.load();
       }
-      if (document.readyState === 'complete') preloadCycle();
-      else window.addEventListener('load', preloadCycle, { once: true });
     })();
 
 
