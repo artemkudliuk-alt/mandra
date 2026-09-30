@@ -51,6 +51,8 @@
   .pl-mark path { fill: #F2EFE8; }
   #preloader.is-static .pl-mark { opacity: 1; }
   #preloader.is-mark .pl-mark { opacity: 1; transition: none; }   /* канва віддає логотип SVG — без стику */
+  /* легка тінь над інтро, щоб білий логотип читався; гасне разом із ним (.is-out) */
+  #preloader.is-mark { background: rgba(0, 0, 0, 0.075); }
 
   :root {
     --bg-dark: #121212;
@@ -9814,8 +9816,10 @@
         '    vec2 pa=px-a,ba=b-a;float k=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);',
         '    float dd=length(pa-ba*k);col+=vec3(.85,.9,.95)*exp(-dd*dd/(uUnit*uUnit*.000012))*(.25+.75*k);}',
         '  col+=(hash(px+fract(uTime)*97.)-.5)*.022;',
-        /* тло з водою гасне, логотип — ні: premultiplied-змішування двох шарів */
-        '  float ba=1.-uFade;',
+        /* тло з водою гасне до легкої тіні 7.5% над інтро, логотип лишається;
+           premultiplied-змішування двох шарів. Тримати рівним --pl-dim у CSS */
+        '  float ba=mix(1.,.075,uFade);',
+        '  col=mix(col,vec3(0.),uFade);',
         '  gl_FragColor=vec4(vec3(.949,.937,.91)*la+col*(1.-la)*ba,la+(1.-la)*ba);',
         '}'
       ].join('\n');
