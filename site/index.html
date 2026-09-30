@@ -625,18 +625,20 @@
      «Онлайн заявка», трохи повернута й відкидає тінь, наче наклеєна поверх
      кадру. Шари тіні: щільна біля краю + м'яка далека. */
   .hero-release-badge {
-    align-self: center;
-    margin-left: 2.4vw;
-    width: 7.6vw;
-    height: 7.6vw;
-    min-width: 104px;
-    min-height: 104px;
+    position: absolute;
+    right: 0;
+    bottom: -3vw;              /* центр наліпки на рівні центру кнопки */
+    z-index: 5;
+    width: 9.1vw;
+    height: 9.1vw;
+    min-width: 125px;
+    min-height: 125px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.45vw;
-    padding: 1vw;
+    padding: 1.2vw;
     border-radius: 50%;
     background: var(--top-btn-bg);
     color: var(--top-btn-text);
@@ -647,12 +649,12 @@
     /* rotate/scale — окремі властивості: гойдання, наведення й оберт по кліку
        складаються, а не перебивають одне одне */
     rotate: -9deg;
-    animation: stickerSway 7s ease-in-out infinite;
+    animation: stickerSway 6.65s ease-in-out infinite;
     transition: scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     user-select: none;
     font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: 0.8vw;
+    font-size: 0.96vw;
     font-weight: 800;
     line-height: 1.2;
     letter-spacing: 0.02em;
@@ -672,7 +674,8 @@
 
   @media (max-width: 900px) {
     .hero-release-badge {
-      margin-left: 12px;
+      position: static;
+      align-self: flex-start;
       font-size: 11px;
       gap: 6px;
       padding: 12px;
@@ -6588,18 +6591,19 @@
         <span>Дізнатися більше</span>
         <span class="glass-icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
-      <div class="hero-release-badge" id="heroReleaseBadge">
-        <span class="pulse-dot" aria-hidden="true"></span>
-        <span id="heroReleaseBadgeText">Здача&nbsp;II черги вже цього року</span>
-      </div>
-      <script>
-        /* клік — стикер прокручується на повний оберт і пружно зупиняється */
-        document.getElementById('heroReleaseBadge').addEventListener('click', e => {
-          e.currentTarget.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
-            { duration: 1100, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
-        });
-      </script>
         </div>
+
+        <div class="hero-release-badge" id="heroReleaseBadge">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="heroReleaseBadgeText">Здача<br>II черги<br>вже цього<br>року</span>
+        </div>
+        <script>
+          /* клік — стикер прокручується на повний оберт і пружно зупиняється */
+          document.getElementById('heroReleaseBadge').addEventListener('click', e => {
+            e.currentTarget.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+              { duration: 1100, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+          });
+        </script>
       </main>
 
       <!-- Bottom Spacer -->
@@ -8490,7 +8494,7 @@
         topBtn: 'Онлайн заявка',
         headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
         desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
-        heroBadge: 'Здача II черги вже цього року',
+        heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
         piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
@@ -8715,7 +8719,7 @@
         topBtn: 'Online Request',
         headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
         desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
-        heroBadge: 'Phase II handover this year',
+        heroBadge: 'Phase<br>II handover<br>this<br>year',
         piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
@@ -8983,7 +8987,7 @@
       const whyTitleEl = document.getElementById('whyTitle');
       if (whyTitleEl && t.whyTitle) whyTitleEl.innerHTML = t.whyTitle;
       const badgeText = document.getElementById('heroReleaseBadgeText');
-      if (badgeText && t.heroBadge) badgeText.textContent = t.heroBadge;
+      if (badgeText && t.heroBadge) badgeText.innerHTML = t.heroBadge;
       document.getElementById('inpMainDesc').value = t.desc;
 
       // Update CTA buttons
