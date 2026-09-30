@@ -1966,26 +1966,14 @@
     background: rgba(0, 0, 0, 0.05);
     pointer-events: none;
   }
-  /* Заголовок на відео — той самий почерк, що «MANDRA PETRICHOR» над банером:
-     два рядки, біле й зелене слово. Кут кадру світлий (небо), тож під текст
-     м'яка тінь, а не плашка. Відступ зліва — сітка сайту (5vw, як у блоці вище). */
-  .vb-title {
-    position: absolute;
-    z-index: 2;
-    left: clamp(20px, 5vw, 96px);
-    top: clamp(20px, 3.6vw, 64px);
-    margin: 0;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(30px, 2.7vw, 50px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    text-transform: uppercase;
-    color: #FFFFFF;
-    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
-    pointer-events: none;
+  /* Заголовок над банером — звичайний заголовок секції (клас .why-title).
+     Сітка — як у блоку Petrichor просто над ним (5vw поля + 1520 всередині),
+     щоб лівий край ішов однією лінією з його текстом. */
+  .vb-head {
+    background: var(--bg-dark);
+    padding: 0 5vw clamp(32px, 3vw, 58px);
   }
-  .vb-title span { display: block; }
+  .vb-head > .why-title { max-width: 1520px; margin: 0 auto; }
   .vb-play {
     position: absolute;
     left: 50%;
@@ -6823,12 +6811,14 @@
   <!-- ============================================================
        ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
        ============================================================ -->
+  <div class="vb-head">
+    <h2 class="why-title"><span id="vbTitleA">Промо</span> <span class="pi-accent" id="vbTitleB">атмосфера</span></h2>
+  </div>
   <section class="section-video-banner" id="video-banner">
     <video class="vb-video" id="videoBanner" muted loop playsinline preload="none"
            poster="assets/video/mandra_banner_poster.webp"
            data-src="assets/video/mandra_banner.mp4" aria-hidden="true"></video>
     <div class="vb-mask" aria-hidden="true"></div>
-    <h2 class="vb-title"><span id="vbTitleA">Промо</span> <span class="pi-accent" id="vbTitleB">Атмосфера</span></h2>
     <button class="vb-play" id="videoBannerPlay" type="button" aria-label="Зупинити відео">
       <svg class="vb-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.7-6.8a.6.6 0 0 0 0-1l-10.7-6.8A.6.6 0 0 0 8 5.2z"/></svg>
       <svg class="vb-icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.4" y="5" width="3.8" height="14" rx="1.2"/><rect x="13.8" y="5" width="3.8" height="14" rx="1.2"/></svg>
@@ -7093,7 +7083,7 @@
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
       <div class="mp-floating-content">
-        <h2 class="mp-float-title" id="mpTitle">Масштаб Mandra Petrichor</h2>
+        <h2 class="mp-float-title" id="mpTitle">Масштаб <span class="pi-accent">Mandra Petrichor</span></h2>
         <div class="mp-float-line"></div>
         <h3 class="mp-float-subtitle" id="mpSubtitle">Один комплекс. Три різні концепції відпочинку.</h3>
         <p class="mp-float-desc" id="mpDesc">
@@ -7330,9 +7320,7 @@
       <div class="founders-top-grid">
         <!-- Лівий блок з цитатою на фоні хвої -->
         <div class="founders-hero-card">
-          <h3 class="founders-hero-text" id="foundersHeroText">
-            Власний інвестиційний проєкт від засновників Mandra Moments та Ribas Hotels Group
-          </h3>
+          <h3 class="founders-hero-text" id="foundersHeroText">Власний інвестиційний проєкт від засновників <span class="pi-accent">Mandra Moments</span> та <span class="pi-accent">Ribas&nbsp;Hotels&nbsp;Group</span></h3>
         </div>
 
         <!-- Картка Артура Лупашка -->
@@ -7388,7 +7376,7 @@
        ============================================================ -->
   <section class="section-partners" id="partners">
     <div class="partners-top-container">
-      <h2 class="partners-title" id="partnersTitle">Партнери Mandra Invest</h2>
+      <h2 class="partners-title" id="partnersTitle">Партнери <span class="pi-accent">Mandra Invest</span></h2>
     </div>
 
     <!-- Нескінченна біжуча стрічка логотипів -->
@@ -7467,7 +7455,7 @@
   <section class="section-synergy" id="synergy">
     <div class="synergy-container">
 
-      <h2 class="synergy-section-title" id="synergyTitle">Як ми взаємодіємо</h2>
+      <h2 class="synergy-section-title" id="synergyTitle">Як ми <span class="pi-accent">взаємодіємо</span></h2>
 
       <!-- Головна триколонкова сітка -->
       <div class="synergy-grid">
@@ -7596,7 +7584,7 @@
        ============================================================ -->
   <section class="section-build-stages" id="build-stages">
     <div class="bs-container">
-      <h2 class="bs-title" id="bsTitle">Етапи будівництва</h2>
+      <h2 class="bs-title" id="bsTitle">Етапи <span class="pi-accent">будівництва</span></h2>
 
       <div class="bs-grid">
         <article class="bs-card">
@@ -7640,7 +7628,7 @@
   <section class="section-build-log" id="build-log">
     <div class="bl-container">
       <div class="bl-head">
-        <h2 class="bl-title" id="blTitle">Хід будівництва</h2>
+        <h2 class="bl-title" id="blTitle">Хід <span class="pi-accent">будівництва</span></h2>
         <a class="bl-all" href="https://www.mandra-petrichor.com.ua/construction" target="_blank" rel="noopener">
           <span id="blAll">Усі записи</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -7765,7 +7753,7 @@
   <section class="section-faq" id="faq">
     <div class="faq-container">
       <div class="faq-header-block">
-        <h2 class="faq-title" id="faqTitle">Найчастіші питання</h2>
+        <h2 class="faq-title" id="faqTitle">Найчастіші <span class="pi-accent">питання</span></h2>
         <div class="faq-title-accent-bar"></div>
       </div>
 
@@ -7910,7 +7898,7 @@
     <div class="section-contacts-bg-glow"></div>
     <div class="contacts-container">
       <div class="contacts-header-block">
-        <h2 class="contacts-title" id="contactsTitle">Потрібна консультація?</h2>
+        <h2 class="contacts-title" id="contactsTitle">Потрібна <span class="pi-accent">консультація?</span></h2>
         <p class="contacts-subtitle" id="contactsSubtitle">Наш консультант надасть вам безкоштовну допомогу</p>
       </div>
       <div class="contacts-card">
@@ -8607,7 +8595,7 @@
         headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
         desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
         heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
-        vbTitleA: 'Промо', vbTitleB: 'Атмосфера',
+        vbTitleA: 'Промо', vbTitleB: 'атмосфера',
         piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
@@ -8625,11 +8613,11 @@
         why4: 'Ключова інфраструктура від YOD Group',
         why5: '3 різні сценарії відпочинку',
         why6: 'Стабільний попит та зручна доступність',
-        bsTitle: 'Етапи будівництва',
+        bsTitle: 'Етапи <span class="pi-accent">будівництва</span>',
         bsQ1: 'I черга', bsN1: 'Ареал спокою', bsC1: '20 котеджів',
         bsQ2: 'II черга', bsN2: 'Простір для свідомих батьків', bsC2: '40 котеджів',
         bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
-        blTitle: 'Хід будівництва',
+        blTitle: 'Хід <span class="pi-accent">будівництва</span>',
         blAll: 'Усі записи',
         blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
         blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
@@ -8685,7 +8673,7 @@
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
         mpEyebrow: 'МАСШТАБ MANDRA PETRICHOR',
-        mpTitle: 'Масштаб Mandra Petrichor',
+        mpTitle: 'Масштаб <span class="pi-accent">Mandra Petrichor</span>',
         mpSubtitle: 'Один комплекс. Три різні концепції відпочинку.',
         mpDesc: 'Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.',
         mpPhaseNum: 'III черга',
@@ -8704,15 +8692,15 @@
         mpTab3: '03 • III черга (Місце для побачень)',
         mpDivideBtnText: 'Розділити на 3 комплекси',
         /* ЕКРАН 6 — ПАРТНЕРИ */
-        partnersTitle: 'Партнери Mandra Invest',
+        partnersTitle: 'Партнери <span class="pi-accent">Mandra Invest</span>',
         /* ЕКРАН 7 — ЗАСНОВНИКИ */
-        foundersHeroText: 'Власний інвестиційний проєкт від засновників Mandra Moments та Ribas Hotels Group',
+        foundersHeroText: 'Власний інвестиційний проєкт від засновників <span class="pi-accent">Mandra Moments</span> та <span class="pi-accent">Ribas&nbsp;Hotels&nbsp;Group</span>',
         founderName1: 'Артур Лупашко',
         founderRole1: 'Засновник Ribas Hotels Group і співзасновник Mandra Moments',
         founderName2: 'Сергій Боєв',
         founderRole2: 'Співзасновник Mandra Moments',
         /* ЕКРАН 8 — СИНЕРГІЯ (ДЕВЕЛОПЕР + ОПЕРАТОР + ІНВЕСТОР) */
-        synergyTitle: 'Як ми взаємодіємо',
+        synergyTitle: 'Як ми <span class="pi-accent">взаємодіємо</span>',
         synDevTitle: 'Mandra Moments',
         synDevSubtitle: 'Девелопер',
         synDev1: 'Концепція',
@@ -8776,7 +8764,7 @@
         stepTitle6: 'Не лише інвестиція, а й власний формат відпочинку.',
         stepDesc6: 'Для інвестора передбачено 19 бонусних днів на рік для особистого проживання в комплексі без втрати прибутку.',
         /* ЕКРАН 11 — НАЙЧАСТІШІ ПИТАННЯ */
-        faqTitle: 'Найчастіші питання',
+        faqTitle: 'Найчастіші <span class="pi-accent">питання</span>',
         faqQ1: 'Де розташований Mandra Petrichor?',
         faqA1: 'Mandra Petrichor будується у селі Забуяння Київської області, приблизно за 70 км від Києва, серед соснового лісу. Загальна територія комплексу — 9,8 га.',
         faqQ2: 'Скільки черг передбачено в Mandra Petrichor?',
@@ -8795,7 +8783,7 @@
         faqA8: 'Так. Власник отримує 19 бонусних днів на рік для особистого відпочинку у своєму будинку. Умови та порядок використання бонусних днів визначаються договором з керуючою компанією.',
 
         /* ЕКРАН 12 — КОНТАКТНА ФОРМА */
-        contactsTitle: 'Потрібна консультація?',
+        contactsTitle: 'Потрібна <span class="pi-accent">консультація?</span>',
         contactsSubtitle: 'Наш консультант надасть вам безкоштовну допомогу',
         lblContactName: "Ваше ім'я",
         lblContactPhone: 'Ваш номер телефону',
@@ -8833,7 +8821,7 @@
         headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
         desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
         heroBadge: 'Phase<br>II handover<br>this<br>year',
-        vbTitleA: 'Promo', vbTitleB: 'Atmosphere',
+        vbTitleA: 'Promo', vbTitleB: 'atmosphere',
         piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
@@ -8851,11 +8839,11 @@
         why4: 'Key infrastructure by YOD Group',
         why5: '3 different leisure scenarios',
         why6: 'Steady demand and easy access',
-        bsTitle: 'Construction stages',
+        bsTitle: 'Construction <span class="pi-accent">stages</span>',
         bsQ1: 'Phase I', bsN1: 'A haven of calm', bsC1: '20 cottages',
         bsQ2: 'Phase II', bsN2: 'A space for mindful parents', bsC2: '40 cottages',
         bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
-        blTitle: 'Construction progress',
+        blTitle: 'Construction <span class="pi-accent">progress</span>',
         blAll: 'All updates',
         blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
         blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
@@ -8911,7 +8899,7 @@
 
         /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
         mpEyebrow: 'SCALE OF MANDRA PETRICHOR',
-        mpTitle: 'Scale of Mandra Petrichor',
+        mpTitle: 'Scale of <span class="pi-accent">Mandra Petrichor</span>',
         mpSubtitle: 'One complex. Three distinct vacation concepts.',
         mpDesc: 'Mandra Petrichor is an expansive country resort in a pine forest near Kyiv, developing as a unified territory with three independent concepts. Each phase is tailored to its distinct audience and creates its own vacation storyline. Together they forge an all-season destination resort.',
         mpPhaseNum: 'Phase III',
@@ -8930,15 +8918,15 @@
         mpTab3: '03 • Phase III (Best Dates & SPA)',
         mpDivideBtnText: 'Divide into 3 Complexes',
         /* SCREEN 6 — PARTNERS */
-        partnersTitle: 'Mandra Invest Partners',
+        partnersTitle: '<span class="pi-accent">Mandra Invest</span> Partners',
         /* SCREEN 7 — FOUNDERS */
-        foundersHeroText: 'Proprietary investment project from the founders of Mandra Moments & Ribas Hotels Group',
+        foundersHeroText: 'Proprietary investment project from the founders of <span class="pi-accent">Mandra Moments</span> &amp; <span class="pi-accent">Ribas&nbsp;Hotels&nbsp;Group</span>',
         founderName1: 'Artur Lupashko',
         founderRole1: 'Founder of Ribas Hotels Group & Co-founder of Mandra Moments',
         founderName2: 'Serhiy Boiev',
         founderRole2: 'Co-founder of Mandra Moments',
         /* SCREEN 8 — SYNERGY (DEVELOPER + OPERATOR + INVESTOR) */
-        synergyTitle: 'How we work together',
+        synergyTitle: 'How we <span class="pi-accent">work together</span>',
         synDevTitle: 'Mandra Moments',
         synDevSubtitle: 'Developer',
         synDev1: 'Concept',
@@ -9001,7 +8989,7 @@
         stepTitle6: 'Not just an investment, but your own way to vacation.',
         stepDesc6: 'Investors get 19 bonus days a year for personal stays at the complex without losing any profit.',
         /* SCREEN 11 — FAQ ACCORDION */
-        faqTitle: 'Frequently Asked Questions',
+        faqTitle: 'Frequently Asked <span class="pi-accent">Questions</span>',
         faqQ1: 'Where is Mandra Petrichor located?',
         faqA1: 'Mandra Petrichor is being built in the village of Zabuiannia, Kyiv region, about 70 km from Kyiv, in a pine forest. The complex covers 9.8 hectares.',
         faqQ2: 'How many phases does Mandra Petrichor have?',
@@ -9020,7 +9008,7 @@
         faqA8: 'Yes. An owner receives 19 bonus nights a year for personal stays in their own cottage. The terms and the booking procedure are set out in the contract with the management company.',
 
         /* SCREEN 12 — CONTACT FORM */
-        contactsTitle: 'Need a Consultation?',
+        contactsTitle: 'Need a <span class="pi-accent">Consultation?</span>',
         contactsSubtitle: 'Our personal advisor will provide dedicated guidance free of charge',
         lblContactName: 'Your Name',
         lblContactPhone: 'Your Phone Number',
@@ -9183,9 +9171,13 @@
                   'fnBuild','fnFaq','fnContacts','footerCol2Title','fnConcepts','fnPhase1',
                   'fnSynergy','fnStats','fnPartners','footerCol3Title','footerPhoneLabel','footerEmailLabel',
                   'footerCopyright','footerCreator'];
+      /* заголовки секцій мають біло-зелений акцент — їх ставимо з розміткою
+         (рядки перекладу наші), усе інше — тільки текстом */
+      const withAccent = ['mpTitle', 'partnersTitle', 'synergyTitle', 'bsTitle', 'blTitle',
+                          'faqTitle', 'contactsTitle', 'foundersHeroText'];
       s2.forEach(function(id) {
         const el = document.getElementById(id);
-        if (el && t[id]) el.textContent = t[id];
+        if (el && t[id]) el[withAccent.indexOf(id) >= 0 ? 'innerHTML' : 'textContent'] = t[id];
       });
 
       const inpName = document.getElementById('inpContactName');
