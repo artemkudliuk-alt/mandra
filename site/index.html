@@ -182,7 +182,7 @@
      «двох сцен одна крізь одну» — лише м'яко зводить різницю в експозиції.
      Transition вмикається тільки на виході: з'являється інтро миттєво. */
   #heroIntro.is-fading {
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s linear;   /* = FADE у скрипті */
   }
 
   /* Затемнення героя проявляється разом із переходом у цикл: під час інтро
@@ -6514,7 +6514,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <!-- Постер інтро — це перший намальований піксель сторінки, тож тягнемо його
      найпершим. Без preload у кадр встигав фон героя, тобто зовсім інша сцена. -->
-<link rel="preload" as="image" href="assets/hero_intro_poster_v6.webp">
+<link rel="preload" as="image" href="assets/hero_intro_poster_v7.webp">
 <noscript><style>
   /* Без JS інтро не зіграє ніколи, тож інтерфейс має бути видимий одразу. */
   body.intro-running .ui-layer,
@@ -6612,7 +6612,7 @@
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
-           poster="assets/hero_intro_poster_v6.webp" src="assets/hero_intro_v6.mp4"></video>
+           poster="assets/hero_intro_poster_v7.webp" src="assets/hero_intro_v7.mp4"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
@@ -11520,16 +11520,19 @@
       const cycle = document.getElementById('heroVideo');
       if (!intro || !cycle) return;
 
-      const FADE = 0.6;         // тривалість розчинення інтро в цикл, та сама, що в CSS .is-fading
+      /* Розчинення коротке й лише на самому хвості: камера там уже майже стоїть,
+         колір інтро підігнано під перший кадр циклу, тож 0.25с тільки ховають
+         різницю в дрібній фактурі двох генерацій (кора, контури 1-2px).
+         0 — склейка встик. Тримати рівним transition у CSS #heroIntro.is-fading. */
+      const FADE = 0.25;
+      const UI_AHEAD = 0.74;    // інтерфейс виїжджає за стільки секунд до кінця інтро
 
       /* Момент появи інтерфейсу рахуємо від довжини ролика, а не константою:
          інтро вже різали кілька разів, і зашита секунда просто не спрацювала б
          на новому монтажі — інтерфейс виїжджав би аж на 'ended'. Тепер будь-
-         який новий монтаж підхоплюється сам. LEAD — наскільки раніше за
-         передачу кадру з'явиться інтерфейс, щоб він устиг стати до переходу. */
-      const LEAD = 0.14;
+         який новий монтаж підхоплюється сам. */
       function revealAt() {
-        return intro.duration ? Math.max(0.4, intro.duration - FADE - LEAD) : 1.06;
+        return intro.duration ? Math.max(0.4, intro.duration - UI_AHEAD) : 1.06;
       }
 
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
