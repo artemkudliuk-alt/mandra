@@ -24,41 +24,32 @@
   }
 
   /* ============================================================
-     ПРЕЛОАДЕР — контур логотипа, що наливається білим
+     ПРЕЛОАДЕР «ПЕТРИКОР» — крапля падає на темну воду, кола проявляють
+     логотип, друга крапля розносить хвилю, і крізь воду проступає інтро.
+     Вода — WebGL-шейдер у скрипті initPreloader. Тло й SVG тут — миттєвий
+     перший кадр і запасний варіант без WebGL / зі зменшеним рухом.
      ============================================================ */
   #preloader {
     position: fixed;
     inset: 0;
     z-index: 100000;
-    background: #0B0F0C;
+    background: #0A0E0B;
     display: grid;
     place-items: center;
-    opacity: 1;
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  #preloader.is-water { background: transparent; }     /* тло малює шейдер */
   #preloader.is-out { opacity: 0; pointer-events: none; }
   #preloader.is-gone { display: none; }
+  #preloader canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .pl-mark {
     width: clamp(170px, 20vw, 300px);
     height: auto;
-    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.6s ease;
   }
-  /* Контур: довжину задає JS через getTotalLength, звідси й малювання */
-  .pl-outline {
-    fill: none;
-    stroke: #FFFFFF;
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-    stroke-dashoffset: var(--pl-dash, 0);
-    stroke-dasharray: var(--pl-dash, 0);
-  }
-  .pl-fill { fill: #FFFFFF; }
-  /* Прямокутник обрізки рухає JS — анімувати атрибут y дешевше, ніж перемальовувати маску */
-  #plClipRect { transition: none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pl-outline { stroke-dasharray: none; stroke-dashoffset: 0; }
-  }
+  .pl-mark path { fill: #F2EFE8; }
+  #preloader.is-static .pl-mark { opacity: 1; }
 
   :root {
     --bg-dark: #121212;
@@ -6535,14 +6526,8 @@
        Коли все готово, оверлей м'яко гасне, а інтро під ним уже грає.
        ============================================================ -->
   <div id="preloader" aria-hidden="true">
-    <svg class="pl-mark" viewBox="0 0 381 301" role="img">
-      <defs>
-        <clipPath id="plClip">
-          <rect id="plClipRect" x="0" y="301" width="381" height="301"></rect>
-        </clipPath>
-      </defs>
-      <path class="pl-outline" fill-rule="evenodd" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
-      <path class="pl-fill" fill-rule="evenodd" clip-path="url(#plClip)" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
+    <svg class="pl-mark" viewBox="0 0 381 301">
+      <path id="plLogoPath" fill-rule="evenodd" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
     </svg>
   </div>
 
@@ -9691,34 +9676,27 @@
        потрібне лише інтро. Тепер src підставляється за екран до появи секції.
        ============================================================ */
     /* ============================================================
-       ПРЕЛОАДЕР
-       Спершу малюється контур (stroke-dashoffset), далі знизу вгору
-       піднімається біла заливка — її рівень і є відсоток завантаження.
-       Прогрес рахуємо з двох джерел: буферизація інтро (воно найважче й саме
-       на нього ми чекаємо) і частка завантажених картинок. Значення тягнемо
-       плавно й тільки вгору, щоб смуга не сіпалась назад.
-       Оверлей гасне ЗА 0.75с, і в цей самий момент інтро вже грає під ним —
-       звідси м'який перехід без чорного провалу.
+       ПРЕЛОАДЕР «ПЕТРИКОР»
+       Сценарій (секунди від старту):
+         0.15–0.55  крапля падає в центр логотипа, розганяючись як у вільному падінні;
+         0.55       удар: від центру біжить пакет із 3–4 кіл, M проявляється
+                    всередині першої хвилі й заспокоюється до різкого;
+         1.0–1.5    літери INVEST спливають зверху вниз;
+         ≥1.8       коли інтро готове грати — друга крапля (0.25с), удар, ворота
+                    відчиняються (інтро стартує ПІД оверлеєм), велика хвиля за
+                    0.75с робить воду прозорою — крізь неї видно живе відео.
+       Вода — аналітичні кола (формула, не симуляція), нормаль з різниць висоти,
+       заломлення зсуває вибірку логотипа, блиск — на схилах хвиль.
+       Без WebGL або зі зменшеним рухом — статичний логотип і м'яке згасання.
        ============================================================ */
     window.__preloadGate = (function initPreloader() {
       const host = document.getElementById('preloader');
       if (!host) return Promise.resolve();
 
-      const outline = host.querySelector('.pl-outline');
-      const clipRect = host.querySelector('#plClipRect');
-      const VB_H = 301;
-      const DRAW_MS = 1150;                /* скільки малюється контур */
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
+      const MIN_HOLD = 1.8;              /* раніше за це заставка не відпускає */
       let resolveGate;
       const gate = new Promise(function (r) { resolveGate = r; });
-
-      /* Малювання контуру */
-      const len = outline.getTotalLength ? outline.getTotalLength() : 0;
-      const t0 = performance.now();
-      if (len && !reduced) {
-        outline.style.setProperty('--pl-dash', len.toFixed(1));
-      }
 
       function introProgress() {
         const v = document.getElementById('heroIntro');
@@ -9731,10 +9709,8 @@
         } catch (e) {}
         return v.readyState >= 2 ? 0.35 : 0;
       }
-
       function imageProgress() {
-        /* Тільки картинки першого екрана: lazy-зображення нижче фолда не
-           вантажаться, поки стоїть заставка, і прогрес завис би на 0.84. */
+        /* лише картинки першого екрана — lazy нижче фолда не вантажаться, поки стоїть заставка */
         const imgs = Array.prototype.filter.call(document.images, function (i) {
           return i.src && i.loading !== 'lazy';
         });
@@ -9743,46 +9719,207 @@
         imgs.forEach(function (i) { if (i.complete) n++; });
         return n / imgs.length;
       }
+      function loaded() { return 0.7 * introProgress() + 0.3 * imageProgress() >= 0.999; }
 
-      let shown = 0, finished = false;
+      function gone() { host.classList.add('is-gone'); }
+
+      /* ---------- запасний шлях: статичний логотип ---------- */
+      function staticPath() {
+        host.classList.add('is-static');
+        const t0 = performance.now();
+        (function wait() {
+          if ((loaded() && performance.now() - t0 > 1200) || performance.now() - t0 > 12000) {
+            resolveGate();
+            host.classList.add('is-out');
+            setTimeout(gone, 700);
+          } else requestAnimationFrame(wait);
+        })();
+        return gate;
+      }
+      if (reduced) return staticPath();
+
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false });
+      if (!gl) return staticPath();
+
+      /* ---------- текстура логотипа: M у червоному каналі, INVEST у зеленому ---------- */
+      const d = document.getElementById('plLogoPath').getAttribute('d');
+      const TEX_W = 1024, TEX_H = Math.round(1024 * 301 / 381);
+      const tc = document.createElement('canvas');
+      tc.width = TEX_W; tc.height = TEX_H;
+      const cx = tc.getContext('2d');
+      cx.fillStyle = '#000'; cx.fillRect(0, 0, TEX_W, TEX_H);
+      cx.scale(TEX_W / 381, TEX_H / 301);
+      const pathM = new Path2D(), pathInv = new Path2D();
+      d.split(/(?=M)/).forEach(function (sub) {
+        /* підшлях гліфа M починається лівіше за x=300, літери INVEST — правіше */
+        (parseFloat(sub.slice(1)) < 300 ? pathM : pathInv).addPath(new Path2D(sub));
+      });
+      cx.globalCompositeOperation = 'lighter';
+      cx.fillStyle = '#F00'; cx.fill(pathM, 'evenodd');
+      cx.fillStyle = '#0F0'; cx.fill(pathInv, 'evenodd');
+
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = [
+        'precision highp float;',
+        'uniform sampler2D uLogo;',
+        'uniform vec2 uRes;',          /* розмір полотна, px */
+        'uniform vec4 uRect;',         /* логотип: x, y (зверху), ширина, висота, px */
+        'uniform vec2 uC;',            /* точка удару, px (y зверху) */
+        'uniform float uUnit;',        /* коротша сторона екрана, px — одиниця довжини хвиль */
+        'uniform float uT1;',          /* час від першого удару, с (<0 — ще не впала) */
+        'uniform float uT2;',          /* час від другого удару, с (<0 — ще не впала) */
+        'uniform float uDrop;',        /* y краплі, що падає, px (<0 — немає) */
+        'uniform float uInv;',         /* проява INVEST, 0..1 */
+        'uniform float uTime;',
+        'float hash(vec2 q){return fract(sin(dot(q,vec2(12.9898,78.233)))*43758.5453);}',
+        /* пакет хвиль: 3-4 гребені під гаусовою обвідною, що біжить від центру й згасає */
+        'float packet(float r,float t,float speed,float amp,float width,float freq){',
+        '  if(t<0.)return 0.;',
+        '  float x=r-speed*t;',
+        '  return amp*sin(x*freq)*exp(-x*x/width)*exp(-t*2.)/(1.+r*3.)*smoothstep(0.,.09,r);',
+        '}',
+        'float bigR(){return 1.25*(1.-pow(1.-min(uT2/.75,1.),2.));}',
+        'float height(vec2 px){',
+        '  float r=length(px-uC)/uUnit;',
+        '  float h=packet(r,uT1,.42,.009,.010,62.)+packet(r,uT1-.28,.36,.004,.008,74.);',
+        '  if(uT2>=0.){float x=r-bigR();h+=.008*sin(x*50.)*exp(-x*x/.006);}',
+        '  return h;',
+        '}',
+        'void main(){',
+        '  vec2 px=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y);',
+        '  float e=1.5;',
+        '  float h0=height(px);',
+        '  vec2 g=vec2(height(px+vec2(e,0.))-h0,height(px+vec2(0.,e))-h0)/(e/uUnit);',
+        '  vec2 uv=(px+g*uUnit*.06-uRect.xy)/uRect.zw;',
+        '  vec4 tx=(uv.x<0.||uv.y<0.||uv.x>1.||uv.y>1.)?vec4(0.):texture2D(uLogo,uv);',
+        /* M проявляється всередині першої хвилі; INVEST спливає зверху вниз */
+        '  float r=length(px-uC)/uUnit;',
+        '  float front=.42*max(uT1,0.);',
+        '  float mA=uT1<0.?0.:tx.r*smoothstep(front-.02,front-.14,r)*smoothstep(.15,.85,uT1);',
+        '  float rise=clamp((uInv*1.15-max(uv.y,0.))/.15,0.,1.)*step(.001,uInv);',
+        '  vec2 uv2=uv+vec2(0.,(1.-rise)*.035);',
+        '  float gA=(uv2.x<0.||uv2.y<0.||uv2.x>1.||uv2.y>1.)?0.:texture2D(uLogo,uv2).g;',
+        '  float iA=gA*rise;',
+        '  vec3 bg=vec3(.039,.055,.043);',
+        '  vec2 q=px/uRes-.5;bg*=1.-dot(q,q)*.9;',
+        '  vec3 col=mix(bg,vec3(.949,.937,.91),max(mA,iA));',
+        /* блиск на схилах: холодний білий, по кромці — ледь зелений відлив */
+        '  vec3 n=normalize(vec3(-g*2.4,1.));',
+        '  vec3 Hv=normalize(normalize(vec3(-.35,-.55,.75))+vec3(0.,0.,1.));',
+        '  float spec=min(max(pow(max(dot(n,Hv),0.),60.)-pow(Hv.z,60.),0.)*2.2,.55);',
+        '  col+=spec*vec3(.82,.9,1.)+min(abs(g.x+g.y)*.06,.05)*vec3(.5,.72,.45);',
+        /* крапля: тонкий світлий штрих, яскравіший на голові */
+        '  if(uDrop>=0.){float len=uUnit*.09;vec2 a=vec2(uC.x,uDrop-len),b=vec2(uC.x,uDrop);',
+        '    vec2 pa=px-a,ba=b-a;float k=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);',
+        '    float dd=length(pa-ba*k);col+=vec3(.85,.9,.95)*exp(-dd*dd/(uUnit*uUnit*.000012))*(.25+.75*k);}',
+        '  col+=(hash(px+fract(uTime)*97.)-.5)*.022;',
+        /* друга хвиля робить воду прозорою: під нею вже грає інтро */
+        '  float al=1.;',
+        '  if(uT2>=0.){float R=bigR();al=smoothstep(R-.035,R+.01,r);}',
+        '  gl_FragColor=vec4(col*al,al);',
+        '}'
+      ].join('\n');
+
+      function sh(type, src) {
+        const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+        return s;
+      }
+      let prog;
+      try {
+        prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+      } catch (err) { console.warn('preloader: shader failed', err); return staticPath(); }
+      gl.useProgram(prog);
+
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(prog, 'p');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tc);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+      const U = {};
+      ['uLogo', 'uRes', 'uRect', 'uC', 'uUnit', 'uT1', 'uT2', 'uDrop', 'uInv', 'uTime'].forEach(function (n) {
+        U[n] = gl.getUniformLocation(prog, n);
+      });
+
+      let W = 0, H = 0, rect = [0, 0, 0, 0], C = [0, 0];
+      function layout() {
+        /* на телефонах воду рахуємо в меншій роздільності — не гріється */
+        const dpr = Math.min(window.devicePixelRatio || 1, innerWidth < 768 ? 1 : 1.5);
+        W = Math.round(innerWidth * dpr); H = Math.round(innerHeight * dpr);
+        canvas.width = W; canvas.height = H;
+        gl.viewport(0, 0, W, H);
+        const lw = Math.min(300, Math.max(170, innerWidth * 0.2)) * dpr, lh = lw * 301 / 381;
+        rect = [(W - lw) / 2, (H - lh) / 2, lw, lh];
+        C = [W / 2, H / 2];
+      }
+      layout();
+      window.addEventListener('resize', layout);
+      host.appendChild(canvas);
+      host.classList.add('is-water');
+
+      const DROP_FROM = 0.15, T_IMPACT = 0.55, EXIT_FALL = 0.25, EXIT_WAVE = 0.75;
+      const t0 = performance.now();
+      let exitAt = -1, released = false;
+
+      /* вільне падіння: y росте квадратично — зверху до центру за відведений час */
+      function dropY(k) { return -0.05 * H + (C[1] + 0.05 * H) * k * k; }
 
       function frame(now) {
-        const elapsed = now - t0;
+        const t = (now - t0) / 1000;
+        if (exitAt < 0 && t >= MIN_HOLD && loaded()) exitAt = t;
 
-        if (len && !reduced) {
-          const dp = Math.min(1, elapsed / DRAW_MS);
-          const eased = 1 - Math.pow(1 - dp, 3);
-          outline.style.strokeDashoffset = (len * (1 - eased)).toFixed(1);
+        let drop = -1, t2 = -1;
+        if (t >= DROP_FROM && t < T_IMPACT) drop = dropY((t - DROP_FROM) / (T_IMPACT - DROP_FROM));
+        if (exitAt >= 0) {
+          const k = (t - exitAt) / EXIT_FALL;
+          if (k < 1) drop = dropY(k);
+          else {
+            t2 = t - exitAt - EXIT_FALL;
+            if (!released) { released = true; resolveGate(); }   /* інтро стартує під водою */
+          }
         }
 
-        /* Заливка стартує лише після того, як контур намальовано */
-        const target = Math.min(1, 0.7 * introProgress() + 0.3 * imageProgress());
-        const allowed = reduced ? 1 : Math.min(1, elapsed / DRAW_MS);
-        shown += (Math.min(target, allowed) - shown) * 0.08;
-        if (shown < 0) shown = 0;
-        clipRect.setAttribute('y', (VB_H * (1 - shown)).toFixed(1));
+        gl.uniform1i(U.uLogo, 0);
+        gl.uniform2f(U.uRes, W, H);
+        gl.uniform4f(U.uRect, rect[0], rect[1], rect[2], rect[3]);
+        gl.uniform2f(U.uC, C[0], C[1]);
+        gl.uniform1f(U.uUnit, Math.min(W, H));
+        gl.uniform1f(U.uT1, t - T_IMPACT);
+        gl.uniform1f(U.uT2, t2);
+        gl.uniform1f(U.uDrop, drop);
+        gl.uniform1f(U.uInv, Math.min(1, Math.max(0, (t - 1.0) / 0.5)));
+        gl.uniform1f(U.uTime, t);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-        const ready = target >= 0.999 && shown > 0.985 && elapsed > DRAW_MS + 150;
-        if (ready && !finished) {
-          finished = true;
-          clipRect.setAttribute('y', '0');
-          resolveGate();                    /* інтро стартує ПІД оверлеєм */
-          host.classList.add('is-out');
-          setTimeout(function () { host.classList.add('is-gone'); }, 800);
+        if (t2 >= EXIT_WAVE) {
+          gone();
+          window.removeEventListener('resize', layout);
+          const lose = gl.getExtension('WEBGL_lose_context');
+          if (lose) lose.loseContext();
           return;
         }
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
 
-      /* Страховка: якщо щось не долетіло, не тримаємо людину на заставці */
+      /* страховка: щось не долетіло — не тримаємо людину на заставці */
       setTimeout(function () {
-        if (finished) return;
-        finished = true;
-        clipRect.setAttribute('y', '0');
-        resolveGate();
-        host.classList.add('is-out');
-        setTimeout(function () { host.classList.add('is-gone'); }, 800);
+        if (exitAt < 0) exitAt = (performance.now() - t0) / 1000;
       }, 12000);
 
       return gate;
