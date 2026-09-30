@@ -640,11 +640,17 @@
     border-radius: 50%;
     background: var(--top-btn-bg);
     color: var(--top-btn-text);
+    /* світло зліва — тінь лягає праворуч і трохи вниз */
     box-shadow:
-      0 2px 3px rgba(0, 0, 0, 0.28),
-      0 14px 34px rgba(0, 0, 0, 0.42);
-    transform: rotate(-9deg);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      3px 2px 3px rgba(0, 0, 0, 0.3),
+      16px 12px 30px rgba(0, 0, 0, 0.45);
+    /* rotate/scale — окремі властивості: гойдання, наведення й оберт по кліку
+       складаються, а не перебивають одне одне */
+    rotate: -9deg;
+    animation: stickerSway 7s ease-in-out infinite;
+    transition: scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    user-select: none;
     font-family: var(--sub-font, 'Manrope', sans-serif);
     font-size: 0.8vw;
     font-weight: 800;
@@ -654,7 +660,14 @@
     text-align: center;
     text-wrap: balance;
   }
-  .hero-release-badge:hover { transform: rotate(-3deg) scale(1.05); }
+  .hero-release-badge:hover { scale: 1.05; }
+  @keyframes stickerSway {
+    0%, 100% { rotate: -13deg; }
+    50%      { rotate: -5deg; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-release-badge { animation: none; }
+  }
   .hero-release-badge .pulse-dot { display: none; }
 
   @media (max-width: 900px) {
@@ -6579,6 +6592,13 @@
         <span class="pulse-dot" aria-hidden="true"></span>
         <span id="heroReleaseBadgeText">Здача&nbsp;II черги вже цього року</span>
       </div>
+      <script>
+        /* клік — стикер прокручується на повний оберт і пружно зупиняється */
+        document.getElementById('heroReleaseBadge').addEventListener('click', e => {
+          e.currentTarget.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+            { duration: 1100, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+        });
+      </script>
         </div>
       </main>
 
