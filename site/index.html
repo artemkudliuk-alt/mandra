@@ -148,7 +148,7 @@
   .bg-photo {
     position: absolute;
     inset: 0;
-    background: url('assets/hero_day_v5.webp') center 36% / cover no-repeat;
+    background: url('assets/hero_day_v6.webp') center 36% / cover no-repeat;
     z-index: 1;
     transform: scale(1.02);
   }
@@ -6400,13 +6400,13 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <!-- Постер інтро — це перший намальований піксель сторінки, тож тягнемо його
      найпершим. Без preload у кадр встигав фон героя, тобто зовсім інша сцена. -->
-<link rel="preload" as="image" href="assets/hero_intro_poster_v3.webp">
+<link rel="preload" as="image" href="assets/hero_intro_poster_v5.webp">
 <noscript><style>
   /* Без JS інтро не зіграє ніколи, тож інтерфейс має бути видимий одразу. */
   body.intro-running .ui-layer,
   body.intro-running .free-floating-cta,
   body.intro-running .scroll-indicator { opacity: 1; transform: none; pointer-events: auto; }
-  body.intro-running .bg-photo { background-image: url('assets/hero_day_v5.webp'); }
+  body.intro-running .bg-photo { background-image: url('assets/hero_day_v6.webp'); }
 </style></noscript>
 </head>
 <!-- intro-running стоїть прямо в розмітці: раніше його вішав скрипт у самому
@@ -6498,7 +6498,7 @@
     <!-- Pristine 4K Original Reference Photograph -->
     <div class="bg-photo" role="img" aria-label="A-frame шале Mandra з чаном на заході сонця"></div>
     <video class="bg-video" id="heroIntro" muted playsinline preload="auto" aria-hidden="true"
-           poster="assets/hero_intro_poster_v3.webp" src="assets/hero_intro_v3.mp4"></video>
+           poster="assets/hero_intro_poster_v5.webp" src="assets/hero_intro_v5.mp4"></video>
     <video class="bg-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="bg-scrim"></div>
     <div class="bg-left-scrim"></div>
@@ -11487,7 +11487,7 @@
          першого екрана) не можна — інтро коротке, цикл не встигав би. */
       function preloadCycle() {
         if (cycle.src) return;
-        cycle.src = 'assets/hero_loop_v5.mp4';
+        cycle.src = 'assets/hero_loop_v6.mp4';
         cycle.load();
       }
     })();
