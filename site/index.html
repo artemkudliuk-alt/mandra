@@ -1618,13 +1618,100 @@
     .pi-feature:hover::after { animation: none; }
   }
 
+  /* ІКОНКИ МОЖЛИВОСТЕЙ — власний набір, лінія 1.6 на сітці 24.
+     Три шари руху: на появі секції лінії «малюються», у спокої в кожної
+     живе одна деталь, на наведення — свій жест. transform-box: fill-box,
+     щоб кожна деталь оберталась навколо себе, а не навколо кута svg. */
   .pi-feature-icon {
     flex: none;
-    width: clamp(20px, 1.35vw, 26px);
-    height: clamp(20px, 1.35vw, 26px);
+    display: grid;
+    place-items: center;
+    width: clamp(36px, 2.4vw, 46px);
+    height: clamp(36px, 2.4vw, 46px);
+    border-radius: 50%;
+    background: rgba(129, 184, 115, 0.13);
     color: var(--accent-color, #81B873);
+    transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .pi-feature-icon svg { width: 100%; height: 100%; display: block; }
+  .pi-feature:hover .pi-feature-icon { background: rgba(129, 184, 115, 0.22); scale: 1.06; }
+  .pi-feature-icon svg {
+    width: 66%; height: 66%; display: block; overflow: visible;
+    fill: none; stroke: currentColor; stroke-width: 1.6;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .pi-feature-icon svg * { transform-box: fill-box; }
+  .pi-ease { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
+
+  /* поява: лінії домальовуються одна за одною (анімує скрипт під сіткою —
+     CSS-перехід на stroke-dashoffset тут залипав) */
+  .pi-features [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; }
+
+  /* 1. Ресторан — тарілка й прибори; пара над тарілкою, прибори розходяться */
+  .ico-steam { opacity: 0; }
+  .is-drawn .ico-steam { animation: icoSteam 3.2s ease-in-out infinite; }
+  .is-drawn .ico-steam + .ico-steam { animation-delay: 1.6s; }
+  @keyframes icoSteam {
+    0%   { opacity: 0; transform: translateY(1.5px); }
+    35%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-2.5px); }
+  }
+  .pi-feature:hover .ico-fork  { transform: translateX(-1.6px) rotate(-8deg); }
+  .pi-feature:hover .ico-knife { transform: translateX(1.6px) rotate(8deg); }
+
+  /* 2. SPA — лотос над водою; вода дихає, пелюстки розкриваються */
+  .is-drawn .ico-wave { animation: icoWave 4s ease-in-out infinite; }
+  .is-drawn .ico-wave + .ico-wave { animation-delay: -2s; }
+  @keyframes icoWave { 0%, 100% { transform: translateX(-0.8px); } 50% { transform: translateX(0.8px); } }
+  .ico-petal-l { transform-origin: 100% 100%; }
+  .ico-petal-r { transform-origin: 0% 100%; }
+  .pi-feature:hover .ico-petal-l { transform: rotate(-14deg); }
+  .pi-feature:hover .ico-petal-r { transform: rotate(14deg); }
+  .pi-feature:hover .ico-petal-c { transform: translateY(-1px); }
+
+  /* 3. Сім'я — двоє дорослих і дитина; дитина підстрибує, дорослі схиляються */
+  .is-drawn .ico-kid { animation: icoKid 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  @keyframes icoKid { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-1.3px); } }
+  .ico-adult-l { transform-origin: 50% 100%; }
+  .ico-adult-r { transform-origin: 50% 100%; }
+  .pi-feature:hover .ico-adult-l { transform: rotate(7deg); }
+  .pi-feature:hover .ico-adult-r { transform: rotate(-7deg); }
+
+  /* 4. Дорослий відпочинок — два келихи; вино гойдається, на наведення — дзенькіт */
+  .ico-glass-l { transform-origin: 50% 100%; transform: rotate(-9deg); }
+  .ico-glass-r { transform-origin: 50% 100%; transform: rotate(9deg); }
+  .is-drawn .ico-wine { animation: icoWine 3s ease-in-out infinite; transform-origin: 50% 50%; }
+  @keyframes icoWine { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+  .pi-feature:hover .ico-glass-l { transform: rotate(4deg); }
+  .pi-feature:hover .ico-glass-r { transform: rotate(-4deg); }
+  .ico-clink { opacity: 0; transform: scale(0.4); transform-origin: 50% 100%; }
+  .pi-feature:hover .ico-clink { opacity: 1; transform: scale(1); transition-delay: 0.22s; }
+
+  /* 5. Три концепції — три кола; повільно обертаються, на наведення розходяться */
+  .pi-feature-icon .ico-trio { transform-origin: 50% 50%; transform-box: view-box; }
+  .is-drawn .ico-trio { animation: icoSpin 22s linear infinite; }
+  @keyframes icoSpin { to { transform: rotate(360deg); } }
+  .pi-feature:hover .ico-c1 { transform: translateY(-1.3px); }
+  .pi-feature:hover .ico-c2 { transform: translate(-1.1px, 0.7px); }
+  .pi-feature:hover .ico-c3 { transform: translate(1.1px, 0.7px); }
+
+  /* 6. Готельне управління — дзвоник рецепції; відблиск, на наведення дзвенить */
+  .is-drawn .ico-shine { animation: icoShine 3.4s ease-in-out infinite; }
+  @keyframes icoShine { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+  .ico-bell { transform-origin: 50% 100%; }
+  .pi-feature:hover .ico-bell { animation: icoRing 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+  @keyframes icoRing {
+    0%, 100% { transform: rotate(0); }
+    15% { transform: rotate(-9deg); } 35% { transform: rotate(7deg); }
+    55% { transform: rotate(-4deg); } 75% { transform: rotate(2deg); }
+  }
+  .ico-ring { opacity: 0; }
+  .pi-feature:hover .ico-ring { opacity: 1; transition-delay: 0.1s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pi-features [pathLength] { stroke-dashoffset: 0; }
+    .pi-features *, .pi-feature:hover * { animation: none !important; transition: none !important; }
+    .ico-steam { opacity: 0.7; }
+  }
   .pi-feature-text {
     font-family: var(--sub-font, 'Manrope', sans-serif);
     font-size: clamp(13px, 0.92vw, 17px);
@@ -6667,31 +6754,47 @@
 
       <div class="pi-features">
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle pathLength="1" style="--i:0" cx="12" cy="13.5" r="5.2"/><circle pathLength="1" style="--i:1" cx="12" cy="13.5" r="2.6" opacity=".55"/><path pathLength="1" style="--i:2" class="ico-fork pi-ease" d="M3.4 6.5v3.2a1.2 1.2 0 0 0 2.4 0V6.5M4.6 11v8.5"/><path pathLength="1" style="--i:2" class="ico-knife pi-ease" d="M20.4 19.5V6.5c-1.5 1-2.1 3-2.1 5.4h2.1"/><path class="ico-steam" d="M10.6 6.2c-.7-.8.7-1.5 0-2.4"/><path class="ico-steam" d="M13.4 6.2c-.7-.8.7-1.5 0-2.4"/></svg></span>
             <p class="pi-feature-text" id="piF1">Ресторан</p>
           </article>
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" class="ico-petal-c pi-ease" d="M12 4.2c2.1 2.3 2.1 6.4 0 8.8c-2.1-2.4-2.1-6.5 0-8.8Z"/><path pathLength="1" style="--i:1" class="ico-petal-l pi-ease" d="M12 13c-3.3 0-6.1-1.9-7.1-5.1c3.1.1 5.7 1.9 7.1 5.1Z"/><path pathLength="1" style="--i:1" class="ico-petal-r pi-ease" d="M12 13c3.3 0 6.1-1.9 7.1-5.1c-3.1.1-5.7 1.9-7.1 5.1Z"/><path pathLength="1" style="--i:2" class="ico-wave" d="M3.5 16.6c1.4 0 1.4 1 2.8 1s1.4-1 2.8-1 1.4 1 2.9 1 1.4-1 2.8-1 1.4 1 2.8 1 1.4-1 2.9-1"/><path pathLength="1" style="--i:3" class="ico-wave" d="M7 20.2c1.3 0 1.3.8 2.5.8s1.3-.8 2.5-.8 1.3.8 2.5.8 1.3-.8 2.5-.8" opacity=".6"/></svg></span>
             <p class="pi-feature-text" id="piF2">SPA-комплекс</p>
           </article>
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-adult-l pi-ease"><circle pathLength="1" style="--i:0" cx="6.2" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M2.8 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-adult-r pi-ease"><circle pathLength="1" style="--i:0" cx="17.8" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M14.4 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-kid"><circle pathLength="1" style="--i:2" cx="12" cy="12.4" r="1.6"/><path pathLength="1" style="--i:3" d="M9.9 20v-2.1a2.1 2.1 0 0 1 4.2 0V20"/></g></svg></span>
             <p class="pi-feature-text" id="piF3">Простори для сімейного відпочинку</p>
           </article>
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-glass-l pi-ease"><path pathLength="1" style="--i:0" d="M4.6 4h5.2c0 3.4-1.1 5.4-2.6 5.4S4.6 7.4 4.6 4Z"/><path class="ico-wine" d="M5.1 6.3h4.2" opacity=".7"/><path pathLength="1" style="--i:1" d="M7.2 9.4v7.8M5.3 17.2h3.8"/></g><g class="ico-glass-r pi-ease"><path pathLength="1" style="--i:0" d="M14.2 4h5.2c0 3.4-1.1 5.4-2.6 5.4S14.2 7.4 14.2 4Z"/><path class="ico-wine" d="M14.7 6.3h4.2" opacity=".7"/><path pathLength="1" style="--i:1" d="M16.8 9.4v7.8M14.9 17.2h3.8"/></g><path class="ico-clink pi-ease" d="M12 2.6V1.2M10 3.1l-.9-1M14 3.1l.9-1"/></svg></span>
             <p class="pi-feature-text" id="piF4">Простори для дорослого відпочинку</p>
           </article>
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-trio"><circle pathLength="1" style="--i:0" class="ico-c1 pi-ease" cx="12" cy="8.3" r="4.3"/><circle pathLength="1" style="--i:1" class="ico-c2 pi-ease" cx="8.2" cy="14.9" r="4.3"/><circle pathLength="1" style="--i:2" class="ico-c3 pi-ease" cx="15.8" cy="14.9" r="4.3"/></g></svg></span>
             <p class="pi-feature-text" id="piF5">Три концепції відпочинку</p>
           </article>
           <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16"/><path d="M7.8 12.3l2.9 2.9 5.5-6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-bell"><path pathLength="1" style="--i:0" d="M5.3 16.4a6.7 6.7 0 0 1 13.4 0"/><path pathLength="1" style="--i:1" d="M4.4 16.4h15.2"/><path pathLength="1" style="--i:2" d="M12 9.7V8M10.3 7.6h3.4"/><path class="ico-shine" d="M8.3 13.8a4.2 4.2 0 0 1 2.1-2.6"/></g><path pathLength="1" style="--i:3" d="M3 19.4h18"/><path class="ico-ring pi-ease" d="M3.6 9.6 2.3 8.4M20.4 9.6l1.3-1.2M5.2 6.6 4.5 5.1M18.8 6.6l.7-1.5"/></svg></span>
             <p class="pi-feature-text" id="piF6">Готельне управління Ribas Hotels Group</p>
           </article>
       </div>
 
+      <script>
+        /* іконки малюються, коли сітка можливостей потрапляє в кадр */
+        (() => {
+          const grid = document.querySelector('.pi-features');
+          new IntersectionObserver(([e], io) => {
+            if (!e.isIntersecting) return;
+            io.disconnect();
+            grid.classList.add('is-drawn');
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            grid.querySelectorAll('[pathLength]').forEach(el => el.animate(
+              [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }],
+              { duration: 1100, delay: 100 + (+el.style.getPropertyValue('--i') || 0) * 120,
+                easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'forwards' }));
+          }, { threshold: 0.35 }).observe(grid);
+        })();
+      </script>
       <div class="pi-actions">
         <a class="stats-cta-btn" href="#petrichor">
           <span id="piCtaText">Переглянути комплекс</span>
