@@ -2088,45 +2088,59 @@
     border: none;
     box-sizing: border-box;
   }
-  /* Фото черги: будинок праворуч, ліворуч під текстом — затемнення.
-     На наведення фото трохи темнішає і «виїжджає» з картки вгору на 20%
-     її висоти — сітка при цьому не рухається, росте лише шар фото. */
+  /* Фото черги: будинок праворуч, текст — у лівому нижньому куті на
+     затемненні. На наведення вся картка збільшується на 20%, як попап:
+     від нижнього краю (не наїжджає на смугу під нею), поверх сусідів, з тінню. */
   .bs-card {
     position: relative;
     isolation: isolate;
+    justify-content: flex-end;
     min-height: clamp(210px, 14.5vw, 280px);
     background: rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+    transform-origin: 50% 100%;
+    transition: transform 0.7s cubic-bezier(0.33, 1, 0.68, 1), box-shadow 0.7s ease;
+  }
+  .bs-card:hover {
+    z-index: 5;
+    transform: scale(1.2);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55), 0 8px 18px rgba(0, 0, 0, 0.35);
   }
   .bs-card-img,
   .bs-card-shade {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    transition: top 0.8s cubic-bezier(0.33, 1, 0.68, 1), height 0.8s cubic-bezier(0.33, 1, 0.68, 1),
-                background 0.8s ease;
   }
-  /* у картинки ростом керує висота (притиснута донизу) — top для неї не тягне розмір */
   .bs-card-img {
     z-index: -2;
-    top: auto;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: 60% 58%;
   }
+  /* затемнення від лівого нижнього кута, де текст; будинок праворуч лишається чистим */
   .bs-card-shade {
     z-index: -1;
-    background: linear-gradient(90deg, rgba(10, 12, 10, 0.86) 0%, rgba(10, 12, 10, 0.6) 34%,
-                rgba(10, 12, 10, 0.12) 66%, rgba(10, 12, 10, 0) 100%);
+    background:
+      linear-gradient(0deg, rgba(10, 12, 10, 0.78) 0%, rgba(10, 12, 10, 0.35) 42%, rgba(10, 12, 10, 0) 70%),
+      linear-gradient(90deg, rgba(10, 12, 10, 0.62) 0%, rgba(10, 12, 10, 0.2) 45%, rgba(10, 12, 10, 0) 70%);
+    transition: opacity 0.7s ease;
   }
-  .bs-card:hover .bs-card-img { height: 120%; }
-  .bs-card:hover .bs-card-shade { top: -20%; }
-  .bs-card:hover .bs-card-shade {
-    background: linear-gradient(90deg, rgba(10, 12, 10, 0.9) 0%, rgba(10, 12, 10, 0.68) 34%,
-                rgba(10, 12, 10, 0.28) 66%, rgba(10, 12, 10, 0.18) 100%);
+  .bs-card::after {                       /* легке затемнення всієї картки на наведення */
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(10, 12, 10, 0.16);
+    opacity: 0;
+    transition: opacity 0.7s ease;
   }
+  .bs-card:hover::after { opacity: 1; }
   @media (prefers-reduced-motion: reduce) {
-    .bs-card-img, .bs-card-shade { transition: none; }
+    .bs-card { transition: none; }
+    .bs-card:hover { transform: none; }
   }
   .bs-queue {
     align-self: flex-start;
