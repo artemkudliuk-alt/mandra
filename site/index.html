@@ -2271,24 +2271,74 @@
   }
   .bl-all svg { width: 1em; height: 1em; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
   .bl-all:hover svg { transform: translate(2px, -2px); }
+  /* ХРОНІКА: над картками тонка лінія часу з точками-відмітками, під кожною —
+     дата (велике число дня, дрібно місяць і рік). Фото чисте, без написів,
+     під ним — подія білим. Найсвіжіший запис — ліворуч, його точка «жива». */
   .bl-grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(14px, 1.2vw, 24px);
+    gap: clamp(20px, 1.8vw, 36px);
+  }
+  .bl-grid::before {                        /* лінія часу по центру точок */
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(129, 184, 115, 0.55) 0%, rgba(255, 255, 255, 0.14) 40%, rgba(255, 255, 255, 0.05) 100%);
   }
   .bl-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    border-radius: clamp(16px, 1.2vw, 22px);
-    background: rgba(255, 255, 255, 0.055);
-    overflow: hidden;
-    border: none;
+    gap: clamp(16px, 1.3vw, 24px);
+  }
+  .bl-mark { display: flex; flex-direction: column; gap: clamp(14px, 1.1vw, 20px); }
+  .bl-dot {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid var(--accent-color, #81B873);
+    background: var(--bg-dark);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+  }
+  .bl-card:first-child .bl-dot { background: var(--accent-color, #81B873); }
+  .bl-card:first-child .bl-dot::after {    /* найсвіжіший запис: тихий пульс */
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color, #81B873);
+    animation: blPulse 2.4s ease-out infinite;
+  }
+  @keyframes blPulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(2.6); opacity: 0; } }
+  .bl-card:hover .bl-dot { transform: scale(1.35); background: var(--accent-color, #81B873); }
+  .bl-when { display: flex; align-items: baseline; gap: 12px; }
+  .bl-day {
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(34px, 2.6vw, 52px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: #FFFFFF;
+  }
+  .bl-month {
+    font-family: var(--sub-font, 'Manrope', sans-serif);
+    font-size: clamp(12px, 0.78vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
   }
   .bl-media {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
+    border-radius: clamp(14px, 1.1vw, 20px);
     overflow: hidden;
     background: #0E120E;
   }
@@ -2300,48 +2350,21 @@
     transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .bl-card:hover .bl-media img { transform: scale(1.04); }
-  .bl-body {
-    display: flex;
-    flex: 1;
-    align-items: flex-end;      /* текст притиснуто донизу картки */
-    padding: clamp(20px, 1.6vw, 30px);
-  }
-  /* Дата великими цифрами поверх фото, у правому верхньому куті.
-     Під нею косий затемнювач — інакше на світлому небі цифри зникають. */
-  .bl-date {
-    position: absolute;
-    top: clamp(10px, 0.9vw, 18px);
-    right: clamp(14px, 1.1vw, 22px);
-    z-index: 2;
-    font-family: var(--title-font, 'Unbounded', sans-serif);
-    font-size: clamp(24px, 2.35vw, 44px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.035em;
-    font-variant-numeric: tabular-nums;
-    color: var(--accent-color, #81B873);
-    white-space: nowrap;
-    pointer-events: none;
-  }
-  .bl-media::after {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto auto;
-    width: 78%;
-    height: 46%;
-    z-index: 1;
-    pointer-events: none;
-    background: linear-gradient(215deg, rgba(8, 12, 8, 0.82) 0%, rgba(8, 12, 8, 0.38) 45%, rgba(8, 12, 8, 0) 78%);
-  }
   .bl-text {
     font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: clamp(14px, 0.95vw, 17px);
+    font-size: clamp(16px, 1.12vw, 20px);
+    font-weight: 500;
     line-height: 1.45;
-    color: rgba(255, 255, 255, 0.86);
+    color: rgba(255, 255, 255, 0.9);
     margin: 0;
+    max-width: 30em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bl-card:first-child .bl-dot::after { animation: none; }
   }
   @media (max-width: 900px) {
     .bl-grid { grid-template-columns: minmax(0, 1fr); }
+    .bl-grid::before { display: none; }
   }
 
   /* ТИМЧАСОВО: блок «Ваш шлях інвестора» знято на прохання замовника.
@@ -7705,33 +7728,36 @@
 
       <div class="bl-grid">
         <article class="bl-card">
+          <time class="bl-mark" datetime="2026-07-12">
+            <span class="bl-dot" aria-hidden="true"></span>
+            <span class="bl-when"><span class="bl-day">12</span><span class="bl-month" id="blD1">липня 2026</span></span>
+          </time>
           <div class="bl-media">
             <img src="assets/build/01_light.webp?v=2" alt="" loading="lazy" decoding="async">
-            <span class="bl-date" id="blD1">12.07.2026</span>
           </div>
-          <div class="bl-body">
-            <p class="bl-text" id="blT1">Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар</p>
-          </div>
+          <p class="bl-text" id="blT1">Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар</p>
         </article>
 
         <article class="bl-card">
+          <time class="bl-mark" datetime="2026-06-25">
+            <span class="bl-dot" aria-hidden="true"></span>
+            <span class="bl-when"><span class="bl-day">25</span><span class="bl-month" id="blD2">червня 2026</span></span>
+          </time>
           <div class="bl-media">
             <img src="assets/build/02_found.webp?v=2" alt="" loading="lazy" decoding="async">
-            <span class="bl-date" id="blD2">25.06.2026</span>
           </div>
-          <div class="bl-body">
-            <p class="bl-text" id="blT2">Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах</p>
-          </div>
+          <p class="bl-text" id="blT2">Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах</p>
         </article>
 
         <article class="bl-card">
+          <time class="bl-mark" datetime="2026-05-11">
+            <span class="bl-dot" aria-hidden="true"></span>
+            <span class="bl-when"><span class="bl-day">11</span><span class="bl-month" id="blD3">травня 2026</span></span>
+          </time>
           <div class="bl-media">
             <img src="assets/build/03_prep.webp?v=2" alt="" loading="lazy" decoding="async">
-            <span class="bl-date" id="blD3">11.05.2026</span>
           </div>
-          <div class="bl-body">
-            <p class="bl-text" id="blT3">Підготовка під заливку фундаменту для ресторана, СПА та івент-холу</p>
-          </div>
+          <p class="bl-text" id="blT3">Підготовка під заливку фундаменту для ресторана, СПА та івент-холу</p>
         </article>
       </div>
     </div>
@@ -8688,7 +8714,7 @@
         bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
         blTitle: 'Хід <span class="pi-accent">будівництва</span>',
         blAll: 'Усі записи',
-        blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
+        blD1: 'липня 2026', blD2: 'червня 2026', blD3: 'травня 2026',
         blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
         blT2: 'Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах',
         blT3: 'Підготовка під заливку фундаменту для ресторана, СПА та івент-холу',
@@ -8914,7 +8940,7 @@
         bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
         blTitle: 'Construction <span class="pi-accent">progress</span>',
         blAll: 'All updates',
-        blD1: '12.07.2026', blD2: '25.06.2026', blD3: '11.05.2026',
+        blD1: 'July 2026', blD2: 'June 2026', blD3: 'May 2026',
         blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
         blT2: 'Foundation of the restaurant, spa and event hall finished. Active works on phases II and III',
         blT3: 'Ground prepared for the foundation pour of the restaurant, spa and event hall',
