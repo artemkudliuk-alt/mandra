@@ -1966,6 +1966,26 @@
     background: rgba(0, 0, 0, 0.05);
     pointer-events: none;
   }
+  /* Заголовок на відео — той самий почерк, що «MANDRA PETRICHOR» над банером:
+     два рядки, біле й зелене слово. Кут кадру світлий (небо), тож під текст
+     м'яка тінь, а не плашка. Відступ зліва — сітка сайту (5vw, як у блоці вище). */
+  .vb-title {
+    position: absolute;
+    z-index: 2;
+    left: clamp(20px, 5vw, 96px);
+    top: clamp(20px, 3.6vw, 64px);
+    margin: 0;
+    font-family: var(--title-font, 'Unbounded', sans-serif);
+    font-size: clamp(30px, 2.7vw, 50px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+  }
+  .vb-title span { display: block; }
   .vb-play {
     position: absolute;
     left: 50%;
@@ -6808,6 +6828,7 @@
            poster="assets/video/mandra_banner_poster.webp"
            data-src="assets/video/mandra_banner.mp4" aria-hidden="true"></video>
     <div class="vb-mask" aria-hidden="true"></div>
+    <h2 class="vb-title"><span id="vbTitleA">Промо</span> <span class="pi-accent" id="vbTitleB">Атмосфера</span></h2>
     <button class="vb-play" id="videoBannerPlay" type="button" aria-label="Зупинити відео">
       <svg class="vb-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.7-6.8a.6.6 0 0 0 0-1l-10.7-6.8A.6.6 0 0 0 8 5.2z"/></svg>
       <svg class="vb-icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.4" y="5" width="3.8" height="14" rx="1.2"/><rect x="13.8" y="5" width="3.8" height="14" rx="1.2"/></svg>
@@ -8586,6 +8607,7 @@
         headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
         desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
         heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
+        vbTitleA: 'Промо', vbTitleB: 'Атмосфера',
         piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
@@ -8811,6 +8833,7 @@
         headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
         desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
         heroBadge: 'Phase<br>II handover<br>this<br>year',
+        vbTitleA: 'Promo', vbTitleB: 'Atmosphere',
         piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
@@ -9110,6 +9133,8 @@
                   'piTag1','piTag2','piTag4','piUnit1','piUnit4',
                   'piCard1','piCard2','piCard4',
                   'piF1','piF2','piF3','piF4','piF5','piF6',
+                  /* ЕКРАН 3.5 — відеобанер */
+                  'vbTitleA','vbTitleB',
                   /* ЕКРАН 4 — шість плиток */
                   'why1','why2','why3','why4','why5','why6',
                   /* ЕКРАН 10 — етапи та хід будівництва */
