@@ -24,35 +24,29 @@
   }
 
   /* ============================================================
-     ПРЕЛОАДЕР «ПЕТРИКОР» — крапля падає на темну воду, кола проявляють
-     логотип, друга крапля розносить хвилю, і крізь воду проступає інтро.
-     Вода — WebGL-шейдер у скрипті initPreloader. Тло й SVG тут — миттєвий
-     перший кадр і запасний варіант без WebGL / зі зменшеним рухом.
+     ПРЕЛОАДЕР «ТОЙ САМИЙ МОМЕНТ» — літери-SVG у щілинах-масках, по черзі
+     три слова; вихід — скошена шторка вгору, під нею вже грає інтро.
      ============================================================ */
   #preloader {
     position: fixed;
     inset: 0;
     z-index: 100000;
     background: #0B0F0C;
-    display: grid;
-    place-items: center;
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  #preloader.is-water { background: transparent; }     /* тло малює шейдер */
   #preloader.is-out { opacity: 0; pointer-events: none; }
   #preloader.is-gone { display: none; }
-  #preloader canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .pl-mark {
-    width: clamp(170px, 20vw, 300px);
-    height: auto;
-    opacity: 0;
-    transition: opacity 0.6s ease;
+  .pl-stage {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: min(9vw, 17vh);          /* 1em = кегль літер */
   }
-  .pl-mark path { fill: #F2EFE8; }
-  #preloader.is-static .pl-mark { opacity: 1; }
-  #preloader.is-mark .pl-mark { opacity: 1; transition: none; }   /* канва віддає логотип SVG — без стику */
-  /* легка тінь над інтро, щоб білий логотип читався; гасне разом із ним (.is-out) */
-  #preloader.is-mark { background: rgba(0, 0, 0, 0.075); }
+  .pl-word { grid-area: 1 / 1; display: flex; align-items: flex-end; }
+  .pl-slot { flex: none; display: block; height: 1.035em; overflow: hidden; }
+  .pl-slot svg { display: block; width: 100%; height: 100%; fill: #FFFFFF; }
+  .pl-word.is-green svg { fill: var(--accent-color, #81B873); }
 
   :root {
     --bg-dark: #121212;
@@ -6647,6 +6641,7 @@
   body.intro-running .hero-release-badge,
   body.intro-running .scroll-indicator { opacity: 1; pointer-events: auto; }
   body.intro-running .bg-photo { background-image: url('assets/hero_day_v7.webp'); }
+  #preloader { display: none; }   /* без JS заставку нікому зняти */
 </style></noscript>
 </head>
 <!-- intro-running стоїть прямо в розмітці: раніше його вішав скрипт у самому
@@ -6661,9 +6656,7 @@
        Коли все готово, оверлей м'яко гасне, а інтро під ним уже грає.
        ============================================================ -->
   <div id="preloader" aria-hidden="true">
-    <svg class="pl-mark" viewBox="0 0 381 301">
-      <path id="plLogoPath" fill-rule="evenodd" d="M379.2,243.0 L378.5,242.5 L367.5,242.5 L367.0,243.0 L367.0,263.8 L366.5,264.2 L317.2,264.2 L317.0,277.5 L317.5,278.0 L366.2,277.8 L367.0,278.5 L367.0,299.5 L379.2,299.5 Z M321.2,195.2 L318.0,200.8 L316.2,206.8 L316.0,218.2 L317.2,224.5 L319.2,229.5 L322.0,233.5 L325.5,236.8 L329.2,238.8 L330.5,238.8 L332.8,239.8 L340.0,239.8 L344.8,237.8 L347.0,235.8 L349.5,232.2 L351.5,228.0 L356.8,208.0 L357.8,206.2 L360.5,203.8 L363.2,203.8 L366.8,207.0 L368.0,210.0 L368.2,215.0 L368.0,218.0 L366.0,222.8 L362.5,225.8 L360.0,226.0 L359.5,226.5 L359.8,239.2 L361.2,239.5 L364.5,239.0 L368.8,237.8 L372.2,235.5 L376.8,230.2 L379.5,223.8 L379.8,221.0 L380.8,218.0 L380.8,211.8 L380.0,209.8 L379.2,204.8 L377.8,200.5 L375.0,196.2 L370.5,192.2 L368.5,191.0 L367.5,191.0 L365.5,190.0 L360.2,189.5 L356.5,190.0 L355.0,191.0 L354.2,191.0 L352.0,192.8 L349.0,196.2 L347.0,200.2 L344.0,210.2 L343.0,215.8 L341.0,221.5 L339.8,223.8 L336.8,226.0 L333.5,225.8 L330.0,222.8 L328.8,219.8 L328.5,217.5 L328.8,210.0 L329.8,207.0 L332.8,203.8 L336.8,202.8 L336.8,188.8 L336.0,188.2 L334.8,188.8 L330.8,189.0 L328.0,190.0 L324.2,192.2 Z M317.0,139.0 L317.2,183.0 L328.5,183.0 L329.2,182.5 L329.2,152.5 L330.0,151.8 L342.5,151.8 L343.2,152.2 L343.5,177.8 L355.2,177.8 L355.8,177.2 L355.8,152.2 L356.2,151.8 L366.5,151.8 L367.0,152.2 L367.0,182.5 L367.5,183.0 L378.8,183.0 L379.2,182.5 L379.0,138.8 L317.5,138.5 Z M379.2,80.0 L377.0,80.0 L375.8,80.8 L374.0,81.0 L372.8,81.8 L371.0,82.0 L369.8,82.8 L368.0,83.0 L366.0,84.0 L349.8,89.0 L348.5,89.8 L346.8,90.0 L345.5,90.8 L343.8,91.0 L342.5,91.8 L340.8,92.0 L338.8,93.0 L337.8,93.0 L335.8,94.0 L334.8,94.0 L317.2,100.0 L317.0,114.5 L319.0,115.5 L342.5,123.0 L343.8,123.8 L344.8,123.8 L362.0,129.8 L363.8,130.0 L365.0,130.8 L366.8,131.0 L368.0,131.8 L369.8,132.0 L371.0,132.8 L372.8,133.0 L374.0,133.8 L375.8,134.0 L377.0,134.8 L379.0,135.0 L379.0,122.2 L355.8,114.8 L354.5,114.0 L352.8,113.8 L351.5,113.0 L349.8,112.8 L348.5,112.0 L346.8,111.8 L345.5,111.0 L343.8,110.8 L342.5,110.0 L340.8,109.8 L339.5,109.0 L335.2,108.0 L335.0,107.0 L379.0,92.5 Z M317.0,21.0 L317.2,33.0 L358.0,33.5 L358.5,34.0 L357.8,35.0 L317.2,63.8 L317.2,76.8 L379.2,76.5 L379.5,64.8 L379.0,64.0 L338.2,64.0 L337.8,63.5 L338.2,62.8 L340.2,61.8 L379.0,33.5 L379.0,20.8 L317.5,20.5 Z M317.0,1.0 L317.0,12.8 L317.5,13.2 L378.2,13.2 L379.2,12.8 L379.2,1.2 L378.0,0.5 L317.5,0.5 Z M1.5,0.0 L0.8,1.2 L0.8,275.2 L1.2,275.8 L58.0,275.8 L58.5,275.2 L58.2,121.2 L58.8,119.8 L60.0,120.8 L61.0,124.5 L65.0,133.8 L65.0,134.8 L69.0,144.0 L69.0,145.0 L72.0,151.8 L73.0,155.2 L76.0,162.0 L77.0,165.5 L80.0,172.2 L84.0,183.5 L84.8,184.5 L88.0,193.8 L88.8,194.8 L89.0,196.2 L91.0,200.5 L92.0,204.0 L95.0,210.8 L95.0,211.8 L99.0,221.0 L99.0,222.0 L99.8,223.0 L100.0,224.5 L102.0,228.8 L103.0,232.2 L106.0,239.0 L107.0,242.5 L110.0,249.2 L111.0,252.8 L120.0,275.5 L165.5,275.8 L168.8,268.8 L168.8,267.8 L172.8,258.5 L173.8,255.0 L183.8,230.2 L183.8,229.2 L184.5,228.2 L187.0,221.0 L187.8,220.0 L187.8,219.0 L188.5,218.0 L191.0,210.8 L191.8,209.8 L191.8,208.8 L194.8,202.0 L194.8,201.0 L198.8,191.8 L198.8,190.8 L199.5,189.8 L202.0,182.5 L202.8,181.5 L203.8,178.0 L213.8,153.2 L217.0,144.0 L217.8,143.0 L217.8,142.0 L221.8,132.8 L221.8,131.8 L224.8,125.0 L225.8,121.5 L227.2,119.2 L227.8,119.5 L227.5,275.2 L228.0,275.8 L285.2,275.5 L285.2,1.2 L284.2,0.0 L222.8,0.0 L221.2,1.0 L143.5,216.2 L142.8,216.2 L142.0,215.2 L135.8,198.0 L135.8,197.0 L134.8,195.2 L133.8,191.5 L128.8,178.8 L128.8,177.8 L118.8,151.0 L118.8,150.0 L117.8,148.2 L116.8,144.5 L111.8,131.8 L111.5,130.0 L64.5,0.8 L64.0,0.2 Z"></path>
-    </svg>
+    <div class="pl-stage" id="plStage"></div>
   </div>
 
 <!-- Незалежна страховка: якщо скрипт нижче взагалі не виконається, клас нікому
@@ -9807,26 +9800,26 @@
        потрібне лише інтро. Тепер src підставляється за екран до появи секції.
        ============================================================ */
     /* ============================================================
-       ПРЕЛОАДЕР «ПЕТРИКОР»
-       Сценарій (секунди від старту):
-         0.15–0.55  крапля падає в центр логотипа, розганяючись як у вільному падінні;
-         0.55       удар: від центру біжить пакет із 3–4 кіл, M проявляється
-                    всередині першої хвилі й заспокоюється до різкого;
-         1.0–1.5    літери INVEST спливають зверху вниз;
-         ≥2.4       коли інтро готове грати — ворота відчиняються (інтро стартує
-                    під оверлеєм), тло з водою розчиняється за 1с, логотип лишається
-                    над відео. Далі його тримає звичайний SVG (WebGL вимикаємо),
-                    і він гасне за 0.6с — до того, як виїде заголовок.
-       Вода — аналітичні кола (формула, не симуляція), нормаль з різниць висоти,
-       заломлення зсуває вибірку логотипа, блиск — на схилах хвиль.
-       Без WebGL або зі зменшеним рухом — статичний логотип і м'яке згасання.
+       ПРЕЛОАДЕР «ТОЙ САМИЙ МОМЕНТ» — за мотивом лоадера Lacoste Polo Series.
+       Три слова по черзі в одному місці. Кожна літера — SVG-контур Unbounded 800
+       (шрифт заголовків) у власній щілині-масці: виїжджає знизу, при зміні слова
+       старі літери йдуть угору, нові підіймаються знизу — хвилею, як барабан.
+       МОМЕНТ — зелений. Коли інтро готове, літери відходять угору, а знизу
+       підіймається скошена шторка: під нею вже грає інтро.
        ============================================================ */
     window.__preloadGate = (function initPreloader() {
       const host = document.getElementById('preloader');
-      if (!host) return Promise.resolve();
+      const stage = document.getElementById('plStage');
+      if (!host || !stage) return Promise.resolve();
 
+      const GLYPHS = {"Т":[829,"M298 649H531V0H298ZM20 750H809V543H20Z"],"О":[970,"M485 -17Q350 -17 248.5 32.0Q147 81 90.5 169.0Q34 257 34 375Q34 493 90.5 581.0Q147 669 248.5 718.0Q350 767 485 767Q620 767 721.5 718.0Q823 669 879.5 581.0Q936 493 936 375Q936 257 879.5 169.0Q823 81 721.5 32.0Q620 -17 485 -17ZM485 190Q552 190 600.5 212.5Q649 235 675 276.5Q701 318 701 375Q701 432 675 473.5Q649 515 600.5 537.5Q552 560 485 560Q418 560 369.5 537.5Q321 515 295 473.5Q269 432 269 375Q269 318 295 276.5Q321 235 369.5 212.5Q418 190 485 190Z"],"Й":[995,"M65 0V750H295V125L233 139L626 750H930V0H700V639L761 625L360 0ZM226 983H407Q420 953 442.5 937.5Q465 922 496 922Q528 922 550.5 937.5Q573 953 585 983H767Q743 883 671 839.0Q599 795 496 795Q395 795 322.5 839.0Q250 883 226 983Z"],"С":[942,"M913 319Q901 219 843.5 143.0Q786 67 691.5 25.0Q597 -17 475 -17Q343 -17 244 32.0Q145 81 90 169.0Q35 257 35 375Q35 493 90 581.0Q145 669 244 718.0Q343 767 475 767Q597 767 691.5 725.0Q786 683 843.5 607.5Q901 532 913 431H679Q669 474 642.5 504.5Q616 535 574 551.5Q532 568 475 568Q411 568 365 545.0Q319 522 294 478.5Q269 435 269 375Q269 315 294 272.0Q319 229 365 205.5Q411 182 475 182Q532 182 574 197.5Q616 213 642.5 244.0Q669 275 679 319Z"],"А":[977,"M227 135V321H741V135ZM642 750 978 0H729L457 649H520L247 0H-1L334 750Z"],"М":[1255,"M1191 750V0H969V664L1015 659L744 0H512L240 657L286 663V0H65V750H424L671 123H586L831 750Z"],"И":[995,"M65 0V750H295V125L233 139L626 750H930V0H700V639L761 625L360 0Z"],"Е":[803,"M720 457V293H163V457ZM322 375 275 85 184 186H755V0H44L100 375L44 750H750V564H184L275 665Z"],"Н":[947,"M65 750H298V0H65ZM649 750H882V0H649ZM196 485H743V279H196Z"]};
+      const WORDS = [['ТОЙ', false], ['САМИЙ', false], ['МОМЕНТ', true]];
+      const TRACK = -25;                       /* трекінг заголовків: -0.025em в одиницях шрифту */
+      const BOX_TOP = 1000, BOX_H = 1035;      /* щілина з запасом під кратку Й і виноси О/С */
+      const OUT = 'cubic-bezier(0.16, 1, 0.3, 1)', INOUT = 'cubic-bezier(0.65, 0, 0.35, 1)';
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const MIN_HOLD = 2.4;              /* раніше за це заставка не відпускає */
+      const MIN_HOLD = reduced ? 1.2 : 3.0;
+
       let resolveGate;
       const gate = new Promise(function (r) { resolveGate = r; });
 
@@ -9853,216 +9846,89 @@
       }
       function loaded() { return 0.7 * introProgress() + 0.3 * imageProgress() >= 0.999; }
 
-      function gone() { host.classList.add('is-gone'); }
+      /* Слово = рядок щілин; у кожній щілині — одна літера-SVG */
+      const SVGNS = 'http://www.w3.org/2000/svg';
+      function buildWord(text, green) {
+        const w = document.createElement('div');
+        w.className = 'pl-word' + (green ? ' is-green' : '');
+        w.setAttribute('aria-hidden', 'true');
+        Array.from(text).forEach(function (ch, i) {
+          const adv = GLYPHS[ch][0];
+          const slot = document.createElement('span');
+          slot.className = 'pl-slot';
+          slot.style.width = (adv / 1000) + 'em';
+          if (i) slot.style.marginLeft = (TRACK / 1000) + 'em';
+          const svg = document.createElementNS(SVGNS, 'svg');
+          svg.setAttribute('viewBox', '0 ' + (-BOX_TOP) + ' ' + adv + ' ' + BOX_H);
+          const path = document.createElementNS(SVGNS, 'path');
+          path.setAttribute('d', GLYPHS[ch][1]);
+          path.setAttribute('transform', 'scale(1 -1)');
+          svg.appendChild(path);
+          slot.appendChild(svg);
+          w.appendChild(slot);
+        });
+        stage.appendChild(w);
+        return Array.prototype.slice.call(w.querySelectorAll('svg'));
+      }
 
-      /* ---------- запасний шлях: статичний логотип ---------- */
-      function staticPath() {
-        host.classList.add('is-static');
+      function lettersIn(letters, delay, fromRight) {
+        const n = letters.length;
+        letters.forEach(function (el, i) {
+          const k = fromRight ? n - 1 - i : i;
+          el.animate([{ transform: 'translateY(105%)' }, { transform: 'translateY(0)' }],
+            { duration: 750, delay: delay + k * 60, easing: OUT, fill: 'both' });
+        });
+      }
+      function lettersOut(letters, delay) {
+        letters.forEach(function (el, i) {
+          el.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-105%)' }],
+            /* forwards, не both: до старту відхід не повинен тримати літеру на місці */
+            { duration: 560, delay: delay + i * 45, easing: INOUT, fill: 'forwards' });
+        });
+      }
+
+      const words = WORDS.map(function (w) { return buildWord(w[0], w[1]); });
+      host.classList.add('is-ready');
+
+      function done() { host.classList.add('is-gone'); }
+
+      if (reduced) {
+        /* без руху: одразу фінальне слово, м'яке згасання, коли все готове */
+        words[0].concat(words[1]).forEach(function (el) { el.style.transform = 'translateY(105%)'; });
         const t0 = performance.now();
         (function wait() {
-          if ((loaded() && performance.now() - t0 > 1200) || performance.now() - t0 > 12000) {
-            resolveGate();
-            host.classList.add('is-out');
-            setTimeout(gone, 700);
+          if ((loaded() && performance.now() - t0 > MIN_HOLD * 1000) || performance.now() - t0 > 12000) {
+            resolveGate(); host.classList.add('is-out'); setTimeout(done, 700);
           } else requestAnimationFrame(wait);
         })();
         return gate;
       }
-      if (reduced) return staticPath();
 
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false });
-      if (!gl) return staticPath();
+      /* Таймлайн: ТОЙ (справа наліво, як у Lacoste) → САМИЙ → МОМЕНТ */
+      words[1].concat(words[2]).forEach(function (el) { el.style.transform = 'translateY(105%)'; });
+      lettersIn(words[0], 250, true);
+      lettersOut(words[0], 1150); lettersIn(words[1], 1270, false);
+      lettersOut(words[1], 2100); lettersIn(words[2], 2220, false);
 
-      /* ---------- текстура логотипа: M у червоному каналі, INVEST у зеленому ---------- */
-      const d = document.getElementById('plLogoPath').getAttribute('d');
-      const TEX_W = 1024, TEX_H = Math.round(1024 * 301 / 381);
-      const tc = document.createElement('canvas');
-      tc.width = TEX_W; tc.height = TEX_H;
-      const cx = tc.getContext('2d');
-      cx.fillStyle = '#000'; cx.fillRect(0, 0, TEX_W, TEX_H);
-      cx.scale(TEX_W / 381, TEX_H / 301);
-      const pathM = new Path2D(), pathInv = new Path2D();
-      d.split(/(?=M)/).forEach(function (sub) {
-        /* підшлях гліфа M починається лівіше за x=300, літери INVEST — правіше */
-        (parseFloat(sub.slice(1)) < 300 ? pathM : pathInv).addPath(new Path2D(sub));
-      });
-      cx.globalCompositeOperation = 'lighter';
-      cx.fillStyle = '#F00'; cx.fill(pathM, 'evenodd');
-      cx.fillStyle = '#0F0'; cx.fill(pathInv, 'evenodd');
-
-      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-      const FS = [
-        'precision highp float;',
-        'uniform sampler2D uLogo;',
-        'uniform vec2 uRes;',          /* розмір полотна, px */
-        'uniform vec4 uRect;',         /* логотип: x, y (зверху), ширина, висота, px */
-        'uniform vec2 uC;',            /* точка удару, px (y зверху) */
-        'uniform float uUnit;',        /* коротша сторона екрана, px — одиниця довжини хвиль */
-        'uniform float uT1;',          /* час від першого удару, с (<0 — ще не впала) */
-        'uniform float uFade;',        /* розчинення тла, 0..1 — логотип лишається */
-        'uniform float uDrop;',        /* y краплі, що падає, px (<0 — немає) */
-        'uniform float uInv;',         /* проява INVEST, 0..1 */
-        'uniform float uTime;',
-        'float hash(vec2 q){return fract(sin(dot(q,vec2(12.9898,78.233)))*43758.5453);}',
-        /* пакет хвиль: 3-4 гребені під гаусовою обвідною, що біжить від центру й згасає */
-        'float packet(float r,float t,float speed,float amp,float width,float freq){',
-        '  if(t<0.)return 0.;',
-        '  float x=r-speed*t;',
-        '  return amp*sin(x*freq)*exp(-x*x/width)*exp(-t*2.)/(1.+r*3.)*smoothstep(0.,.09,r);',
-        '}',
-        'float height(vec2 px){',
-        '  float r=length(px-uC)/uUnit;',
-        '  float h=packet(r,uT1,.42,.009,.010,62.)+packet(r,uT1-.28,.36,.004,.008,74.);',
-        '  return h;',
-        '}',
-        'void main(){',
-        '  vec2 px=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y);',
-        '  float e=1.5;',
-        '  float h0=height(px);',
-        '  vec2 g=vec2(height(px+vec2(e,0.))-h0,height(px+vec2(0.,e))-h0)/(e/uUnit);',
-        '  vec2 uv=(px+g*uUnit*.06-uRect.xy)/uRect.zw;',
-        '  vec4 tx=(uv.x<0.||uv.y<0.||uv.x>1.||uv.y>1.)?vec4(0.):texture2D(uLogo,uv);',
-        /* M проявляється всередині першої хвилі; INVEST спливає зверху вниз */
-        '  float r=length(px-uC)/uUnit;',
-        '  float front=.42*max(uT1,0.);',
-        '  float mA=uT1<0.?0.:tx.r*smoothstep(front-.02,front-.14,r)*smoothstep(.15,.85,uT1);',
-        '  float rise=clamp((uInv*1.15-max(uv.y,0.))/.15,0.,1.)*step(.001,uInv);',
-        '  vec2 uv2=uv+vec2(0.,(1.-rise)*.035);',
-        '  float gA=(uv2.x<0.||uv2.y<0.||uv2.x>1.||uv2.y>1.)?0.:texture2D(uLogo,uv2).g;',
-        '  float iA=gA*rise;',
-        '  vec3 bg=vec3(.043,.059,.047);',
-        '  float la=max(mA,iA);',
-        '  vec3 col=bg;',
-        /* блиск на схилах: холодний білий, по кромці — ледь зелений відлив */
-        '  vec3 n=normalize(vec3(-g*2.4,1.));',
-        '  vec3 Hv=normalize(normalize(vec3(-.35,-.55,.75))+vec3(0.,0.,1.));',
-        '  float spec=min(max(pow(max(dot(n,Hv),0.),60.)-pow(Hv.z,60.),0.)*2.2,.55);',
-        '  col+=spec*vec3(.82,.9,1.)+min(abs(g.x+g.y)*.06,.05)*vec3(.5,.72,.45);',
-        /* крапля: тонкий світлий штрих, яскравіший на голові */
-        '  if(uDrop>=0.){float len=uUnit*.09;vec2 a=vec2(uC.x,uDrop-len),b=vec2(uC.x,uDrop);',
-        '    vec2 pa=px-a,ba=b-a;float k=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);',
-        '    float dd=length(pa-ba*k);col+=vec3(.85,.9,.95)*exp(-dd*dd/(uUnit*uUnit*.000012))*(.25+.75*k);}',
-        '  col+=(hash(px+fract(uTime)*97.)-.5)*.022;',
-        /* тло з водою гасне до легкої тіні 7.5% над інтро, логотип лишається;
-           premultiplied-змішування двох шарів. Тримати рівним --pl-dim у CSS */
-        '  float ba=mix(1.,.075,uFade);',
-        '  col=mix(col,vec3(0.),uFade);',
-        '  gl_FragColor=vec4(vec3(.949,.937,.91)*la+col*(1.-la)*ba,la+(1.-la)*ba);',
-        '}'
-      ].join('\n');
-
-      function sh(type, src) {
-        const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
-        return s;
-      }
-      let prog;
-      try {
-        prog = gl.createProgram();
-        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
-        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
-        gl.linkProgram(prog);
-        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
-      } catch (err) { console.warn('preloader: shader failed', err); return staticPath(); }
-      gl.useProgram(prog);
-
-      const buf = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-      const loc = gl.getAttribLocation(prog, 'p');
-      gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-      const tex = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tc);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-      const U = {};
-      ['uLogo', 'uRes', 'uRect', 'uC', 'uUnit', 'uT1', 'uFade', 'uDrop', 'uInv', 'uTime'].forEach(function (n) {
-        U[n] = gl.getUniformLocation(prog, n);
-      });
-
-      let W = 0, H = 0, rect = [0, 0, 0, 0], C = [0, 0];
-      function layout() {
-        /* на телефонах воду рахуємо в меншій роздільності — не гріється */
-        const dpr = Math.min(window.devicePixelRatio || 1, innerWidth < 768 ? 1 : 1.5);
-        W = Math.round(host.clientWidth * dpr); H = Math.round(host.clientHeight * dpr);
-        canvas.width = W; canvas.height = H;
-        gl.viewport(0, 0, W, H);
-        const lw = Math.min(300, Math.max(170, innerWidth * 0.2)) * dpr, lh = lw * 301 / 381;
-        rect = [(W - lw) / 2, (H - lh) / 2, lw, lh];
-        C = [W / 2, H / 2];
-      }
-      layout();
-      window.addEventListener('resize', layout);
-      host.appendChild(canvas);
-      host.classList.add('is-water');
-
-      const DROP_FROM = 0.15, T_IMPACT = 0.55, BG_FADE = 1.0, LOGO_FADE = 0.6;
       const t0 = performance.now();
-      let fadeAt = -1;
-
-      /* вільне падіння: y росте квадратично — зверху до центру за відведений час */
-      function dropY(k) { return -0.05 * H + (C[1] + 0.05 * H) * k * k; }
-
-      /* Логотип над інтро: канва віддає його SVG у тій самій точці й розмірі,
-         WebGL звільняємо. Гасне під кінець інтро, раніше за появу заголовка. */
-      function handToSvg() {
-        host.classList.add('is-mark');
-        canvas.remove();
-        window.removeEventListener('resize', layout);
-        const lose = gl.getExtension('WEBGL_lose_context');
-        if (lose) lose.loseContext();
-        const intro = document.getElementById('heroIntro');
-        const began = performance.now();
-        (function watch() {
-          /* гасне трохи раніше за кінець: інтерфейс виїжджає за 0.74с до кінця
-             інтро, і логотип має піти до того, як під ним стане заголовок */
-          const end = intro && intro.duration ? intro.duration - LOGO_FADE - 0.35 : 0;
-          if ((intro && end && intro.currentTime >= end) || (intro && intro.ended) ||
-              document.body.classList.contains('intro-done') && !(intro && end) ||
-              performance.now() - began > 6000) {
-            host.classList.add('is-out');
-            setTimeout(gone, LOGO_FADE * 1000 + 50);
-          } else requestAnimationFrame(watch);
-        })();
+      let leaving = false;
+      function leave() {
+        if (leaving) return;
+        leaving = true;
+        resolveGate();                        /* інтро стартує під заставкою */
+        lettersOut(words[2], 0);
+        /* скошена шторка: нижній край заставки підіймається вгору, ліворуч вище */
+        const anim = host.animate([
+          { clipPath: 'polygon(0 0, 100% 0, 100% calc(100% + 14vh), 0 100%)' },
+          { clipPath: 'polygon(0 0, 100% 0, 100% 0%, 0 -14vh)' }
+        ], { duration: 1050, delay: 180, easing: INOUT, fill: 'both' });
+        anim.onfinish = done;
       }
-
-      function frame(now) {
-        const t = (now - t0) / 1000;
-        if (fadeAt < 0 && t >= MIN_HOLD && loaded()) {
-          fadeAt = t;
-          host.style.pointerEvents = 'none';
-          resolveGate();                  /* інтро стартує під водою, що розчиняється */
-        }
-        const fade = fadeAt < 0 ? 0 : Math.min(1, (t - fadeAt) / BG_FADE);
-
-        gl.uniform1i(U.uLogo, 0);
-        gl.uniform2f(U.uRes, W, H);
-        gl.uniform4f(U.uRect, rect[0], rect[1], rect[2], rect[3]);
-        gl.uniform2f(U.uC, C[0], C[1]);
-        gl.uniform1f(U.uUnit, Math.min(W, H));
-        gl.uniform1f(U.uT1, t - T_IMPACT);
-        gl.uniform1f(U.uFade, fade * fade * (3 - 2 * fade));   /* плавний старт і фініш */
-        gl.uniform1f(U.uDrop, t >= DROP_FROM && t < T_IMPACT ? dropY((t - DROP_FROM) / (T_IMPACT - DROP_FROM)) : -1);
-        gl.uniform1f(U.uInv, Math.min(1, Math.max(0, (t - 1.0) / 0.5)));
-        gl.uniform1f(U.uTime, t);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-        if (fade >= 1) { handToSvg(); return; }
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-
-      /* страховка: щось не долетіло — не тримаємо людину на заставці */
-      setTimeout(function () {
-        if (fadeAt < 0) { fadeAt = (performance.now() - t0) / 1000; host.style.pointerEvents = 'none'; resolveGate(); }
-      }, 12000);
+      (function wait() {
+        const t = (performance.now() - t0) / 1000;
+        if ((t >= MIN_HOLD && loaded()) || t > 12) leave();
+        else requestAnimationFrame(wait);
+      })();
 
       return gate;
     })();
