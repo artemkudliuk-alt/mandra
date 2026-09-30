@@ -1636,17 +1636,20 @@
     transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .pi-feature:hover .pi-feature-icon { background: rgba(129, 184, 115, 0.22); scale: 1.06; }
-  .pi-feature-icon svg {
+  .pi-feature-icon svg,
+  .why-tile-mark svg {
     width: 66%; height: 66%; display: block; overflow: visible;
     fill: none; stroke: currentColor; stroke-width: 1.6;
     stroke-linecap: round; stroke-linejoin: round;
   }
-  .pi-feature-icon svg * { transform-box: fill-box; }
+  .pi-feature-icon svg *,
+  .why-tile-mark svg * { transform-box: fill-box; }
   .pi-ease { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
 
   /* поява: лінії домальовуються одна за одною (анімує скрипт під сіткою —
      CSS-перехід на stroke-dashoffset тут залипав) */
-  .pi-features [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .pi-features [pathLength],
+  .why-grid [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; }
 
   /* 1. Ресторан — тарілка й прибори; пара над тарілкою, прибори розходяться */
   .ico-steam { opacity: 0; }
@@ -1710,8 +1713,9 @@
   .pi-feature:hover .ico-ring { opacity: 1; transition-delay: 0.1s; }
 
   @media (prefers-reduced-motion: reduce) {
-    .pi-features [pathLength] { stroke-dashoffset: 0; }
-    .pi-features *, .pi-feature:hover * { animation: none !important; transition: none !important; }
+    .pi-features [pathLength], .why-grid [pathLength] { stroke-dashoffset: 0; }
+    .pi-features *, .pi-feature:hover *,
+    .why-grid .why-tile-mark *, .why-tile:hover .why-tile-mark * { animation: none !important; transition: none !important; }
     .ico-steam { opacity: 0.7; }
   }
   .pi-feature-text {
@@ -1835,58 +1839,78 @@
 
   .why-tile-text {
     font-family: var(--sub-font, 'Manrope', sans-serif);
-    font-size: clamp(15px, 1.05vw, 20px);
+    font-size: clamp(21px, 1.47vw, 28px);
     font-weight: 600;
-    line-height: 1.34;
-    letter-spacing: -0.005em;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
     color: #FFFFFF;
     margin: 0;
-    max-width: 15em;
+    max-width: 14em;
   }
+  /* Знак плитки — той самий набір, що іконки можливостей Petrichor (лінія 1.6,
+     сітка 24, малювання при появі, одна жива деталь у спокої). На наведення
+     знак не ховається: під ним проступає фото, тож підкладка стає темним
+     склом, а сам знак робить свій жест. */
   .why-tile-mark {
     align-self: flex-end;
-    width: clamp(46px, 3.6vw, 66px);
-    height: clamp(46px, 3.6vw, 66px);
+    display: grid;
+    place-items: center;
+    width: clamp(64px, 5vw, 92px);
+    height: clamp(64px, 5vw, 92px);
+    border-radius: 50%;
+    background: rgba(129, 184, 115, 0.12);
     color: var(--accent-color, #81B873);
-    opacity: 0.85;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .why-tile-mark svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .why-tile:hover .why-tile-mark { opacity: 0; transform: translateY(6px); }
-
-  /* --- рух знаків: повільний, без ривків, кожен про свою плитку --- */
-  @keyframes whySpin { to { transform: rotate(360deg); } }
-  @keyframes whyRise { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.2px); } }
-  @keyframes whyBreathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.09); opacity: 0.55; } }
-  @keyframes whyFill { 0%, 100% { opacity: 0.28; } 50% { opacity: 1; } }
-  @keyframes whyDraw { 0% { stroke-dashoffset: 46; } 55%, 100% { stroke-dashoffset: 0; } }
-  @keyframes whyTravel { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-
-  /* 01 — доба й сезони: світило обходить коло */
-  .wm-orbit { transform-origin: 32px 32px; animation: whySpin 14s linear infinite; }
-  /* 02 — шість форм: дахи підіймаються по черзі */
-  .wm-roof { animation: whyRise 3.4s ease-in-out infinite; }
-  .wm-roof:nth-of-type(2) { animation-delay: 0.28s; }
-  .wm-roof:nth-of-type(3) { animation-delay: 0.56s; }
-  .wm-roof:nth-of-type(4) { animation-delay: 0.84s; }
-  .wm-roof:nth-of-type(5) { animation-delay: 1.12s; }
-  .wm-roof:nth-of-type(6) { animation-delay: 1.4s; }
-  /* 03 — управління: кільце дихає навколо ядра */
-  .wm-ring { transform-origin: 32px 32px; animation: whyBreathe 4.2s ease-in-out infinite; }
-  /* 04 — інфраструктура: поверхи набираються знизу вгору */
-  .wm-bar { animation: whyFill 3.6s ease-in-out infinite; }
-  .wm-bar:nth-of-type(2) { animation-delay: 0.4s; }
-  .wm-bar:nth-of-type(3) { animation-delay: 0.8s; }
-  /* 05 — три сценарії: промені прокреслюються з однієї точки */
-  .wm-ray { stroke-dasharray: 46; animation: whyDraw 4.6s ease-in-out infinite; }
-  .wm-ray:nth-of-type(2) { animation-delay: 0.5s; }
-  .wm-ray:nth-of-type(3) { animation-delay: 1s; }
-  /* 06 — доступність: точка йде маршрутом до місця */
-  .wm-dot { offset-path: path('M8 56 C 20 44, 18 30, 32 26 S 46 24, 48 29'); animation: whyTravel 5.2s ease-in-out infinite; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .wm-orbit, .wm-roof, .wm-ring, .wm-bar, .wm-ray, .wm-dot { animation: none; }
+  .why-tile:hover .why-tile-mark,
+  .why-tile:focus-visible .why-tile-mark {
+    background: rgba(10, 12, 10, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    scale: 1.06;
   }
+
+  /* 01 — 365 днів: стрілка кола повільно обертається, на наведення — пів оберту */
+  .ico-loop, .ico-loop-turn { transform-origin: 50% 50%; }
+  .is-drawn .ico-loop { animation: icoSpin 9s linear infinite; }
+  .why-tile:hover .ico-loop-turn { transform: rotate(180deg); }
+  .why-tile:hover .ico-rings { transform: translateY(-1px); }
+  /* 02 — шість рішень: будиночки по черзі «дихають», на наведення розходяться */
+  .is-drawn .ico-h1, .is-drawn .ico-h2, .is-drawn .ico-h3 { animation: icoBob 3.4s ease-in-out infinite; }
+  .is-drawn .ico-h2 { animation-delay: .35s; }
+  .is-drawn .ico-h3 { animation-delay: .7s; }
+  @keyframes icoBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.9px; } }
+  .why-tile:hover .ico-h1 { transform: translateX(-1.2px); }
+  .why-tile:hover .ico-h3 { transform: translateX(1.2px); }
+  /* 03 — Ribas: бирка гойдається на кільці, на наведення ключ повертається */
+  .ico-tag { transform-origin: 90% 0%; }
+  .is-drawn .ico-tag { animation: icoSwing 3.2s ease-in-out infinite; }
+  @keyframes icoSwing { 0%, 100% { rotate: -6deg; } 50% { rotate: 6deg; } }
+  .ico-key { transform-origin: 50% 20%; }
+  .why-tile:hover .ico-key { transform: rotate(-24deg); }
+  /* 04 — інфраструктура: вантаж гойдається на тросі, на наведення піднімається */
+  .ico-hook { transform-origin: 50% 0%; }
+  .is-drawn .ico-hook { animation: icoSwing 3.6s ease-in-out infinite; }
+  .why-tile:hover .ico-hook-lift { transform: translateY(-2.2px); }
+  /* 05 — три сценарії: стрілки ледь хитаються, на наведення розсуваються */
+  .ico-a1, .ico-a3 { transform-origin: 0% 50%; }
+  .ico-a2 { transform-origin: 100% 50%; }
+  .is-drawn .ico-a1 { animation: icoNod 3.8s ease-in-out infinite; }
+  .is-drawn .ico-a2 { animation: icoNod 3.8s ease-in-out -1.2s infinite reverse; }
+  .is-drawn .ico-a3 { animation: icoNod 3.8s ease-in-out -2.4s infinite; }
+  @keyframes icoNod { 0%, 100% { rotate: -3deg; } 50% { rotate: 3deg; } }
+  .why-tile:hover .ico-a1, .why-tile:hover .ico-a3 { transform: translateX(1.4px); }
+  .why-tile:hover .ico-a2 { transform: translateX(-1.4px); }
+  /* 06 — доступність: точка йде маршрутом до мітки, на наведення мітка підстрибує */
+  .ico-route { stroke-dasharray: 1.4 2.2; opacity: .55; }
+  .ico-walker { fill: currentColor; stroke: none; opacity: 0;
+    offset-path: path('M3 20.4c4-3.8 3.2-8 8-9.2s7.2-.6 7.6 1.6'); offset-rotate: 0deg; }
+  .is-drawn .ico-walker { animation: icoWalk 4.8s ease-in-out infinite; }
+  @keyframes icoWalk {
+    0% { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; }
+    85% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; }
+  }
+  .why-tile:hover .ico-pin { transform: translateY(-1.6px); }
 
   /* --- дотик: наведення не існує, тому фото видно одразу --- */
   @media (hover: none) {
@@ -6786,19 +6810,22 @@
       </div>
 
       <script>
-        /* іконки малюються, коли сітка можливостей потрапляє в кадр */
+        /* іконки малюються, коли сітка потрапляє в кадр: можливості Petrichor
+           і знаки плиток «Унікальність проєкту» */
         (() => {
-          const grid = document.querySelector('.pi-features');
-          new IntersectionObserver(([e], io) => {
+          const io = new IntersectionObserver((entries) => entries.forEach((e) => {
             if (!e.isIntersecting) return;
-            io.disconnect();
+            const grid = e.target;
+            io.unobserve(grid);
             grid.classList.add('is-drawn');
             if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             grid.querySelectorAll('[pathLength]').forEach(el => el.animate(
               [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }],
               { duration: 1100, delay: 100 + (+el.style.getPropertyValue('--i') || 0) * 120,
                 easing: 'cubic-bezier(0.65, 0, 0.35, 1)', fill: 'forwards' }));
-          }, { threshold: 0.35 }).observe(grid);
+          }), { threshold: 0.3 });
+          window.addEventListener('DOMContentLoaded', () =>
+            document.querySelectorAll('.pi-features, .why-grid').forEach(g => io.observe(g)));
         })();
       </script>
       <div class="pi-actions">
@@ -6907,70 +6934,42 @@
     <div class="why-grid">
       <div class="why-tile" data-img="assets/tiles/01_season.webp?v=1">
         <p class="why-tile-text" id="why1">Комплекс 365 днів на рік</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <circle cx="32" cy="32" r="21"/>
-        <g class="wm-orbit"><circle cx="32" cy="11" r="4.4" fill="currentColor" stroke="none"/></g>
-        <path d="M32 24.5a7.5 7.5 0 0 0 0 15 7.5 7.5 0 0 1 0-15z" fill="currentColor" stroke="none" opacity="0.55"/>
-      </svg></span>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect pathLength="1" style="--i:0" x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path pathLength="1" style="--i:1" d="M3.5 9.6h17"/><path pathLength="1" style="--i:1" class="ico-rings pi-ease" d="M8 3v3.6M16 3v3.6"/><g class="ico-loop-turn pi-ease"><g class="ico-loop"><path pathLength="1" style="--i:2" d="M15.3 15.1a3.3 3.3 0 1 1-.97-2.34"/><path pathLength="1" style="--i:3" d="M14.6 11.2l-.3 1.8 1.8.2"/></g></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/01_season.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/02_architecture.webp?v=1">
         <p class="why-tile-text" id="why2">6 різних архітектурних рішень</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
-        <path class="wm-roof" d="M6 28l7-12 7 12"/>
-        <path class="wm-roof" d="M25 28l7-9 7 9"/>
-        <path class="wm-roof" d="M44 28l7-14 7 14"/>
-        <path class="wm-roof" d="M6 54l7-9 7 9"/>
-        <path class="wm-roof" d="M25 54l7-13 7 13"/>
-        <path class="wm-roof" d="M44 54l7-10 7 10"/>
-      </svg></span>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" class="ico-h1 pi-ease" d="M2.6 19.2 6.4 10.4l3.8 8.8"/><path pathLength="1" style="--i:1" class="ico-h2 pi-ease" d="M9.4 19.2v-5.6l2.9-4.1 2.9 4.1v5.6"/><path pathLength="1" style="--i:2" class="ico-h3 pi-ease" d="M15.6 19.2v-7.6l5.6-2.6v10.2"/><path pathLength="1" style="--i:3" d="M1.8 20.2h20.4"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/02_architecture.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/03_service.webp?v=1">
-        <p class="why-tile-text" id="why3">Керуюча компанія Ribas Hotels Group</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2">
-        <g class="wm-ring"><path d="M32 9l19.9 11.5v23L32 55 12.1 43.5v-23z"/></g>
-        <circle cx="32" cy="32" r="7" fill="currentColor" stroke="none" opacity="0.9"/>
-      </svg></span>
+        <p class="why-tile-text" id="why3">Керуюча компанія Ribas&nbsp;Hotels&nbsp;Group</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-key pi-ease"><circle pathLength="1" style="--i:0" cx="13.5" cy="6.6" r="3.4"/><circle cx="13.5" cy="6.6" r=".9"/><path pathLength="1" style="--i:1" d="M13.5 10v10.4M13.5 16.6h2.6M13.5 19.2h2"/></g><g class="ico-tag"><path pathLength="1" style="--i:2" d="M10.8 8.6 8.6 11.4"/><path pathLength="1" style="--i:3" d="M5.4 11.9l3.9-.9 1.3 5.4-3.9.9z"/></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/03_service.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/04_infrastructure.webp?v=1">
-        <p class="why-tile-text" id="why4">Ключова інфраструктура від YOD Group</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
-        <rect class="wm-bar" x="9" y="43" width="46" height="11" rx="2.5"/>
-        <rect class="wm-bar" x="15" y="29" width="34" height="11" rx="2.5"/>
-        <rect class="wm-bar" x="21" y="15" width="22" height="11" rx="2.5"/>
-      </svg></span>
+        <p class="why-tile-text" id="why4">Ключова інфраструктура від YOD&nbsp;Group</p>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" d="M7 20.6V4.6M4.4 20.6h5.2"/><path pathLength="1" style="--i:1" d="M3.4 4.6h17.2M7 4.6 9.8 2.4l2.8 2.2"/><g class="ico-hook-lift pi-ease"><g class="ico-hook"><path pathLength="1" style="--i:2" d="M16.6 4.6v6"/><rect pathLength="1" style="--i:3" x="14.6" y="10.6" width="4" height="3.4" rx=".6"/></g></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/04_infrastructure.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/05_scenarios.webp?v=1">
         <p class="why-tile-text" id="why5">3 різні сценарії відпочинку</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <circle cx="32" cy="54" r="4.2" fill="currentColor" stroke="none"/>
-        <path class="wm-ray" d="M32 50V12"/>
-        <path class="wm-ray" d="M29 50L11 20"/>
-        <path class="wm-ray" d="M35 50l18-30"/>
-      </svg></span>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" d="M12 21V3.6M9.6 21h4.8"/><path pathLength="1" style="--i:1" class="ico-a1 pi-ease" d="M12 4.4h5.9l1.8 1.8-1.8 1.8H12"/><path pathLength="1" style="--i:2" class="ico-a2 pi-ease" d="M12 9.2H6.1l-1.8 1.8 1.8 1.8H12"/><path pathLength="1" style="--i:3" class="ico-a3 pi-ease" d="M12 14h4.9l1.8 1.8-1.8 1.8H12"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/05_scenarios.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/06_access.webp?v=1">
         <p class="why-tile-text" id="why6">Стабільний попит та зручна доступність</p>
-        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <path d="M8 56C20 44 18 30 32 26S46 24 48 29" stroke-dasharray="5 6" opacity="0.55"/>
-        <path d="M48 8c-4.2 0-7.6 3.4-7.6 7.6 0 5.6 7.6 13 7.6 13s7.6-7.4 7.6-13C55.6 11.4 52.2 8 48 8z"/>
-        <circle cx="48" cy="15.6" r="2.6" fill="currentColor" stroke="none"/>
-        <circle class="wm-dot" cx="0" cy="0" r="3.2" fill="currentColor" stroke="none"/>
-      </svg></span>
+        <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-route" d="M3 20.4c4-3.8 3.2-8 8-9.2s7.2-.6 7.6 1.6"/><g class="ico-pin pi-ease"><path pathLength="1" style="--i:0" d="M18.2 2.8c-2.3 0-4.1 1.8-4.1 4.1 0 3.1 4.1 7 4.1 7s4.1-3.9 4.1-7c0-2.3-1.8-4.1-4.1-4.1z"/><circle pathLength="1" style="--i:1" cx="18.2" cy="6.9" r="1.4"/></g><circle class="ico-walker" cx="0" cy="0" r="1.1"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/06_access.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
@@ -8619,8 +8618,8 @@
         whyTitle: 'Унікальність <span class="pi-accent">проєкту</span>',
         why1: 'Комплекс 365 днів на рік',
         why2: '6 різних архітектурних рішень',
-        why3: 'Керуюча компанія Ribas Hotels Group',
-        why4: 'Ключова інфраструктура від YOD Group',
+        why3: 'Керуюча компанія Ribas Hotels Group',
+        why4: 'Ключова інфраструктура від YOD Group',
         why5: '3 різні сценарії відпочинку',
         why6: 'Стабільний попит та зручна доступність',
         bsTitle: 'Етапи <span class="pi-accent">будівництва</span>',
@@ -8845,8 +8844,8 @@
         whyTitle: 'What makes the project <span class="pi-accent">unique</span>',
         why1: 'A resort open 365 days a year',
         why2: '6 different architectural solutions',
-        why3: 'Managed by Ribas Hotels Group',
-        why4: 'Key infrastructure by YOD Group',
+        why3: 'Managed by Ribas Hotels Group',
+        why4: 'Key infrastructure by YOD Group',
         why5: '3 different leisure scenarios',
         why6: 'Steady demand and easy access',
         bsTitle: 'Construction <span class="pi-accent">stages</span>',
