@@ -6740,7 +6740,7 @@
     .m-menu-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px;
                   padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
     .m-menu-tape { flex: 1; min-height: 90px; display: flex; align-items: center; overflow: hidden; margin: 12px -20px; pointer-events: none; container-type: size; }
-    .m-menu-tape-track { display: flex; width: max-content; animation: footerWatermarkScroll 38s linear infinite; }
+    .m-menu-tape-track { display: flex; width: max-content; animation: footerWatermarkScroll 54s linear infinite; }   /* на 30% повільніше */
     .m-menu-tape-track span {
       flex: none; padding-right: 0.35em; white-space: nowrap;
       font-family: var(--title-font, 'Unbounded', sans-serif); font-weight: 900; text-transform: uppercase;
@@ -6774,19 +6774,30 @@
        виїжджає після інтро, ховається з першим скролом */
     .hero-main-content .hero-release-badge { display: none !important; }
     .m-release {
-      position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 997;
-      display: flex; align-items: center; gap: 12px; max-width: calc(100% - 40px); box-sizing: border-box;
-      padding: 12px 20px 12px 14px; border-radius: 18px;
+      position: fixed; left: 50%; bottom: calc(34px + env(safe-area-inset-bottom)); z-index: 997;
+      display: flex; align-items: center; gap: 14px; max-width: calc(100% - 40px); box-sizing: border-box;
+      padding: 14px 24px 14px 17px; border-radius: 20px;
       background: var(--top-btn-bg, #DEF7D7); color: #12240E;
-      box-shadow: 3px 3px 4px rgba(0,0,0,0.28), 12px 16px 34px rgba(0,0,0,0.45);
+      /* тінь як у наліпки: щільна біля краю + м'яка далека, праворуч-униз */
+      box-shadow: 2px 3px 2px rgba(0,0,0,0.32), 6px 9px 14px rgba(0,0,0,0.32), 16px 24px 44px rgba(0,0,0,0.5);
       font-family: var(--sub-font); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
-      font-size: clamp(13px, 3.6vw, 16px); line-height: 1.25; text-align: left;
-      transform: translate(-50%, 160%) rotate(-2deg); opacity: 0;
+      font-size: clamp(15.6px, 4.32vw, 19px); line-height: 1.25; text-align: left;
+      transform: translate(-50%, 180%); rotate: -2deg; opacity: 0;
       transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
       pointer-events: none;
     }
-    .m-release.is-on { transform: translate(-50%, 0) rotate(-2deg); opacity: 1; }
-    .m-release-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-color, #81B873);
+    .m-release.is-on { transform: translate(-50%, 0); opacity: 1; animation: releaseWiggle 3.6s ease-in-out 1s infinite; }
+    /* легке «трусіння» раз на кілька секунд — щоб наліпка чіпляла око, а не смикалась */
+    @keyframes releaseWiggle {
+      0%, 76%, 100% { rotate: -2deg; scale: 1; }
+      80% { rotate: -4.5deg; scale: 1.035; }
+      84% { rotate: 0.5deg; }
+      88% { rotate: -3.5deg; }
+      92% { rotate: -1deg; }
+      96% { rotate: -2.4deg; scale: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { .m-release.is-on { animation: none; } }
+    .m-release-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-color, #81B873);
                      box-shadow: 0 0 0 0 rgba(129,184,115,0.7); animation: statusPulse 2s infinite; }
     .m-release-text { display: block; }
     .bg-video, .bg-photo { object-position: 72% 50%; background-position: 72% 50%; }
