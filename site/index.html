@@ -7120,6 +7120,9 @@
     .m-nav svg { width: 34px; height: 14px; display: block; overflow: visible;
                  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
     .m-nav button:active svg { transform: translateX(var(--nudge, 0)); transition-duration: 0.12s; }
+    .m-nav button.is-end { opacity: 0.28; pointer-events: none; }
+    .m-nav button { transition: opacity 0.3s ease; }
+    .bl-grid > .bl-card:last-child::before { width: 100%; }
     .m-nav button:first-child { --nudge: -6px; }
     .m-nav button:last-child  { --nudge: 6px; }
 
@@ -12745,6 +12748,8 @@
         const items = Array.prototype.slice.call(row.children);
         const n = items.length; if (n < 2) return;
         items.forEach(function (el, i) { el.dataset.k = i; });   /* копії успадкують номер */
+        /* хроніка має дати — по колу її не крутимо: від крайньої до крайньої */
+        const linear = row.classList.contains('bl-grid');
 
         function makeClone(el, i) {
           const c = el.cloneNode(true);
@@ -12764,6 +12769,7 @@
         }
         function build() {
           row.querySelectorAll('.m-clone').forEach(function (c) { c.remove(); });
+          if (linear) return;
           const head = document.createDocumentFragment(), tail = document.createDocumentFragment();
           items.forEach(function (el, i) { head.appendChild(makeClone(el, i)); tail.appendChild(makeClone(el, i)); });
           row.insertBefore(head, items[0]);
@@ -12788,13 +12794,14 @@
           requestAnimationFrame(function () { row.style.scrollSnapType = ''; });
         }
         function normalize() {
+          if (linear) { syncEnds(); return; }
           const k = current();
           if (k < n) jumpTo(k + n);
           else if (k >= 2 * n) jumpTo(k - n);
         }
 
         build();
-        requestAnimationFrame(function () { jumpTo(n); });
+        if (!linear) requestAnimationFrame(function () { jumpTo(n); });
 
         /* scrollend буває пропускає (заміряно: після плавного scrollTo в Chromium
            приходить не щоразу), тож страхуємо паузою в прокрутці. Поки палець на
@@ -12815,11 +12822,21 @@
           b.setAttribute('aria-label', d < 0 ? 'Попередня картка' : 'Наступна картка');
           b.innerHTML = ARROW(d);
           b.addEventListener('click', function () {
-            const k = current() + d;
+            let k = current() + d;
+            if (linear) k = Math.max(0, Math.min(n - 1, k));
             row.scrollTo({ left: offsetOf(k), behavior: 'smooth' });
           });
           nav.appendChild(b);
         });
+        /* лінійний набір: на краю стрілку в той бік приглушуємо */
+        function syncEnds() {
+          if (!linear) return;
+          const k = current(), bs = nav.querySelectorAll('button');
+          bs[0].classList.toggle('is-end', k <= 0);
+          bs[1].classList.toggle('is-end', k >= n - 1 || row.scrollLeft + row.clientWidth >= row.scrollWidth - 2);
+        }
+        row.addEventListener('scroll', function () { requestAnimationFrame(syncEnds); }, { passive: true });
+        requestAnimationFrame(syncEnds);
         /* стрілки — праворуч від заголовка секції; де заголовка над набором
            нема (засновники), окремим рядком над набором, теж праворуч */
         const key = Object.keys(HEAD).filter(function (c) { return row.classList.contains(c); })[0];
@@ -12838,7 +12855,7 @@
         }
         head.appendChild(nav);
 
-        loops.push(function () { const k = current(); build(); jumpTo(k); });
+        if (!linear) loops.push(function () { const k = current(); build(); jumpTo(k); });
       });
 
       /* Гарантія під формою — у два рядки: «Відповідаємо…» з нового рядка.
