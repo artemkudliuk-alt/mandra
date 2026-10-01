@@ -6799,23 +6799,29 @@
 
 
     /* ---------- ГЕНПЛАН 9:16: карта на весь екран, черги впираються в краї ----------
-       План лишається 16:9 і висоти кадру; видно смугу ~32% ширини навколо
-       комплексу. Розміщення плану = формула object-position (left p% і зсув −p%),
-       тож старт-кадр відео прольоту з тим самим object-position збігається з
-       планом піксель у піксель. Далі кадр за час прольоту плавно їде до будинку. */
+       План лишається 16:9 і висоти кадру. Точка 67.8% ширини плану — центр
+       трьох міток I/II/III — стоїть рівно по центру екрана на будь-якому
+       телефоні: left 50% і зсув на −67.8% ширини самого плану. Відео прольоту
+       й стоп-кадр мають ту саму геометрію, тож старт-кадр збігається з планом
+       піксель у піксель, а проліт до будинку — це зміна того ж зсуву. */
     .mp-clean-media { --mph: clamp(560px, 100svh, 900px); padding-top: var(--mph); overflow: hidden; }
     .mp-clean-media::before { display: none; }
     .mp-plan { position: absolute; top: 0; height: var(--mph); width: auto; aspect-ratio: 16 / 9;
-               left: 74%; transform: translateX(-74%); }
+               left: 50%; transform: translateX(-67.8%); }
     .mp-phase-video, .mp-phase-endframe, .mp-clean-media::after { bottom: auto !important; height: var(--mph) !important; }
     /* під час прольоту текст під картою ховаємо — кадр 9:16 лишається сам */
     .section-masterplan-clean.mp-video-active .mp-pills,
     .section-masterplan-clean.mp-video-active .mp-floating-content { display: none !important; }
     .mp-plan .mp-clean-img { width: 100%; height: 100%; }
-    .mp-phase-video, .mp-phase-endframe { object-position: 74% 50%; }
+    .mp-phase-video, .mp-phase-endframe {
+      inset: auto !important; top: 0 !important; left: 50% !important;
+      width: auto !important; aspect-ratio: 16 / 9;
+      transform: translateX(-67.8%);
+    }
+    /* A-frame I черги стоїть лівіше за центр міток — камера доводить кадр до нього */
     .section-masterplan-clean.mp-video-active[data-phase="1"] .mp-phase-video,
-    .section-masterplan-clean[data-phase="1"] .mp-phase-endframe { object-position: 67% 50%; }
-    .section-masterplan-clean.mp-video-active .mp-phase-video { transition: opacity 0.5s ease, object-position 2.4s cubic-bezier(0.65, 0, 0.35, 1); }
+    .section-masterplan-clean[data-phase="1"] .mp-phase-endframe { transform: translateX(-62.8%); }
+    .section-masterplan-clean.mp-video-active .mp-phase-video { transition: opacity 0.5s ease, transform 2.4s cubic-bezier(0.65, 0, 0.35, 1); }
     /* темніє донизу, як герой — під картку черги */
     .mp-clean-media::after { background: linear-gradient(180deg, rgba(10,12,10,0.55) 0%, rgba(10,12,10,0) 22%, rgba(10,12,10,0) 42%, rgba(10,12,10,0.88) 78%, rgba(10,12,10,0.96) 100%) !important; }
 
