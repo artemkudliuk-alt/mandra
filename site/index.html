@@ -1741,8 +1741,29 @@
   }
   .pi-status .pulse-dot { flex: none; }
 
-  /* ДЕСКТОП: статус — рівна квадратна рамка на чорному тлі з бігучим рядком
-     по колу. Без заливки, без повороту, без тіні. */
+  /* ДЕСКТОП: замість рядка статусу — табло з двох половин: «I черга — приймає
+     гостей · Працює» і «II · III черги — 81 котедж · У продажу». */
+  .pi-phases { display: none; }
+  @media (min-width: 768px) {
+    .pi-actions > .pi-status { display: none !important; }
+    .pi-phases {
+      flex: 1; min-width: 0; display: flex; align-items: stretch;
+      border-top: 1px solid rgba(255, 255, 255, 0.14); border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .pi-ph { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 0 clamp(16px, 1.6vw, 26px); }
+    .pi-ph + .pi-ph { border-left: 1px solid rgba(255, 255, 255, 0.14); }
+    .pi-ph .pulse-dot { flex: none; }
+    .pi-ph-k { flex: none; font-family: var(--title-font, 'Unbounded', sans-serif); font-weight: 800; font-size: clamp(11px, 0.78vw, 13px);
+               letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); white-space: nowrap; }
+    .pi-ph-t { font-family: var(--sub-font, 'Manrope', sans-serif); font-weight: 700; font-size: clamp(15px, 1.15vw, 19px);
+               color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pi-ph-tag { margin-left: auto; flex: none; padding: 5px 12px; border-radius: 999px; font-family: var(--sub-font, 'Manrope', sans-serif);
+                 font-weight: 800; font-size: clamp(11px, 0.75vw, 12px); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+    .pi-ph-tag.is-on { background: rgba(129, 184, 115, 0.16); color: var(--accent-color, #81B873); }
+    .pi-ph-tag.is-sale { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); color: #FFFFFF; }
+  }
+
+  /* ДЕСКТОП (було): статус — рівна квадратна рамка з бігучим рядком. */
   @media (min-width: 768px) {
     .pi-status.is-ticker {
       display: block; overflow: hidden; padding: 0; min-width: 0;
@@ -7628,6 +7649,21 @@
           <span class="pulse-dot" aria-hidden="true"></span>
           <span id="piStatus">Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.</span>
         </div>
+
+        <!-- Десктоп: статус черг двома половинами, як табло -->
+        <div class="pi-phases">
+          <div class="pi-ph">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            <span class="pi-ph-k" id="piPh1K">I черга</span>
+            <span class="pi-ph-t" id="piPh1T">Приймає гостей</span>
+            <span class="pi-ph-tag is-on" id="piPh1Tag">Працює</span>
+          </div>
+          <div class="pi-ph">
+            <span class="pi-ph-k" id="piPh2K">II · III черги</span>
+            <span class="pi-ph-t" id="piPh2T">81 котедж</span>
+            <span class="pi-ph-tag is-sale" id="piPh2Tag">У продажу</span>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -9431,6 +9467,8 @@
         heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
         vbTitleA: 'Відчуй атмосферу', vbTitleB: 'лісу',
         piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
+        piPh1K: 'I черга', piPh1T: 'Приймає гостей', piPh1Tag: 'Працює',
+        piPh2K: 'II · III черги', piPh2T: '81 котедж', piPh2Tag: 'У продажу',
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
         piTag1: 'територія', piTag2: 'котеджі', piTag4: 'інфраструктура',
@@ -9657,6 +9695,8 @@
         heroBadge: 'Phase<br>II handover<br>this<br>year',
         vbTitleA: 'Feel the atmosphere of the', vbTitleB: 'forest',
         piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
+        piPh1K: 'Phase I', piPh1T: 'Welcoming guests', piPh1Tag: 'Open',
+        piPh2K: 'Phases II · III', piPh2T: '81 cottages', piPh2Tag: 'For sale',
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
         piTag1: 'territory', piTag2: 'cottages', piTag4: 'infrastructure',
@@ -9951,7 +9991,7 @@
                   'mfFooterTitle','mfP1Name','mfP1Desc','mfP2Name','mfP2Desc',
                   'mfP3Name','mfP3Desc','mfP4Name','mfP4Desc',
                   /* ЕКРАН 3 — Mandra Petrichor: комплекс у цифрах */
-                  'piLead','piStatus','piCtaText',
+                  'piLead','piStatus','piCtaText','piPh1K','piPh1T','piPh1Tag','piPh2K','piPh2T','piPh2Tag',
                   'piTag1','piTag2','piTag4','piUnit1','piUnit4',
                   'piCard1','piCard2','piCard4',
                   'piF1','piF2','piF3','piF4','piF5','piF6',
