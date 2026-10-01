@@ -6791,7 +6791,10 @@
     .why-tile-img { opacity: 0.45 !important; }
 
     /* ---------- ГЕНПЛАН ---------- */
-    .mp-floating-content { position: relative; top: auto; left: auto; max-width: none; margin: 0; padding: 32px 20px 8px; }
+    /* заголовок «Масштаб Mandra Petrichor» і текст стоять НАД картою (JS виносить
+       блок перед .mp-clean-media); плашки черг під картою не потрібні */
+    .mp-floating-content { position: relative; top: auto; left: auto; max-width: none; margin: 0; padding: 56px 20px 28px; }
+    .mp-pills { display: none !important; }
     .mp-float-title { font-size: clamp(32px, 8.21vw, 50px) !important; }
     .mp-float-subtitle { font-size: clamp(19px, 4.87vw, 29px) !important; }
     .mp-float-desc { font-size: clamp(16px, 4.1vw, 25px) !important; line-height: 1.55; }
@@ -6814,9 +6817,8 @@
     .mp-plan { position: absolute; top: 0; height: var(--mph); width: auto; aspect-ratio: 16 / 9;
                left: 50%; transform: translateX(-67.8%); }
     .mp-phase-video, .mp-phase-endframe, .mp-clean-media::after { bottom: auto !important; height: var(--mph) !important; }
-    /* під час прольоту текст під картою ховаємо — кадр 9:16 лишається сам */
-    .section-masterplan-clean.mp-video-active .mp-pills,
-    .section-masterplan-clean.mp-video-active .mp-floating-content { display: none !important; }
+    /* текст над картою під час прольоту лише гасне (opacity з базових стилів):
+       display:none зсунув би карту вгору на висоту тексту */
     .mp-plan .mp-clean-img { width: 100%; height: 100%; }
     .mp-phase-video, .mp-phase-endframe {
       inset: auto !important; top: 0 !important; left: 50% !important;
@@ -6839,7 +6841,7 @@
     .mp-phase-num { font-size: 12px !important; letter-spacing: 0.22em; margin-bottom: 10px; }
     .mp-phase-title { font-size: clamp(30px, 8.7vw, 44px) !important; line-height: 1.05; letter-spacing: -0.025em; text-wrap: balance; }
     .mp-phase-desc { font-size: clamp(16px, 4.4vw, 20px) !important; line-height: 1.5; margin: 12px auto 0; max-width: 30em; text-wrap: balance; }
-    .mp-phase-count-row { justify-content: center; margin-top: 14px; }
+    .mp-phase-count-row { justify-content: center; margin-top: 14px; border-bottom: none !important; padding-bottom: 0 !important; }
     .mp-phase-count, .mp-phase-status { font-size: 14px !important; }
     .mp-phase-list:not([style*="none"]) { display: flex !important; } .mp-phase-list { grid-template-columns: none !important; justify-content: center; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; }
     .mp-phase-list span { font-size: 15px !important; }
@@ -12426,6 +12428,9 @@
       if (!window.matchMedia('(max-width: 767px)').matches) return;
 
       /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
+      const mpMedia = document.querySelector('.mp-clean-media'), mpText = document.querySelector('.mp-clean-media > .mp-floating-content');
+      if (mpMedia && mpText) mpMedia.before(mpText);   /* заголовок генплану — над картою */
+
       const cards = document.querySelectorAll('.bs-grid .bs-card'), bars = document.querySelectorAll('.bs-bars .bs-bar');
       cards.forEach(function (c, i) { if (bars[i]) c.appendChild(bars[i]); });
 
