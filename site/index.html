@@ -7186,6 +7186,7 @@
                  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
     .m-nav button:active svg { transform: translateX(var(--nudge, 0)); transition-duration: 0.12s; }
     .m-nav button.is-end { opacity: 0.28; pointer-events: none; }
+    .why-grid.is-drifting { scroll-snap-type: none !important; }
     .m-nav button { transition: opacity 0.3s ease; }
     .bl-grid > .bl-card:last-child::before { width: 100%; }
     .m-nav button:first-child { --nudge: -6px; }
@@ -12938,7 +12939,7 @@
            приходить не щоразу), тож страхуємо паузою в прокрутці. Поки палець на
            екрані — не стрибаємо: інакше набір смикнувся б під пальцем. */
         let t = 0, touching = false;
-        function settle() { if (!touching) normalize(); }
+        function settle() { if (!touching && !row.classList.contains('is-drifting')) normalize(); }
         function later() { clearTimeout(t); t = setTimeout(settle, 160); }
         row.addEventListener('scroll', later, { passive: true });
         row.addEventListener('scrollend', settle);
@@ -12988,29 +12989,39 @@
 
         if (!linear) loops.push(function () { const k = current(); build(); jumpTo(k); });
 
-        /* «Унікальність проєкту» листається сама. Темп — 4.5 с на картку: це
-           ритм сайту (пульс наліпки 3.6 с, імпульс хроніки 3.6 с, доба героя 10 с)
-           і досить, щоб прочитати короткий заголовок картки. Йде лише коли набір
-           у кадрі; дотик чи стрілка зупиняють автопрокрутку, після 7 с тиші вона
-           продовжується. При «зменшити рух» — не вмикається. */
+        /* «Унікальність проєкту» пливе сама: стрічка повільно й безперервно їде
+           ліворуч (~28 px/с — картка за ~11 с, не поспішаючи). Пальцем її можна
+           будь-коли взяти й прогорнути — тоді плавання зупиняється, картки
+           прилипають як звичайно, а через 6 с тиші стрічка знову попливе з місця,
+           де її лишили. Йде лише коли набір у кадрі й вкладка активна. По колу:
+           щойно доїхали до третього комплекту — непомітно на комплект назад.
+           При «зменшити рух» не вмикається. */
         if (row.classList.contains('why-grid') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          const STEP = 4500, IDLE = 7000;
-          let timer = 0, inView = false, quietUntil = 0;
-          const tick = function () {
-            if (inView && !document.hidden && Date.now() >= quietUntil && !touching) {
-              row.scrollTo({ left: offsetOf(current() + 1), behavior: 'smooth' });
-            }
-          };
-          const start = function () { if (!timer) timer = setInterval(tick, STEP); };
-          const stop = function () { clearInterval(timer); timer = 0; };
-          const hush = function () { quietUntil = Date.now() + IDLE; };
+          const SPEED = 28, IDLE = 6000;
+          let inView = false, quietUntil = 0, pos = -1, last = 0, raf = 0;
+          row.dataset.drift = '1';
+          const setW = function () { return all()[n].getBoundingClientRect().left - all()[0].getBoundingClientRect().left; };
+          const drifting = function () { return inView && !document.hidden && !touching && Date.now() >= quietUntil; };
+          function frame(t) {
+            raf = requestAnimationFrame(frame);
+            const dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t;
+            if (!drifting()) { pos = -1; row.classList.remove('is-drifting'); return; }
+            if (pos < 0) { pos = row.scrollLeft; row.classList.add('is-drifting'); }
+            pos += SPEED * dt;
+            const w = setW();
+            if (pos >= offsetOf(2 * n) - 1) pos -= w;          /* третій комплект → на комплект назад */
+            row.scrollLeft = pos;
+          }
+          const hush = function () { quietUntil = Date.now() + IDLE; pos = -1; row.classList.remove('is-drifting'); };
           row.addEventListener('touchstart', hush, { passive: true });
           row.addEventListener('pointerdown', hush);
-          nav.addEventListener('click', hush);
+          row.addEventListener('wheel', hush, { passive: true });
+          nav.addEventListener('click', hush, true);
           new IntersectionObserver(function (e) {
-            inView = e[0].intersectionRatio > 0.5;
-            if (inView) start(); else stop();
-          }, { threshold: [0, 0.5, 1] }).observe(row);
+            inView = e[0].intersectionRatio > 0.4;
+            if (inView && !raf) { last = 0; raf = requestAnimationFrame(frame); }
+            if (!inView && raf) { cancelAnimationFrame(raf); raf = 0; row.classList.remove('is-drifting'); pos = -1; }
+          }, { threshold: [0, 0.4, 1] }).observe(row);
         }
       });
 
