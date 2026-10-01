@@ -4045,7 +4045,11 @@
 
   @media (max-width: 900px) { .mp-cursor { display: none; } }
   @media (max-width: 767px) {
-    .mp-marker { pointer-events: auto; cursor: pointer; padding: 14px; gap: 2px; }
+    /* метка черги — div з роллю кнопки: прибираємо системну підсвітку дотику
+       (сірий/синій прямокутник на iOS і Android) і рамку фокусу після тапу */
+    .mp-marker { pointer-events: auto; cursor: pointer; padding: 14px; gap: 2px;
+                 -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; outline: none; }
+    .mp-marker:focus, .mp-marker:focus-visible, .mp-plan, .mp-clean-media { -webkit-tap-highlight-color: transparent; outline: none; }
     .mp-mk-num { font-size: clamp(30px, 8.5vw, 46px) !important; -webkit-text-stroke: 4px rgba(5, 11, 6, 0.6); }
     .mp-mk-title { font-size: clamp(14px, 3.8vw, 20px) !important; }
     .mp-mk-ping { width: 76px; height: 76px; min-width: 0; min-height: 0; }
