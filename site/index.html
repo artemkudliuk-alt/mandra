@@ -1851,7 +1851,10 @@
      склом, а сам знак робить свій жест. */
   /* десктоп: заголовок плитки по центру */
   @media (min-width: 768px) {
+    .why-tile { justify-content: center; }
     .why-tile-text { align-self: center; text-align: center; text-wrap: balance; }
+    /* знак не займає місця в потоці — заголовок стоїть рівно в центрі плитки */
+    .why-tile-mark { position: absolute; right: clamp(20px, 1.9vw, 34px); bottom: clamp(20px, 1.9vw, 34px); }
   }
   .why-tile-mark {
     align-self: flex-end;
