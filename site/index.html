@@ -6880,14 +6880,16 @@
     /* «Ribas Hotels Group» зв'язано нерозривними пробілами — розмір такий, щоб
        назва влазила в картку цілком, а не обрізалась по правому краю */
     .founders-hero-text { font-size: min(18px, 4.6vw) !important; }
-    /* засновники: на старті набір стоїть рівно від лівого краю — хвіст останньої
-       картки (копія з кола) у лівому полі не видно */
-    .founders-top-grid { clip-path: inset(-20px 0 -20px 20px); }
+    /* усі свайп-набори: на старті перша картка рівно від лівого краю — хвіст
+       останньої картки (копія з кола) у лівому полі не видно */
+    .why-grid, .bs-grid, .bl-grid, .founders-top-grid { clip-path: inset(-20px 0 -20px 20px); }
     /* відступ від кнопок черг до карток засновників — менший */
     .section-phase1-live { padding-bottom: 36px !important; }
     .section-founders { padding-top: 20px !important; }
     /* після логотипів партнерів до наступного фону — вдвічі менше повітря (105 → 52px) */
     .section-partners { padding-bottom: 21px !important; }
+    /* від останнього питання FAQ до «Потрібна консультація?» — вдвічі менше (174 → 87px) */
+    .section-faq { padding-bottom: 13px !important; }
     .founder-name { font-size: clamp(20px, 5.13vw, 31px) !important; }
     .founder-role { font-size: clamp(14px, 3.59vw, 22px) !important; }
     .founders-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
