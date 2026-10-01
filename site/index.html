@@ -1455,7 +1455,7 @@
   .pi-features {
     grid-column: span 7;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));   /* чотири можливості — 2×2 */
     gap: clamp(12px, 1vw, 20px);
   }
   .pi-actions {
@@ -6814,6 +6814,24 @@
     .pi-title { font-size: clamp(34px, 8.72vw, 53px) !important; }
     .pi-lead { font-size: clamp(16px, 4.1vw, 25px) !important; }
     .pi-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px; }
+    /* цифри: «10 га» зеленою на всю ширину, «101» і «4 000 м²» — темними в один рядок */
+    .pi-container { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; column-gap: 10px; }
+    .pi-figure:nth-of-type(2), .pi-figure:nth-of-type(3) { grid-column: span 1 !important; padding: 18px; }
+    .pi-figure:nth-of-type(1) { background: var(--accent-color, #81B873); }
+    .pi-figure:nth-of-type(1) .pi-card-num { color: #0E1F0B; }
+    .pi-figure:nth-of-type(1) .pi-card-text { color: rgba(14, 31, 11, 0.78); }
+    .pi-figure:nth-of-type(1) .pi-card-tag { box-shadow: inset 0 0 0 1px rgba(14, 31, 11, 0.3); color: rgba(14, 31, 11, 0.8); }
+    .pi-figure.pi-card-accent { background: rgba(255, 255, 255, 0.045); }
+    .pi-figure.pi-card-accent .pi-card-num { color: var(--accent-color, #81B873); }
+    .pi-figure.pi-card-accent .pi-card-text { color: rgba(255, 255, 255, 0.72); }
+    .pi-figure.pi-card-accent .pi-card-tag { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.78); }
+    .pi-figure:nth-of-type(2) .pi-card-num, .pi-figure:nth-of-type(3) .pi-card-num { font-size: clamp(27px, 7.4vw, 44px) !important; white-space: nowrap; }
+    .pi-figure:nth-of-type(2) .pi-card-unit, .pi-figure:nth-of-type(3) .pi-card-unit { font-size: 0.42em !important; }
+    .pi-figure:nth-of-type(2) .pi-card-tag, .pi-figure:nth-of-type(3) .pi-card-tag { padding: 4px 9px; letter-spacing: 0.04em; max-width: 100%; box-sizing: border-box; }
+    .pi-figure:nth-of-type(2) .pi-card-text, .pi-figure:nth-of-type(3) .pi-card-text { font-size: clamp(14px, 3.6vw, 17px) !important; }
+    /* можливості — як картки-досягнення: по центру, значок над підписом */
+    .pi-feature { align-items: center !important; text-align: center; justify-content: center; padding: 20px 12px; min-height: 128px; }
+    .pi-feature .pi-feature-text { text-wrap: balance; }
     .pi-feature { min-height: 0; padding: 14px; flex-direction: column; align-items: flex-start; gap: 10px; }
     .pi-feature-text { font-size: clamp(15px, 3.85vw, 23px) !important; }
     .pi-actions { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -7437,11 +7455,7 @@
       <div class="pi-features">
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle pathLength="1" style="--i:0" cx="12" cy="13.5" r="5.2"/><circle pathLength="1" style="--i:1" cx="12" cy="13.5" r="2.6" opacity=".55"/><path pathLength="1" style="--i:2" class="ico-fork pi-ease" d="M3.4 6.5v3.2a1.2 1.2 0 0 0 2.4 0V6.5M4.6 11v8.5"/><path pathLength="1" style="--i:2" class="ico-knife pi-ease" d="M20.4 19.5V6.5c-1.5 1-2.1 3-2.1 5.4h2.1"/><path class="ico-steam" d="M10.6 6.2c-.7-.8.7-1.5 0-2.4"/><path class="ico-steam" d="M13.4 6.2c-.7-.8.7-1.5 0-2.4"/></svg></span>
-            <p class="pi-feature-text" id="piF1">Ресторан</p>
-          </article>
-          <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" class="ico-petal-c pi-ease" d="M12 4.2c2.1 2.3 2.1 6.4 0 8.8c-2.1-2.4-2.1-6.5 0-8.8Z"/><path pathLength="1" style="--i:1" class="ico-petal-l pi-ease" d="M12 13c-3.3 0-6.1-1.9-7.1-5.1c3.1.1 5.7 1.9 7.1 5.1Z"/><path pathLength="1" style="--i:1" class="ico-petal-r pi-ease" d="M12 13c3.3 0 6.1-1.9 7.1-5.1c-3.1.1-5.7 1.9-7.1 5.1Z"/><path pathLength="1" style="--i:2" class="ico-wave" d="M3.5 16.6c1.4 0 1.4 1 2.8 1s1.4-1 2.8-1 1.4 1 2.9 1 1.4-1 2.8-1 1.4 1 2.8 1 1.4-1 2.9-1"/><path pathLength="1" style="--i:3" class="ico-wave" d="M7 20.2c1.3 0 1.3.8 2.5.8s1.3-.8 2.5-.8 1.3.8 2.5.8 1.3-.8 2.5-.8" opacity=".6"/></svg></span>
-            <p class="pi-feature-text" id="piF2">SPA-комплекс</p>
+            <p class="pi-feature-text" id="piF1">Ресторан та SPA-комплекс</p>
           </article>
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-adult-l pi-ease"><circle pathLength="1" style="--i:0" cx="6.2" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M2.8 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-adult-r pi-ease"><circle pathLength="1" style="--i:0" cx="17.8" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M14.4 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-kid"><circle pathLength="1" style="--i:2" cx="12" cy="12.4" r="1.6"/><path pathLength="1" style="--i:3" d="M9.9 20v-2.1a2.1 2.1 0 0 1 4.2 0V20"/></g></svg></span>
@@ -7454,10 +7468,6 @@
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-trio"><circle pathLength="1" style="--i:0" class="ico-c1 pi-ease" cx="12" cy="8.3" r="4.3"/><circle pathLength="1" style="--i:1" class="ico-c2 pi-ease" cx="8.2" cy="14.9" r="4.3"/><circle pathLength="1" style="--i:2" class="ico-c3 pi-ease" cx="15.8" cy="14.9" r="4.3"/></g></svg></span>
             <p class="pi-feature-text" id="piF5">Три концепції відпочинку</p>
-          </article>
-          <article class="pi-feature">
-            <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-bell"><path pathLength="1" style="--i:0" d="M5.3 16.4a6.7 6.7 0 0 1 13.4 0"/><path pathLength="1" style="--i:1" d="M4.4 16.4h15.2"/><path pathLength="1" style="--i:2" d="M12 9.7V8M10.3 7.6h3.4"/><path class="ico-shine" d="M8.3 13.8a4.2 4.2 0 0 1 2.1-2.6"/></g><path pathLength="1" style="--i:3" d="M3 19.4h18"/><path class="ico-ring pi-ease" d="M3.6 9.6 2.3 8.4M20.4 9.6l1.3-1.2M5.2 6.6 4.5 5.1M18.8 6.6l.7-1.5"/></svg></span>
-            <p class="pi-feature-text" id="piF6">Готельне управління Ribas Hotels Group</p>
           </article>
       </div>
 
@@ -9298,7 +9308,7 @@
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
         piTag1: 'територія', piTag2: 'котеджі', piTag4: 'інфраструктура',
-        piF1: 'Ресторан',
+        piF1: 'Ресторан та SPA-комплекс',
         piF2: 'SPA-комплекс',
         piF3: 'Простори для сімейного відпочинку',
         piF4: 'Простори для дорослого відпочинку',
@@ -9524,7 +9534,7 @@
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
         piTag1: 'territory', piTag2: 'cottages', piTag4: 'infrastructure',
-        piF1: 'Restaurant',
+        piF1: 'Restaurant & spa complex',
         piF2: 'Spa complex',
         piF3: 'Spaces for family leisure',
         piF4: 'Spaces for adult leisure',
