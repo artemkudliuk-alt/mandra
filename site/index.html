@@ -12986,6 +12986,31 @@
         head.appendChild(nav);
 
         if (!linear) loops.push(function () { const k = current(); build(); jumpTo(k); });
+
+        /* «Унікальність проєкту» листається сама. Темп — 4.5 с на картку: це
+           ритм сайту (пульс наліпки 3.6 с, імпульс хроніки 3.6 с, доба героя 10 с)
+           і досить, щоб прочитати короткий заголовок картки. Йде лише коли набір
+           у кадрі; дотик чи стрілка зупиняють автопрокрутку, після 7 с тиші вона
+           продовжується. При «зменшити рух» — не вмикається. */
+        if (row.classList.contains('why-grid') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          const STEP = 4500, IDLE = 7000;
+          let timer = 0, inView = false, quietUntil = 0;
+          const tick = function () {
+            if (inView && !document.hidden && Date.now() >= quietUntil && !touching) {
+              row.scrollTo({ left: offsetOf(current() + 1), behavior: 'smooth' });
+            }
+          };
+          const start = function () { if (!timer) timer = setInterval(tick, STEP); };
+          const stop = function () { clearInterval(timer); timer = 0; };
+          const hush = function () { quietUntil = Date.now() + IDLE; };
+          row.addEventListener('touchstart', hush, { passive: true });
+          row.addEventListener('pointerdown', hush);
+          nav.addEventListener('click', hush);
+          new IntersectionObserver(function (e) {
+            inView = e[0].intersectionRatio > 0.5;
+            if (inView) start(); else stop();
+          }, { threshold: [0, 0.5, 1] }).observe(row);
+        }
       });
 
       /* Гарантія під формою — у два рядки: «Відповідаємо…» з нового рядка.
