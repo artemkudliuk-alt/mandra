@@ -6797,6 +6797,47 @@
     .mp-phase-title { font-size: clamp(24px, 6.15vw, 37px) !important; }
     .mp-phase-desc, .mp-phase-list span { font-size: clamp(15px, 3.85vw, 23px) !important; }
 
+
+    /* ---------- ГЕНПЛАН 9:16: карта на весь екран, черги впираються в краї ----------
+       План лишається 16:9 і висоти кадру; видно смугу ~32% ширини навколо
+       комплексу. Розміщення плану = формула object-position (left p% і зсув −p%),
+       тож старт-кадр відео прольоту з тим самим object-position збігається з
+       планом піксель у піксель. Далі кадр за час прольоту плавно їде до будинку. */
+    .mp-clean-media { --mph: clamp(560px, 100svh, 900px); padding-top: var(--mph); overflow: hidden; }
+    .mp-clean-media::before { display: none; }
+    .mp-plan { position: absolute; top: 0; height: var(--mph); width: auto; aspect-ratio: 16 / 9;
+               left: 74%; transform: translateX(-74%); }
+    .mp-phase-video, .mp-phase-endframe, .mp-clean-media::after { bottom: auto !important; height: var(--mph) !important; }
+    /* під час прольоту текст під картою ховаємо — кадр 9:16 лишається сам */
+    .section-masterplan-clean.mp-video-active .mp-pills,
+    .section-masterplan-clean.mp-video-active .mp-floating-content { display: none !important; }
+    .mp-plan .mp-clean-img { width: 100%; height: 100%; }
+    .mp-phase-video, .mp-phase-endframe { object-position: 74% 50%; }
+    .section-masterplan-clean.mp-video-active[data-phase="1"] .mp-phase-video,
+    .section-masterplan-clean[data-phase="1"] .mp-phase-endframe { object-position: 67% 50%; }
+    .section-masterplan-clean.mp-video-active .mp-phase-video { transition: opacity 0.5s ease, object-position 2.4s cubic-bezier(0.65, 0, 0.35, 1); }
+    /* темніє донизу, як герой — під картку черги */
+    .mp-clean-media::after { background: linear-gradient(180deg, rgba(10,12,10,0.55) 0%, rgba(10,12,10,0) 22%, rgba(10,12,10,0) 42%, rgba(10,12,10,0.88) 78%, rgba(10,12,10,0.96) 100%) !important; }
+
+    /* картка черги — у почерку першого екрана: по центру, знизу кадру */
+    .section-masterplan-clean.mp-video-active.mp-ended .mp-phase-card {
+      left: 20px !important; right: 20px !important; top: auto !important; bottom: 40px !important;
+      width: auto !important; min-width: 0 !important; transform: none !important;
+      padding: 0 !important; background: none !important; text-align: center;
+    }
+    .mp-phase-num { font-size: 12px !important; letter-spacing: 0.22em; margin-bottom: 10px; }
+    .mp-phase-title { font-size: clamp(30px, 8.7vw, 44px) !important; line-height: 1.05; letter-spacing: -0.025em; text-wrap: balance; }
+    .mp-phase-desc { font-size: clamp(16px, 4.4vw, 20px) !important; line-height: 1.5; margin: 12px auto 0; max-width: 30em; text-wrap: balance; }
+    .mp-phase-count-row { justify-content: center; margin-top: 14px; }
+    .mp-phase-count, .mp-phase-status { font-size: 14px !important; }
+    .mp-phase-list:not([style*="none"]) { display: flex !important; } .mp-phase-list { grid-template-columns: none !important; justify-content: center; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; }
+    .mp-phase-list span { font-size: 15px !important; }
+    .mp-phase-actions { flex-direction: column; align-items: center; gap: 14px; margin-top: 22px; }
+    .mp-phase-cta { min-height: 54px; height: auto; padding: 12px 26px !important; max-width: 100%; }
+    .mp-phase-cta .action-pill { white-space: normal; text-align: center; line-height: 1.25; font-size: clamp(14px, 3.8vw, 16px) !important; }
+    .mp-phase-status { white-space: normal !important; text-align: center; }
+    .mp-back-link { min-height: 44px; font-size: 15px !important; }
+
     /* ---------- ПЕРША ЧЕРГА ---------- */
     .phase1-container { padding-left: 20px; padding-right: 20px; }
     .phase1-split { grid-template-columns: minmax(0, 1fr) !important; }
@@ -11660,6 +11701,7 @@
         const endframe = document.getElementById('mpPhaseEndframe');
         if (!sec || !video || !src) return;
 
+        sec.dataset.phase = n;                /* мобільний кадр 9:16 веде камеру до будинку цієї черги */
         sec.classList.remove('mp-ended');
         document.body.classList.remove('mp-ended');
         sec.classList.add('mp-video-active');
