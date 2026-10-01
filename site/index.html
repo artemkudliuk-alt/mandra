@@ -1999,6 +1999,10 @@
   /* Заголовок над банером — звичайний заголовок секції (клас .why-title),
      по центру над відео. */
   .vb-head {
+    position: relative;
+    z-index: 4;
+    margin-top: -2px;                  /* закриває субпіксельну щілину на стику з героєм: крізь неї світило небо з відео */
+    padding-top: 2px;
     background: var(--bg-dark);
     padding: 0 5vw clamp(32px, 3vw, 58px);
   }
