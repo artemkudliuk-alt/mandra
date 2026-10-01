@@ -7019,6 +7019,29 @@
     .bl-card::before { content: ''; position: absolute; top: 5px; left: 0; width: calc(100% + 12px); height: 1px;
                        background: linear-gradient(90deg, rgba(129, 184, 115, 0.6), rgba(129, 184, 115, 0.22)); }
     .bl-dot { z-index: 1; }
+    /* Імпульс по лінії часу — справа наліво, від старішої дати до свіжішої:
+       11 травня → 25 червня → 12 липня. Кожна картка веде імпульс своєю ділянкою
+       (від точки сусіда праворуч до своєї), сусід стартує, щойно попередня
+       ділянка закінчилась. Ділянка останньої дати веде вже в наступне коло
+       копій — там імпульсу немає. */
+    .bl-card::after {
+      content: ''; position: absolute; top: 4.5px; left: calc(100% + 12px - 26px); width: 26px; height: 2px;
+      border-radius: 2px; opacity: 0; pointer-events: none;
+      background: linear-gradient(90deg, #DEF7D7 0%, rgba(129, 184, 115, 0.9) 35%, rgba(129, 184, 115, 0) 100%);
+      box-shadow: 0 0 8px rgba(129, 184, 115, 0.8);
+      animation: blImpulse 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    .bl-card[data-k="1"]::after { animation-delay: 0s; }
+    .bl-card[data-k="0"]::after { animation-delay: 1.08s; }
+    .bl-card[data-k="2"]::after { animation: none; }
+    @keyframes blImpulse {
+      0%   { left: calc(100% + 12px - 26px); opacity: 0; }
+      4%   { opacity: 1; }
+      27%  { opacity: 1; }
+      30%  { left: 0; opacity: 0; }
+      100% { left: 0; opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { .bl-card::after { animation: none; } }
     /* пульс живої точки розходиться на ~9px ліворуч — поле обрізаємо ближче до краю,
        щоб кільце не різалось; хвіст попередньої картки сюди все одно не дістає */
     .bl-grid { clip-path: inset(-20px 0 -20px 8px) !important; }
