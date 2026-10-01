@@ -7171,6 +7171,64 @@
     .mp-address-arrow { align-self: stretch; padding-left: 14px !important; }
     .mp-address-arrow svg { width: 22px !important; min-width: 22px; height: 22px !important; color: var(--accent-color, #81B873); }
 
+    /* ---------- КАРТКА ЧЕРГИ ПІСЛЯ ПРОЛЬОТУ ----------
+       1. Кількість котеджів — круглою м'ятною наліпкою в правому верхньому куті кадру,
+          як «Здача II черги»: тінь, легкий поворот, час від часу похитується.
+       2. Бейдж I черги компактний, увесь текстовий блок I черги на ~10% вище.
+       3. Зручності III черги — лінійні іконки над підписами, сіткою у два рядки. */
+    .mp-clean-media > .mp-phase-count {
+      position: absolute; top: calc(env(safe-area-inset-top) + 86px); right: 18px; z-index: 6;
+      width: 96px; height: 96px; border-radius: 50%; box-sizing: border-box; padding: 10px;
+      display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      background: var(--top-btn-bg, #DEF7D7); color: #12240E; overflow: hidden;
+      box-shadow: 2px 3px 2px rgba(0,0,0,0.32), 6px 9px 14px rgba(0,0,0,0.32), 16px 24px 44px rgba(0,0,0,0.5);
+      font-family: var(--title-font, 'Unbounded', sans-serif) !important; font-weight: 800;
+      font-size: 10.5px !important; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.04em;
+      rotate: 8deg; pointer-events: none;
+    }
+    .section-masterplan-clean.mp-video-active.mp-ended .mp-clean-media > .mp-phase-count {
+      display: flex; animation: mpCountIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both, mpCountWiggle 3.8s ease-in-out 1.2s infinite;
+    }
+    .mp-phase-count-num { display: block; font-size: 32px; line-height: 1; letter-spacing: -0.04em; margin-bottom: 4px; }
+    @keyframes mpCountIn { from { opacity: 0; scale: 0.6; rotate: -6deg; } to { opacity: 1; scale: 1; rotate: 8deg; } }
+    @keyframes mpCountWiggle {
+      0%, 76%, 100% { rotate: 8deg; scale: 1; }
+      80% { rotate: 5deg; scale: 1.04; }
+      84% { rotate: 10.5deg; }
+      88% { rotate: 6.5deg; }
+      92% { rotate: 9deg; }
+      96% { rotate: 7.6deg; scale: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .section-masterplan-clean.mp-video-active.mp-ended .mp-clean-media > .mp-phase-count { animation: none; }
+    }
+
+    .section-masterplan-clean.mp-video-active.mp-ended[data-phase="1"] .mp-phase-card { bottom: calc(40px + 10svh) !important; }
+    .mp-phase-count-row:empty, .mp-phase-count-row:not(:has(> :not([style*="none"]))) { display: none !important; }
+    .mp-phase-status {
+      font-size: 12.5px !important; line-height: 1.35 !important; padding: 6px 14px !important;
+      max-width: 270px; margin: 0 auto; justify-content: center;
+    }
+
+    .mp-phase-list:not([style*="none"]) { display: flex !important; }
+    .mp-phase-list { flex-wrap: wrap; justify-content: center; gap: 14px 6px !important; margin-top: 16px !important; max-width: 340px; margin-left: auto; margin-right: auto; }
+    .mp-phase-list span {
+      flex: 0 0 calc(33.333% - 6px); display: flex !important; flex-direction: column; align-items: center;
+      gap: 7px !important; white-space: normal !important; text-align: center;
+      font-size: 13px !important; line-height: 1.25; color: rgba(255, 255, 255, 0.86);
+    }
+    .mp-phase-list span::before {
+      width: 26px !important; height: 26px !important; transform: none !important;
+      background: var(--accent-color, #81B873) !important;
+      -webkit-mask: no-repeat center / contain; mask: no-repeat center / contain;
+    }
+    .mp-phase-list span[data-ic="spa"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20c-4 0-7-3-7-7 3 0 5 1.5 7 4 2-2.5 4-4 7-4 0 4-3 7-7 7zM12 17c-1.6-2-1.6-6 0-9 1.6 3 1.6 7 0 9z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20c-4 0-7-3-7-7 3 0 5 1.5 7 4 2-2.5 4-4 7-4 0 4-3 7-7 7zM12 17c-1.6-2-1.6-6 0-9 1.6 3 1.6 7 0 9z'/%3E%3C/svg%3E"); }
+    .mp-phase-list span[data-ic="food"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3v6a2 2 0 0 0 4 0V3M7 11v10M18 3c-2 0-3.2 2.6-3.2 6.5H18V21'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3v6a2 2 0 0 0 4 0V3M7 11v10M18 3c-2 0-3.2 2.6-3.2 6.5H18V21'/%3E%3C/svg%3E"); }
+    .mp-phase-list span[data-ic="event"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h4l-.4 5a1.6 1.6 0 0 1-3.2 0zM9 9.6V20M6.6 20h4.8M13 3h4l-.4 5a1.6 1.6 0 0 1-3.2 0zM15 9.6V20M12.6 20h4.8'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h4l-.4 5a1.6 1.6 0 0 1-3.2 0zM9 9.6V20M6.6 20h4.8M13 3h4l-.4 5a1.6 1.6 0 0 1-3.2 0zM15 9.6V20M12.6 20h4.8'/%3E%3C/svg%3E"); }
+    .mp-phase-list span[data-ic="heart"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E"); }
+    .mp-phase-list span[data-ic="villa"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11l8-6 8 6M6 9.6V20h12V9.6M10 20v-5h4v5'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11l8-6 8 6M6 9.6V20h12V9.6M10 20v-5h4v5'/%3E%3C/svg%3E"); }
+    .mp-phase-list span[data-ic="leaf"]::before { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 19c0-8 6-14 14-14 0 8-6 14-14 14zM5 19l7-7'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 19c0-8 6-14 14-14 0 8-6 14-14 14zM5 19l7-7'/%3E%3C/svg%3E"); }
+
     /* «Усі записи» — під картками праворуч, дрібніше */
     .bl-grid + .bl-all { display: flex; align-items: center; width: max-content; margin: 16px 0 0 auto; font-size: 26px !important; gap: 10px; }
     .bl-grid + .bl-all span { font-size: 26px !important; }
@@ -12630,6 +12688,32 @@
       /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
       const toTop = document.getElementById('footerScrollTop'), fCol = document.querySelector('.footer-contacts-col');
       if (toTop && fCol) fCol.appendChild(toTop);   /* «Вгору» — праворуч від контактів */
+
+      /* Картка черги на телефоні: кількість котеджів — наліпкою в кадр, зручності — з іконками */
+      const mpCount = document.getElementById('mpPhaseCount'), mpMediaBox = document.querySelector('.mp-clean-media');
+      const mpList = document.getElementById('mpPhaseList');
+      function iconFor(t) {
+        t = t.toLowerCase();
+        if (/spa|спа/.test(t)) return 'spa';
+        if (/ресторан|restaurant/.test(t)) return 'food';
+        if (/event|івент|подій/.test(t)) return 'event';
+        if (/побач|date/.test(t)) return 'heart';
+        if (/вілл|villa|двох|two/.test(t)) return 'villa';
+        return 'leaf';
+      }
+      function dressPhase() {
+        if (mpCount && !mpCount.querySelector('.mp-phase-count-num')) {
+          const m = mpCount.textContent.trim().match(/^(\S+)\s+(.+)$/);
+          if (m) mpCount.innerHTML = '<span class="mp-phase-count-num">' + m[1] + '</span>' + m[2];
+        }
+        if (mpList) mpList.querySelectorAll('span').forEach(function (sp) { sp.dataset.ic = iconFor(sp.textContent); });
+      }
+      if (mpCount && mpMediaBox) {
+        mpMediaBox.appendChild(mpCount);
+        new MutationObserver(dressPhase).observe(mpCount, { childList: true, characterData: true, subtree: true });
+      }
+      if (mpList) new MutationObserver(dressPhase).observe(mpList, { childList: true, characterData: true, subtree: true });
+      dressPhase();
 
       const blAll = document.querySelector('.bl-all'), blGrid = document.querySelector('.bl-grid');
       if (blAll && blGrid) blGrid.after(blAll);     /* «Усі записи» — під хронікою */
