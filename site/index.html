@@ -12878,8 +12878,9 @@
         const items = Array.prototype.slice.call(row.children);
         const n = items.length; if (n < 2) return;
         items.forEach(function (el, i) { el.dataset.k = i; });   /* копії успадкують номер */
-        /* хроніка має дати — по колу її не крутимо: від крайньої до крайньої */
-        const linear = row.classList.contains('bl-grid');
+        /* хроніка (дати) і етапи (черги I→III) мають порядок — по колу їх не
+           крутимо: від крайньої до крайньої */
+        const linear = row.classList.contains('bl-grid') || row.classList.contains('bs-grid');
 
         function makeClone(el, i) {
           const c = el.cloneNode(true);
