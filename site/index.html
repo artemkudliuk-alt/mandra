@@ -4022,12 +4022,14 @@
     margin: 0; border-radius: 50%;
     border: 2px solid rgba(222, 247, 215, 0.85);
     transform: translate(-50%, -50%) scale(0.6); opacity: 0;
-    animation: mpPing 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    animation: mpMkPing 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     pointer-events: none;
   }
   .mp-marker:nth-of-type(2) .mp-mk-ping { animation-delay: -0.9s; }
   .mp-marker:nth-of-type(3) .mp-mk-ping { animation-delay: -1.8s; }
-  @keyframes mpPing {
+  /* власне ім'я: раніше ці keyframes теж звались mpPing і, як оголошені
+     пізніше, підміняли пульс значка локації — кільце їхало вгору-ліворуч */
+  @keyframes mpMkPing {
     0% { transform: translate(-50%, -50%) scale(0.55); opacity: 0.9; }
     100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
   }
@@ -6869,9 +6871,14 @@
     .ph1-rev-stars, .ph1-rev-src, .ph1-rev-count { font-size: clamp(14px, 3.59vw, 22px) !important; }
     .ph1-reviews { grid-template-columns: 34px minmax(0, 1fr) 34px !important; gap: 14px !important; }
     .ph1-rev-arrow { width: 34px !important; height: 44px !important; }
-    .trust-brand { font-size: clamp(16px, 4.1vw, 25px) !important; }
+    /* картки Google / Booking вузькі (~147px): зірки під назвою, а не поруч, і
+       назва дрібніша — інакше «Booking.com» і зірки вилазили за картку */
+    .phase1-trust-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    .trust-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .trust-brand { font-size: clamp(13px, 3.6vw, 18px) !important; white-space: nowrap; gap: 6px; }
+    .trust-stars { font-size: 12px !important; letter-spacing: 1px; }
     .trust-count { font-size: clamp(28px, 7.18vw, 43px) !important; }
-    .trust-sub, .trust-stars { font-size: clamp(14px, 3.59vw, 22px) !important; }
+    .trust-sub { font-size: clamp(14px, 3.59vw, 22px) !important; }
     .phase1-play-label { font-size: clamp(16px, 4.1vw, 25px) !important; }
     .capsule-label { font-size: clamp(16px, 4.1vw, 25px) !important; }
 
