@@ -684,6 +684,7 @@
     transition: transform 0.05s linear;
     max-width: var(--sub-max-w);
   }
+  p.hero-main-desc strong { font-weight: 800; color: #FFFFFF; }
   p.hero-main-desc {
     font-family: var(--sub-font);
     font-size: var(--sub-size);
@@ -1429,6 +1430,9 @@
     position: relative;
     z-index: 3;
     background: var(--bg-dark);
+    border-top-left-radius: 22px;      /* наїжджає на маніфест карткою */
+    border-top-right-radius: 22px;
+    box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.45);
     padding: clamp(72px, 8vh, 124px) 5vw;
     box-sizing: border-box;
   }
@@ -2736,8 +2740,12 @@
      ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
      Inline Image Capsules: фото вбудовані просто в рядок тексту
      ============================================================ */
+  /* Маніфест з'являється повністю звичайним скролом, далі прилипає під шапкою,
+     а блок Petrichor (наступний у .stack-stage) наїжджає на нього знизу. */
+  .stack-stage { position: relative; }
   .section-manifesto {
-    position: relative;
+    position: sticky;
+    top: clamp(64px, 5.5vw, 90px);       /* під фіксованою шапкою — як scroll-padding */
     z-index: 2;
     background: var(--bg-dark);
     display: flex;
@@ -6746,7 +6754,7 @@
         <!-- BLOCK 2: Subtitle / Description -->
         <div class="desc-wrapper">
           <p class="hero-main-desc fx-solid" id="heroMainDesc">
-            Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.
+            Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до <strong>11,3%</strong>.
           </p>
         </div>
 
@@ -6819,6 +6827,13 @@
 
 
 
+  </div><!-- /.hero-stage -->
+
+  <!-- ============================================================
+       ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
+       ============================================================ -->
+  <!-- Маніфест прилипає під шапкою, блок Petrichor наїжджає на нього знизу -->
+  <div class="stack-stage">
   <!-- ============================================================
        ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
        ============================================================ -->
@@ -6834,11 +6849,6 @@
 
     </div>
   </section>
-  </div><!-- /.hero-stage -->
-
-  <!-- ============================================================
-       ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
-       ============================================================ -->
   <section class="section-petrichor-intro" id="petrichor-intro">
     <div class="pi-container">
 
@@ -6927,12 +6937,13 @@
 
     </div>
   </section>
+  </div><!-- /.stack-stage -->
 
   <!-- ============================================================
        ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
        ============================================================ -->
   <div class="vb-head">
-    <h2 class="why-title"><span id="vbTitleA">Промо</span> <span class="pi-accent" id="vbTitleB">атмосфера</span></h2>
+    <h2 class="why-title"><span id="vbTitleA">Відчуй атмосферу</span> <span class="pi-accent" id="vbTitleB">лісу</span></h2>
   </div>
   <section class="section-video-banner" id="video-banner">
     <video class="vb-video" id="videoBanner" muted loop playsinline preload="none"
@@ -8697,9 +8708,9 @@
         navContacts: 'КОНТАКТИ',
         topBtn: 'Онлайн заявка',
         headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
-        desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.',
+        desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до <strong>11,3%</strong>.',
         heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
-        vbTitleA: 'Промо', vbTitleB: 'атмосфера',
+        vbTitleA: 'Відчуй атмосферу', vbTitleB: 'лісу',
         piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
         piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
         piCtaText: 'Переглянути комплекс',
@@ -8923,9 +8934,9 @@
         navContacts: 'CONTACTS',
         topBtn: 'Online Request',
         headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
-        desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to 11.3%.',
+        desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to <strong>11.3%</strong>.',
         heroBadge: 'Phase<br>II handover<br>this<br>year',
-        vbTitleA: 'Promo', vbTitleB: 'atmosphere',
+        vbTitleA: 'Feel the atmosphere of the', vbTitleB: 'forest',
         piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
         piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
         piCtaText: 'Explore the complex',
@@ -9185,7 +9196,7 @@
       document.getElementById('btnTopAction').textContent = t.topBtn;
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
       document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
-      document.getElementById('heroMainDesc').textContent = t.desc;
+      document.getElementById('heroMainDesc').innerHTML = t.desc;   /* рядок наш, з <strong> для 11,3% */
       ['faqA1', 'faqA2', 'faqA3', 'faqA4', 'faqA5', 'faqA6', 'faqA7', 'faqA8'].forEach(function (id) {
         const el = document.getElementById(id);
         if (el && t[id]) el.innerHTML = t[id];
@@ -9194,7 +9205,7 @@
       if (whyTitleEl && t.whyTitle) whyTitleEl.innerHTML = t.whyTitle;
       const badgeText = document.getElementById('heroReleaseBadgeText');
       if (badgeText && t.heroBadge) badgeText.innerHTML = t.heroBadge;
-      document.getElementById('inpMainDesc').value = t.desc;
+      document.getElementById('inpMainDesc').value = t.desc.replace(/<[^>]*>/g, '');
 
       // Update CTA buttons
       const numoPill = document.querySelector('#btnStyleNumo .action-pill');
@@ -9589,6 +9600,9 @@
       const hero = document.querySelector('.hero-container');
       const manifesto = document.querySelector('.section-manifesto');
       if (!hero || !manifesto) return;
+      /* Доводку героя до маніфесту «на півекрана» вимкнено: маніфест більше не
+         наїжджає на героя, а просто з'являється повністю звичайним скролом. */
+      const HERO_SNAP = false;
 
       function getSnapY() {
         // Картки притиснуті до стику внизу екрана, без мертвого порожнього відступу
@@ -9671,7 +9685,7 @@
         const snapY = getSnapY();
 
         // 1. Користувач на першому екрані (Hero): за один скрол вниз вжух у стик
-        if (scrollY < 40 && e.deltaY > 6) {
+        if (HERO_SNAP && scrollY < 40 && e.deltaY > 6) {
           e.stopImmediatePropagation();
           e.preventDefault();
           scrollToPos(snapY, HERO_SNAP_DURATION);
@@ -9681,7 +9695,7 @@
         // 2. Користувач у стику маніфесту:
         // Скрол вгору — повертаємося на Hero (0).
         // Скрол вниз — НЕ перехоплюємо, починаємо звичайний скрол далі на картинку!
-        if (Math.abs(scrollY - snapY) < 40 && e.deltaY < -6) {
+        if (HERO_SNAP && Math.abs(scrollY - snapY) < 40 && e.deltaY < -6) {
           e.stopImmediatePropagation();
           e.preventDefault();
           scrollToPos(0, HERO_SNAP_DURATION);
@@ -9724,10 +9738,10 @@
         const snapY = getSnapY();
         const scPos = getShowcasePositions();
 
-        if (scrollY < 40 && (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input, textarea')))) {
+        if (HERO_SNAP && scrollY < 40 && (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('input, textarea')))) {
           e.preventDefault();
           scrollToPos(snapY, HERO_SNAP_DURATION);
-        } else if (Math.abs(scrollY - snapY) < 40 && (e.key === 'ArrowUp' || e.key === 'PageUp')) {
+        } else if (HERO_SNAP && Math.abs(scrollY - snapY) < 40 && (e.key === 'ArrowUp' || e.key === 'PageUp')) {
           e.preventDefault();
           scrollToPos(0, HERO_SNAP_DURATION);
         } else if (scPos) {
@@ -9755,11 +9769,11 @@
         const snapY = getSnapY();
         const scPos = getShowcasePositions();
 
-        if (scrollY < 40 && deltaY > 40) {
+        if (HERO_SNAP && scrollY < 40 && deltaY > 40) {
           scrollToPos(snapY, HERO_SNAP_DURATION);
           return;
         }
-        if (Math.abs(scrollY - snapY) < 40 && deltaY < -40) {
+        if (HERO_SNAP && Math.abs(scrollY - snapY) < 40 && deltaY < -40) {
           scrollToPos(0, HERO_SNAP_DURATION);
           return;
         }
