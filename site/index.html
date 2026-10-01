@@ -6708,7 +6708,7 @@
 
     /* ---------- ГЕРОЙ: усе по центру, кнопка компактна, наліпка під нею ---------- */
     .ui-layer { padding-left: 20px; padding-right: 20px; }
-    .hero-main-content { margin: auto 0 56px; gap: 18px; align-items: center; text-align: center; }
+    .hero-main-content { margin: auto 0; padding: 24px 0; gap: 18px; align-items: center; text-align: center; }   /* по центру видимої висоти на будь-якому телефоні */
     .title-wrapper, .desc-wrapper { max-width: none !important; transform: none !important; }
     h1.hero-main-headline { font-size: clamp(36px, 10.26vw, 62px) !important; line-height: 1.04 !important; letter-spacing: -0.03em !important; text-wrap: balance; }
     p.hero-main-desc { font-size: clamp(18px, 4.62vw, 28px) !important; line-height: 1.5 !important; text-wrap: balance; }
@@ -6851,6 +6851,14 @@
     .why-tile-text { font-size: clamp(21px, 5.38vw, 33px) !important; max-width: 12em; }
     .why-tile-mark { width: 60px !important; height: 60px !important; }
     .founders-top-grid > * { flex-basis: 78%; }
+  }
+  /* низькі екрани (старі/компактні телефони): герой ущільнюється, щоб влізти над краєм */
+  @media (max-width: 767px) and (max-height: 700px) {
+    .hero-main-content { gap: 12px; padding: 12px 0; }
+    h1.hero-main-headline { font-size: clamp(32px, 9vw, 40px) !important; }
+    p.hero-main-desc { font-size: 16px !important; }
+    .free-floating-cta { gap: 14px; }
+    .hero-release-badge { width: 92px !important; height: 92px !important; font-size: 11px; }
   }
   /* великі телефони й планшет у портреті: у свайпі видно півтори картки, а не одну гігантську */
   @media (min-width: 540px) and (max-width: 767px) {
