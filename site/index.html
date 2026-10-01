@@ -10629,7 +10629,9 @@
       function introProgress() {
         const v = document.getElementById('heroIntro');
         if (!v) return 1;
-        if (v.readyState >= 4) return 1;
+        /* iOS на мобільному інтернеті не докачує ролик наперед (preload=auto
+           там ігнорується), тож HAVE_FUTURE_DATA — уже «готовий до гри» */
+        if (v.readyState >= 3) return 1;
         try {
           if (v.buffered.length && v.duration) {
             return Math.min(1, v.buffered.end(v.buffered.length - 1) / v.duration);
@@ -10718,6 +10720,11 @@
       function leave() {
         if (leaving) return;
         leaving = true;
+        /* iOS відновлює позицію прокрутки попереднього візиту навіть при
+           scrollRestoration=manual — під заставкою сторінка вже стояла посередині,
+           і потім Lenis «проїжджав» її нагору. Скидаємо до розчинення. */
+        window.scrollTo(0, 0);
+        if (window.lenis) window.lenis.scrollTo(0, { immediate: true, force: true });
         /* заставка разом з літерами просто розчиняється, і в ту ж мить стартує
            інтро — воно коротке (2.5с), тож його проліт має бути видно майже весь */
         resolveGate();
@@ -10726,7 +10733,7 @@
       }
       (function wait() {
         const t = (performance.now() - t0) / 1000;
-        if ((t >= MIN_HOLD && loaded()) || t > 12) leave();
+        if ((t >= MIN_HOLD && loaded()) || t > 6) leave();   /* стеля 6с: далі інтро догрузиться вже під ним */
         else requestAnimationFrame(wait);
       })();
 
@@ -12525,7 +12532,9 @@
         document.body.classList.remove('intro-running');
         document.documentElement.classList.remove('intro-running');
         document.body.classList.add('intro-done');
+        if (window.scrollY > 0 && !location.hash) window.scrollTo(0, 0);   /* див. leave() у прелоадері — iOS */
         if (window.lenis) {
+          window.lenis.scrollTo(window.scrollY, { immediate: true, force: true });   /* ціль Lenis = справжня позиція, без «доїзду» */
           window.lenis.start();
         }
         window.dispatchEvent(new Event('scroll'));
@@ -12564,16 +12573,17 @@
         if (!intro.ended && !handed) requestAnimationFrame(tick);
       }
 
-      intro.addEventListener('canplay', function () {
-        /* Стартуємо не одразу, а коли прелоадер віддасть екран */
-        (window.__preloadGate || Promise.resolve()).then(function () {
-        preloadCycle();          /* інтро вже в буфері — цикл не спорить із ним за канал */
+      /* Стартуємо, коли прелоадер віддасть екран. Раніше чекали ще й 'canplay',
+         але iOS на мобільному інтернеті не вантажить відео до play() — подія не
+         приходила, інтро не грало. play() сам запускає завантаження. */
+      try { intro.load(); } catch (e) {}
+      (window.__preloadGate || Promise.resolve()).then(function () {
+        preloadCycle();
         intro.play().then(function () {
           intro.classList.add('is-ready');
           requestAnimationFrame(tick);
         }).catch(revealUi);      /* автоплей заблокований — не ховаємо інтерфейс */
-        });
-      }, { once: true });
+      });
 
       intro.addEventListener('ended', function () {
         revealUi();
