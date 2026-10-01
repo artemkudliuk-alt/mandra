@@ -7010,6 +7010,27 @@
     .bs-bars { display: none !important; }
     .bs-card { min-height: 300px; }
     .bs-card .bs-bar { margin-top: 14px; width: 100%; }
+    /* бейдж черги — у лівому верхньому куті картки, назва й смуга лишаються внизу */
+    .bs-card .bs-queue { position: absolute; top: 22px; left: 22px; z-index: 2; }
+
+    /* хроніка: лінія часу через точки, як на десктопі. Набір листається, тож
+       лінію малює кожна картка — від своєї точки до наступної через проміжок */
+    .bl-card { position: relative; }
+    .bl-card::before { content: ''; position: absolute; top: 5px; left: 0; width: calc(100% + 12px); height: 1px;
+                       background: linear-gradient(90deg, rgba(129, 184, 115, 0.6), rgba(129, 184, 115, 0.22)); }
+    .bl-dot { z-index: 1; }
+    /* пульс живої точки розходиться на ~9px ліворуч — поле обрізаємо ближче до краю,
+       щоб кільце не різалось; хвіст попередньої картки сюди все одно не дістає */
+    .bl-grid { clip-path: inset(-20px 0 -20px 8px) !important; }
+    /* «жива» точка — у найсвіжішого запису та його копій, а не в першого елемента ряду */
+    .bl-card:first-child .bl-dot { background: var(--bg-dark); }
+    .bl-card:first-child .bl-dot::after { content: none; }
+    .bl-card[data-k="0"] .bl-dot { background: var(--accent-color, #81B873); }
+    .bl-card[data-k="0"] .bl-dot::after { content: ''; position: absolute; inset: -2px; border-radius: 50%;
+                                          border: 2px solid var(--accent-color, #81B873); animation: blPulse 2.4s ease-out infinite; }
+    /* «Усі записи» — під картками праворуч, дрібніше */
+    .bl-grid + .bl-all { display: flex; width: max-content; margin: 14px 0 0 auto; font-size: 13px !important; gap: 6px; }
+    .bl-grid + .bl-all span { font-size: 13px !important; }
 
     /* генплан: піли черг під картою */
     .mp-pills { display: flex; gap: 8px; padding: 16px 20px 0; position: relative; z-index: 6; line-height: normal; }
@@ -12459,6 +12480,9 @@
       const toTop = document.getElementById('footerScrollTop'), fCol = document.querySelector('.footer-contacts-col');
       if (toTop && fCol) fCol.appendChild(toTop);   /* «Вгору» — праворуч від контактів */
 
+      const blAll = document.querySelector('.bl-all'), blGrid = document.querySelector('.bl-grid');
+      if (blAll && blGrid) blGrid.after(blAll);     /* «Усі записи» — під хронікою */
+
       const mpMedia = document.querySelector('.mp-clean-media'), mpText = document.querySelector('.mp-clean-media > .mp-floating-content');
       if (mpMedia && mpText) mpMedia.before(mpText);   /* заголовок генплану — над картою */
 
@@ -12481,6 +12505,7 @@
       document.querySelectorAll('.why-grid, .bs-grid, .bl-grid, .founders-top-grid').forEach(function (row) {
         const items = Array.prototype.slice.call(row.children);
         const n = items.length; if (n < 2) return;
+        items.forEach(function (el, i) { el.dataset.k = i; });   /* копії успадкують номер */
 
         function makeClone(el, i) {
           const c = el.cloneNode(true);
@@ -12576,6 +12601,15 @@
 
         loops.push(function () { const k = current(); build(); jumpTo(k); });
       });
+
+      /* Гарантія під формою — у два рядки: «Відповідаємо…» з нового рядка.
+         Текст ставить переклад через textContent, тож розбиваємо після нього. */
+      function splitGuarantee() {
+        const g = document.getElementById('contactsGuaranteeText');
+        if (g && g.textContent.indexOf(' • ') > -1) g.innerHTML = g.textContent.split(' • ').join('<br>');
+      }
+      splitGuarantee();
+      loops.push(splitGuarantee);
 
       /* Перемикання мови переписує лише оригінали — копії збираємо заново */
       if (typeof window.setLanguage === 'function' && loops.length) {
