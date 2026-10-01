@@ -7009,6 +7009,10 @@
     .ph1-rev-count, .ph1-rev-stars { white-space: nowrap; flex: none; }   /* «1 / 2» не ламається на два рядки */
     .ph1-rev-item.is-on { transition-delay: 0.08s, 0.08s, 0s; }
 
+    /* засновники → «Партнери» той самий відступ, що від заголовка до логотипів (55px) */
+    #founders { padding-bottom: 0 !important; }
+    #partners { padding-top: 55px !important; }
+
     /* ---------- ПЕРША ЧЕРГА ---------- */
     .phase1-container { padding-left: 20px; padding-right: 20px; }
     .phase1-split { grid-template-columns: minmax(0, 1fr) !important; }
@@ -7721,8 +7725,8 @@
   </div>
   <section class="section-video-banner" id="video-banner">
     <video class="vb-video" id="videoBanner" muted loop playsinline preload="none"
-           poster="assets/video/mandra_banner_poster.webp"
-           data-src="assets/video/mandra_banner.mp4" aria-hidden="true"></video>
+           poster="assets/video/mandra_banner_poster_v2.webp"
+           data-src="assets/video/mandra_banner_v2.mp4" aria-hidden="true"></video>
     <div class="vb-mask" aria-hidden="true"></div>
     <button class="vb-play" id="videoBannerPlay" type="button" aria-label="Зупинити відео">
       <svg class="vb-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.7-6.8a.6.6 0 0 0 0-1l-10.7-6.8A.6.6 0 0 0 8 5.2z"/></svg>
