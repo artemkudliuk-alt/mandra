@@ -6731,7 +6731,7 @@
     body.m-menu-open { overflow: hidden; }
     .m-menu a.m-menu-link {
       display: block; padding: 12px 0;
-      font-family: var(--title-font, 'Unbounded', sans-serif); font-size: clamp(28px, 7.18vw, 43px); font-weight: 800;
+      font-family: var(--title-font, 'Unbounded', sans-serif); font-size: clamp(23px, 6vw, 36px); font-weight: 800;
       letter-spacing: -0.02em; line-height: 1.1; color: #FFFFFF; text-decoration: none;
       opacity: 0; transform: translateY(16px);
       transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -6739,17 +6739,17 @@
     body.m-menu-open .m-menu a.m-menu-link { opacity: 1; transform: none; }
     .m-menu-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px;
                   padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-    .m-menu-tape { flex: 1; min-height: 90px; display: flex; align-items: center; overflow: hidden; margin: 12px -20px; pointer-events: none; }
+    .m-menu-tape { flex: 1; min-height: 90px; display: flex; align-items: center; overflow: hidden; margin: 12px -20px; pointer-events: none; container-type: size; }
     .m-menu-tape-track { display: flex; width: max-content; animation: footerWatermarkScroll 38s linear infinite; }
     .m-menu-tape-track span {
       flex: none; padding-right: 0.35em; white-space: nowrap;
       font-family: var(--title-font, 'Unbounded', sans-serif); font-weight: 900; text-transform: uppercase;
-      font-size: clamp(64px, 22vw, 140px); line-height: 0.9; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.06);
+      font-size: 96cqh; line-height: 0.82; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.06);   /* на всю висоту вільного місця */
     }
     @media (prefers-reduced-motion: reduce) { .m-menu-tape-track { animation: none; } }
     .m-menu-phone { font-family: var(--sub-font); font-size: clamp(18px, 4.62vw, 28px); font-weight: 700; color: #FFFFFF; text-decoration: none; padding: 10px 0; }
     .m-menu-cta {
-      display: flex; align-items: center; justify-content: center; height: 54px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center; height: 54px; border-radius: 999px; margin: 0 14px 10px;
       background: var(--top-btn-bg, #DEF7D7); color: #12240E; text-decoration: none;
       font-family: var(--sub-font); font-size: clamp(16px, 4.1vw, 25px); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
     }
@@ -12558,7 +12558,14 @@
     /* МОБІЛЬНА ЛОГІКА (≤767px): крапки під свайп-наборами, смуги етапів у картках,
        «Читати далі» для довгого тексту, липка панель заявки. На десктопі не вмикається. */
     (function () {
-      if (!window.matchMedia('(max-width: 767px)').matches) return;
+      /* Вмикаємо, щойно екран стає мобільним: і при завантаженні, і коли вікно
+         звузили вже після нього (DevTools, поворот планшета). Один раз. */
+      const mq = window.matchMedia('(max-width: 767px)');
+      let started = false;
+      function start() { if (started || !mq.matches) return; started = true; init(); }
+      mq.addEventListener('change', start);
+      start();
+      function init() {
 
       /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
       const toTop = document.getElementById('footerScrollTop'), fCol = document.querySelector('.footer-contacts-col');
@@ -12762,6 +12769,7 @@
       }
       window.addEventListener('scroll', function () { if (!fTick) { fTick = true; requestAnimationFrame(formCheck); } }, { passive: true });
       formCheck();
+      }
     })();
   </script>
 </body>
