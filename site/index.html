@@ -6892,6 +6892,11 @@
     .section-faq { padding-bottom: 13px !important; }
     /* картка консультації: спершу фото, ім'я й посада консультанта, під ними форма */
     .contacts-media-side { order: -1; border-top: none !important; border-bottom: 1px solid rgba(14, 31, 11, 0.08); }
+    /* кнопка «Вгору» — праворуч від контактів у футері, а не внизу біля водяного знака */
+    .footer-contacts-col { position: relative; width: 100%; }
+    .footer-contacts-col > .footer-scrolltop { position: absolute !important; top: 0 !important; right: 0 !important; bottom: auto !important;
+                                               gap: 14px; padding: 0; }
+    .footer-contacts-col > .footer-scrolltop .footer-scrolltop-label { font-size: 1.35rem; }
     .founder-name { font-size: clamp(20px, 5.13vw, 31px) !important; }
     .founder-role { font-size: clamp(14px, 3.59vw, 22px) !important; }
     .founders-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
@@ -12444,6 +12449,9 @@
       if (!window.matchMedia('(max-width: 767px)').matches) return;
 
       /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
+      const toTop = document.getElementById('footerScrollTop'), fCol = document.querySelector('.footer-contacts-col');
+      if (toTop && fCol) fCol.appendChild(toTop);   /* «Вгору» — праворуч від контактів */
+
       const mpMedia = document.querySelector('.mp-clean-media'), mpText = document.querySelector('.mp-clean-media > .mp-floating-content');
       if (mpMedia && mpText) mpMedia.before(mpText);   /* заголовок генплану — над картою */
 
