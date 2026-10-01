@@ -6879,6 +6879,11 @@
        блок перед .mp-clean-media); плашки черг під картою не потрібні */
     .mp-floating-content { position: relative; top: auto; left: auto; max-width: none; margin: 0; padding: 56px 20px 28px; }
     .mp-pills { display: none !important; }
+    /* адреса — одразу під заголовком і рискою, перед підзаголовком */
+    .mp-floating-content { display: flex !important; flex-direction: column; }
+    .mp-float-title { order: 0; } .mp-float-line { order: 1; }
+    .mp-address { order: 2; margin: 4px 0 22px !important; align-self: stretch; }
+    .mp-float-subtitle { order: 3; } .mp-float-desc { order: 4; }
     .mp-float-title { font-size: clamp(32px, 8.21vw, 50px) !important; }
     .mp-float-subtitle { font-size: clamp(19px, 4.87vw, 29px) !important; }
     .mp-float-desc { font-size: clamp(16px, 4.1vw, 25px) !important; line-height: 1.55; }
@@ -6935,6 +6940,24 @@
     .mp-phase-status { white-space: normal !important; text-align: center; }
     .mp-back-link { min-height: 44px; font-size: 15px !important; }
 
+    /* засновники: картка з хвоєю горизонтально на всю ширину, під нею двоє поруч */
+    .founders-top-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important;
+                         overflow: visible !important; margin: 0 !important; padding: 0 !important; clip-path: none !important; }
+    .founders-top-grid > .founders-hero-card { grid-column: 1 / -1; aspect-ratio: 16 / 9; min-height: 0 !important; height: auto !important; }
+    .founders-top-grid > .founder-profile-card { min-width: 0; }
+    .founders-top-grid .founder-name { font-size: clamp(17px, 4.6vw, 24px) !important; line-height: 1.15; }
+    .founders-top-grid .founder-role { font-size: clamp(13px, 3.4vw, 16px) !important; }
+
+    /* відгуки: усі в одній клітинці сітки — висота блоку = найдовший відгук,
+       картки Google/Booking під ним більше не стрибають; зміна — м'яким переходом */
+    .ph1-rev-track { display: grid !important; }
+    .ph1-rev-item, .ph1-rev-item:not(.is-on), .ph1-rev-item.is-on {
+      grid-area: 1 / 1; position: relative !important; inset: auto !important; align-self: center;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.6s;
+    }
+    .ph1-rev-item:not(.is-on) { transform: translateX(14px); }
+    .ph1-rev-item.is-on { transition-delay: 0.08s, 0.08s, 0s; }
+
     /* ---------- ПЕРША ЧЕРГА ---------- */
     .phase1-container { padding-left: 20px; padding-right: 20px; }
     .phase1-split { grid-template-columns: minmax(0, 1fr) !important; }
@@ -6970,7 +6993,7 @@
     .founders-hero-text { font-size: min(18px, 4.6vw) !important; }
     /* усі свайп-набори: на старті перша картка рівно від лівого краю — хвіст
        останньої картки (копія з кола) у лівому полі не видно */
-    .why-grid, .bs-grid, .bl-grid, .founders-top-grid { clip-path: inset(-20px 0 -20px 20px); }
+    .why-grid, .bs-grid, .bl-grid { clip-path: inset(-20px 0 -20px 20px); }
     /* відступ від кнопок черг до карток засновників — менший */
     .section-phase1-live { padding-bottom: 36px !important; }
     .section-founders { padding-top: 20px !important; }
@@ -7041,14 +7064,13 @@
     .footer-nav-link { display: inline-flex; align-items: center; min-height: 44px; font-size: clamp(16px, 4.1vw, 25px) !important; }
 
     /* ---------- СВАЙП-НАБОРИ (варіант В): однотипні картки листаються вбік ---------- */
-    .why-grid, .bs-grid, .bl-grid, .founders-top-grid {
+    .why-grid, .bs-grid, .bl-grid {
       display: flex !important; overflow-x: auto; overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory; scrollbar-width: none;
       gap: 12px !important; margin: 0 -20px; padding: 0 20px 4px; scroll-padding: 0 20px;
     }
-    .why-grid::-webkit-scrollbar, .bs-grid::-webkit-scrollbar, .bl-grid::-webkit-scrollbar,
-    .founders-top-grid::-webkit-scrollbar { display: none; }
-    .why-grid > *, .bs-grid > *, .bl-grid > *, .founders-top-grid > * {
+    .why-grid::-webkit-scrollbar, .bs-grid::-webkit-scrollbar, .bl-grid::-webkit-scrollbar { display: none; }
+    .why-grid > *, .bs-grid > *, .bl-grid > * {
       flex: 0 0 84%; scroll-snap-align: start; min-width: 0;
     }
     .why-grid { background: none !important; border: none !important; margin: 0; padding: 0 20px 4px; }
@@ -7057,7 +7079,6 @@
     .why-tile-scrim { opacity: 1 !important; }
     .why-tile-text { font-size: clamp(21px, 5.38vw, 33px) !important; max-width: 12em; }
     .why-tile-mark { width: 60px !important; height: 60px !important; }
-    .founders-top-grid > * { flex-basis: 78%; }
   }
   /* низькі екрани (старі/компактні телефони): герой ущільнюється, щоб влізти над краєм */
   @media (max-width: 767px) and (max-height: 700px) {
@@ -7069,7 +7090,7 @@
   }
   /* великі телефони й планшет у портреті: у свайпі видно півтори картки, а не одну гігантську */
   @media (min-width: 540px) and (max-width: 767px) {
-    .why-grid > *, .bs-grid > *, .bl-grid > *, .founders-top-grid > * { flex-basis: 56%; }
+    .why-grid > *, .bs-grid > *, .bl-grid > * { flex-basis: 56%; }
     .pi-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   }
   @media (max-width: 767px) {
@@ -12631,7 +12652,7 @@
       const HEAD = { 'why-grid': '.why-title', 'bs-grid': '.bs-title', 'bl-grid': '.bl-title' };
       const loops = [];
 
-      document.querySelectorAll('.why-grid, .bs-grid, .bl-grid, .founders-top-grid').forEach(function (row) {
+      document.querySelectorAll('.why-grid, .bs-grid, .bl-grid').forEach(function (row) {   /* засновники — сіткою, не свайпом */
         const items = Array.prototype.slice.call(row.children);
         const n = items.length; if (n < 2) return;
         items.forEach(function (el, i) { el.dataset.k = i; });   /* копії успадкують номер */
