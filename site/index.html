@@ -4015,7 +4015,33 @@
   .mp-cursor.is-on > span { transform: scale(1); opacity: 1; }
   .mp-cursor.is-press > span { transform: scale(0.92); transition-duration: 0.12s; }
 
-  @media (max-width: 900px) { .mp-marker, .mp-cursor { display: none; } }
+  /* «тут можна натиснути»: від мітки розходиться тихе кільце */
+  .mp-mk-ping {
+    position: absolute; left: 50%; top: 50%;
+    width: 7vw; height: 7vw; min-width: 64px; min-height: 64px;
+    margin: 0; border-radius: 50%;
+    border: 2px solid rgba(222, 247, 215, 0.85);
+    transform: translate(-50%, -50%) scale(0.6); opacity: 0;
+    animation: mpPing 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    pointer-events: none;
+  }
+  .mp-marker:nth-of-type(2) .mp-mk-ping { animation-delay: -0.9s; }
+  .mp-marker:nth-of-type(3) .mp-mk-ping { animation-delay: -1.8s; }
+  @keyframes mpPing {
+    0% { transform: translate(-50%, -50%) scale(0.55); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+  }
+  .mp-plan.is-hot .mp-mk-ping { animation: none; opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .mp-mk-ping { animation: none; } }
+
+  @media (max-width: 900px) { .mp-cursor { display: none; } }
+  @media (max-width: 767px) {
+    .mp-marker { pointer-events: auto; cursor: pointer; padding: 14px; gap: 2px; }
+    .mp-mk-num { font-size: clamp(30px, 8.5vw, 46px) !important; -webkit-text-stroke: 4px rgba(5, 11, 6, 0.6); }
+    .mp-mk-title { font-size: clamp(14px, 3.8vw, 20px) !important; }
+    .mp-mk-ping { width: 76px; height: 76px; min-width: 0; min-height: 0; }
+    .mp-marker:active .mp-marker-inner { transform: scale(0.94); }
+  }
   @media (hover: none), (pointer: coarse) {
     .mp-cursor { display: none; }
     .mp-plan.is-hot { cursor: pointer; }
@@ -6773,6 +6799,10 @@
 
     /* ---------- ПЕРША ЧЕРГА ---------- */
     .phase1-container { padding-left: 20px; padding-right: 20px; }
+    .phase1-split { grid-template-columns: minmax(0, 1fr) !important; }
+    .phase1-split > *, .ph1-reviews, .ph1-rev-stage, .ph1-rev-track { min-width: 0; max-width: 100%; }
+    .phase1-trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .phase1-trust-card { min-width: 0; }
     .phase1-title { font-size: clamp(30px, 7.69vw, 46px) !important; }
     .phase1-lead { font-size: clamp(16px, 4.1vw, 25px) !important; }
     .phase1-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px; }
@@ -6909,6 +6939,8 @@
     }
     .m-cta-bar.is-on { transform: none; }
     body.m-menu-open .m-cta-bar { transform: translateY(140%); }
+    body:has(.mp-video-active) .m-cta-bar { transform: translateY(140%); }   /* не заступає картку черги після прольоту */
+    .mp-phase-title { text-wrap: balance; }
     .m-cta-main {
       flex: 1; display: flex; align-items: center; justify-content: center; height: 50px; border-radius: 999px;
       background: var(--top-btn-bg, #DEF7D7); color: #12240E; text-decoration: none;
@@ -11450,13 +11482,22 @@
           if (!d || markers[n]) return;
           const el = document.createElement('div');
           el.className = 'mp-marker';
+          el.dataset.phase = n;
+          el.setAttribute('role', 'button');
+          el.setAttribute('aria-label', d.num + ' — пролетіти до черги');
           el.style.left = (centre[n].x / 1920 * 100).toFixed(2) + '%';
           el.style.top  = (centre[n].y / 1080 * 100).toFixed(2) + '%';
           el.innerHTML =
+            '<span class="mp-mk-ping" aria-hidden="true"></span>' +
             '<div class="mp-marker-inner">' +
               '<div class="mp-mk-num">' + d.num.split(' ')[0] + '</div>' +
               '<div class="mp-mk-title">черга</div>' +
             '</div>';
+          el.addEventListener('click', function (e) {
+            if (!window.matchMedia('(hover: none), (max-width: 900px)').matches) return;   /* на десктопі клік ловить сам план */
+            e.stopPropagation();
+            if (window.mpSelectPhase) window.mpSelectPhase(+n);
+          });
           plan.appendChild(el);
           markers[n] = el;
         });
