@@ -12914,7 +12914,10 @@
         main.textContent = document.getElementById('btnTopAction').textContent.trim();
         bar.classList.toggle('is-on', on); bar.setAttribute('aria-hidden', !on);
       }
-      new IntersectionObserver(function (e) { heroIn = e[0].intersectionRatio > 0.35; upd(); }, { threshold: [0, 0.35, 1] }).observe(hero);
+      /* Панель з'являється, щойно на героя наїхали цифри комплексу (верх блоку
+         Petrichor піднявся вище ~55% екрана). Сам герой липкий — блок наїжджає
+         зверху, тож за його видимістю чекати не можна: він «видимий» до кінця. */
+      const piIntro = document.getElementById('petrichor-intro') || hero;
       /* Панель ховається, щойно форма з'явилась у кадрі, і не вертається нижче — у футері
          вона лише закривала б контакти. Рахуємо за положенням форми на кожному кадрі
          прокрутки: IntersectionObserver мовчить, коли форма стрибає з «над екраном»
@@ -12922,9 +12925,10 @@
       let fTick = false;
       function formCheck() {
         fTick = false;
-        const was = formIn;
+        const was = formIn, wasHero = heroIn;
         formIn = form.getBoundingClientRect().top < window.innerHeight;
-        if (formIn !== was) upd();
+        heroIn = piIntro.getBoundingClientRect().top > window.innerHeight * 0.55;
+        if (formIn !== was || heroIn !== wasHero) upd();
       }
       window.addEventListener('scroll', function () { if (!fTick) { fTick = true; requestAnimationFrame(formCheck); } }, { passive: true });
       formCheck();
