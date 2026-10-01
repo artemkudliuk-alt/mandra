@@ -6830,7 +6830,8 @@
     .pi-figure:nth-of-type(2) .pi-card-tag, .pi-figure:nth-of-type(3) .pi-card-tag { padding: 4px 9px; letter-spacing: 0.04em; max-width: 100%; box-sizing: border-box; }
     .pi-figure:nth-of-type(2) .pi-card-text, .pi-figure:nth-of-type(3) .pi-card-text { font-size: clamp(14px, 3.6vw, 17px) !important; }
     /* можливості — як картки-досягнення: по центру, значок над підписом */
-    .pi-feature { align-items: center !important; text-align: center; justify-content: center; padding: 20px 12px; min-height: 128px; }
+    /* текст ліворуч, значок праворуч угорі — як бейдж на картці-досягненні */
+    .pi-feature { flex-direction: row-reverse !important; align-items: flex-start !important; justify-content: space-between; text-align: left; gap: 10px; padding: 18px 14px 18px 16px; min-height: 118px; }
     .pi-feature .pi-feature-text { text-wrap: balance; }
     .pi-feature { min-height: 0; padding: 14px; flex-direction: column; align-items: flex-start; gap: 10px; }
     .pi-feature-text { font-size: clamp(15px, 3.85vw, 23px) !important; }
@@ -7054,7 +7055,7 @@
   /* великі телефони й планшет у портреті: у свайпі видно півтори картки, а не одну гігантську */
   @media (min-width: 540px) and (max-width: 767px) {
     .why-grid > *, .bs-grid > *, .bl-grid > *, .founders-top-grid > * { flex-basis: 56%; }
-    .pi-features { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .pi-features { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   }
   @media (max-width: 767px) {
 
