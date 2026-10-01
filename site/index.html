@@ -6927,11 +6927,13 @@
        блок перед .mp-clean-media); плашки черг під картою не потрібні */
     .mp-floating-content { position: relative; top: auto; left: auto; max-width: none; margin: 0; padding: 56px 20px 28px; }
     .mp-pills { display: none !important; }
-    /* адреса — одразу під заголовком і рискою, перед підзаголовком */
+    /* над картою — лише заголовок і риска; під картою — підзаголовок, текст і локація */
     .mp-floating-content { display: flex !important; flex-direction: column; }
-    .mp-float-title { order: 0; } .mp-float-line { order: 1; }
-    .mp-address { order: 2; margin: 4px 0 22px !important; align-self: stretch; }
-    .mp-float-subtitle { order: 3; } .mp-float-desc { order: 4; }
+    .mp-floating-content:not(.mp-after) { padding-bottom: 24px !important; }
+    .mp-floating-content.mp-after { padding: 28px 20px 8px !important; }
+    .mp-float-title { order: 0; } .mp-float-line { order: 1; margin-bottom: 0 !important; }
+    .mp-float-subtitle { order: 3; margin-top: 0 !important; } .mp-float-desc { order: 4; }
+    .mp-address { order: 5; margin: 22px 0 0 !important; align-self: stretch; }
     .mp-float-title { font-size: clamp(32px, 8.21vw, 50px) !important; }
     .mp-float-subtitle { font-size: clamp(19px, 4.87vw, 29px) !important; }
     .mp-float-desc { font-size: clamp(16px, 4.1vw, 25px) !important; line-height: 1.55; }
@@ -12811,7 +12813,16 @@
       if (blAll && blGrid) blGrid.after(blAll);     /* «Усі записи» — під хронікою */
 
       const mpMedia = document.querySelector('.mp-clean-media'), mpText = document.querySelector('.mp-clean-media > .mp-floating-content');
-      if (mpMedia && mpText) mpMedia.before(mpText);   /* заголовок генплану — над картою */
+      /* генплан на телефоні: заголовок → карта → текст → плашка локації */
+      if (mpMedia && mpText) {
+        mpMedia.before(mpText);
+        const after = document.createElement('div');
+        after.className = 'mp-floating-content mp-after';
+        ['.mp-float-subtitle', '.mp-float-desc', '.mp-address'].forEach(function (sel) {
+          const el = mpText.querySelector(sel); if (el) after.appendChild(el);
+        });
+        mpMedia.after(after);
+      }
 
       const cards = document.querySelectorAll('.bs-grid .bs-card'), bars = document.querySelectorAll('.bs-bars .bs-bar');
       cards.forEach(function (c, i) { if (bars[i]) c.appendChild(bars[i]); });
