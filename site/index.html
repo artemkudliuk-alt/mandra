@@ -6799,7 +6799,8 @@
     @media (prefers-reduced-motion: reduce) { .m-release.is-on { animation: none; } }
     .m-release-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-color, #81B873);
                      box-shadow: 0 0 0 0 rgba(129,184,115,0.7); animation: statusPulse 2s infinite; }
-    .m-release-text { display: block; }
+    .m-release-text { display: block; white-space: nowrap; }
+    .m-release { width: max-content; }   /* left:50% ужимав плашку до половини екрана — рядки ламались на чотири */
     .bg-video, .bg-photo { object-position: 72% 50%; background-position: 72% 50%; }
 
     /* ---------- MANDRA PETRICHOR ---------- */
