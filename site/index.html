@@ -6647,30 +6647,39 @@
   @media (max-width: 767px) {
     html { scroll-padding-top: 72px; }
 
-    /* ---------- ШАПКА + бургер ---------- */
-    .top-navbar { padding: 12px 20px; height: 64px; box-sizing: border-box; }
+    /* ---------- ШАПКА: без скла, прозора; мова — у бургер-меню ---------- */
+    .top-navbar, .top-navbar.is-scrolled {
+      padding: 14px 20px; height: 72px; box-sizing: border-box;
+      background: linear-gradient(180deg, rgba(8, 11, 9, 0.55) 0%, rgba(8, 11, 9, 0) 100%) !important;
+      backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none !important;
+    }
     .top-navbar .nav-menu,
     .top-navbar .phone-capsule,
-    .top-navbar .btn-top-accent { display: none !important; }
+    .top-navbar .btn-top-accent,
+    .top-navbar .lang-switch { display: none !important; }
     .header-actions { display: flex; align-items: center; gap: 10px; }
-    .brand-logo-img { height: 38px !important; width: auto !important; }
-    .lang-switch { transform: none !important; min-height: 40px; }
+    .brand-logo-img { height: 46px !important; width: auto !important; }
+    .m-menu .lang-switch { display: inline-flex !important; align-self: flex-start; transform: none !important; min-height: 44px; }
     .lang-switch-label { font-size: 13px !important; }
+
+    /* бургер: без кружка — три лінії різної довжини, що тихо «дихають» */
     .nav-burger {
-      display: inline-grid; place-items: center;
-      width: 44px; height: 44px; padding: 0; border: none; border-radius: 50%;
-      background: var(--top-btn-bg, #DEF7D7); color: #12240E; cursor: pointer;
+      display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px;
+      width: 44px; height: 44px; padding: 0 4px; border: none; background: none; color: #FFFFFF; cursor: pointer;
     }
-    .nav-burger span, .nav-burger span::before, .nav-burger span::after {
-      display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor;
-      position: relative; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+    .nav-burger i {
+      display: block; height: 2px; border-radius: 2px; background: currentColor;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s, width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .nav-burger span::before, .nav-burger span::after { content: ''; position: absolute; left: 0; }
-    .nav-burger span::before { top: -6px; }
-    .nav-burger span::after { top: 6px; }
-    body.m-menu-open .nav-burger span { background: transparent; }
-    body.m-menu-open .nav-burger span::before { transform: translateY(6px) rotate(45deg); }
-    body.m-menu-open .nav-burger span::after { transform: translateY(-6px) rotate(-45deg); }
+    .nav-burger i:nth-child(1) { width: 28px; }
+    .nav-burger i:nth-child(2) { width: 18px; animation: burgerBreath 2.8s ease-in-out infinite; }
+    .nav-burger i:nth-child(3) { width: 23px; animation: burgerBreath 2.8s ease-in-out -1.4s infinite; }
+    @keyframes burgerBreath { 0%, 100% { width: 18px; } 50% { width: 28px; } }
+    body.m-menu-open .nav-burger i { animation: none; width: 26px; }
+    body.m-menu-open .nav-burger i:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    body.m-menu-open .nav-burger i:nth-child(2) { opacity: 0; transform: translateX(8px); }
+    body.m-menu-open .nav-burger i:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    @media (prefers-reduced-motion: reduce) { .nav-burger i { animation: none !important; } }
 
     .m-menu {
       display: flex; flex-direction: column; justify-content: center; gap: 4px;
@@ -6697,19 +6706,19 @@
       font-family: var(--sub-font); font-size: 16px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
     }
 
-    /* ---------- ГЕРОЙ ---------- */
+    /* ---------- ГЕРОЙ: усе по центру, кнопка компактна, наліпка під нею ---------- */
     .ui-layer { padding-left: 20px; padding-right: 20px; }
-    .hero-main-content { margin-bottom: 40px; gap: 16px; }
+    .hero-main-content { margin: auto 0 56px; gap: 18px; align-items: center; text-align: center; }
     .title-wrapper, .desc-wrapper { max-width: none !important; transform: none !important; }
-    h1.hero-main-headline { font-size: 34px !important; line-height: 1.06 !important; letter-spacing: -0.025em !important; }
-    p.hero-main-desc { font-size: 17px !important; line-height: 1.5 !important; }
-    .free-floating-cta { transform: none !important; margin-top: 8px; flex-direction: column; align-items: stretch; gap: 18px; }
-    .cta-btn-numo { justify-content: center; padding: 0 24px !important; height: 54px; }
+    h1.hero-main-headline { font-size: 40px !important; line-height: 1.04 !important; letter-spacing: -0.03em !important; text-wrap: balance; }
+    p.hero-main-desc { font-size: 18px !important; line-height: 1.5 !important; text-wrap: balance; }
+    .free-floating-cta { transform: none !important; margin-top: 6px; flex-direction: column; align-items: center; gap: 22px; }
+    .cta-btn-numo { justify-content: center; padding: 0 30px !important; height: 54px; width: auto; }
     .cta-btn-numo .action-pill { font-size: 16px !important; }
     .cta-btn-numo .btn-arrow { width: 22px !important; height: 22px !important; }
     .hero-release-badge {
-      position: static; align-self: flex-end; margin: 0;
-      width: 104px; height: 104px; min-width: 0; min-height: 0; padding: 12px;
+      position: static; align-self: center; margin: 4px 0 0;
+      width: 108px; height: 108px; min-width: 0; min-height: 0; padding: 12px;
       font-size: 12px; gap: 4px;
     }
     .scroll-indicator { display: none; }
@@ -6986,7 +6995,7 @@
       </a>
 
       <a class="btn-top-accent" id="btnTopAction" href="#contacts">Онлайн заявка</a>
-      <button class="nav-burger" id="navBurger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mMenu"><span></span></button>
+      <button class="nav-burger" id="navBurger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mMenu"><i></i><i></i><i></i></button>
 
     </div>
   </header>
@@ -7001,6 +7010,8 @@
     (function () {
       const btn = document.getElementById('navBurger'), menu = document.getElementById('mMenu');
       function build() {
+        /* перемикач мови живе в шапці; у панель його лише переносимо — інакше очищення меню його знищило б */
+        document.querySelector('.top-navbar .header-actions').prepend(document.getElementById('langToggleBtn'));
         menu.innerHTML = '';
         document.querySelectorAll('.top-navbar .nav-link').forEach(function (a, i) {
           const l = document.createElement('a');
@@ -7009,9 +7020,10 @@
           menu.appendChild(l);
         });
         const foot = document.createElement('div'); foot.className = 'm-menu-foot';
+        foot.appendChild(document.getElementById('langToggleBtn'));
         const ph = document.querySelector('.top-navbar .phone-capsule'), cta = document.getElementById('btnTopAction');
-        foot.innerHTML = '<a class="m-menu-phone" href="' + ph.getAttribute('href') + '">' + ph.textContent.trim() + '</a>' +
-                         '<a class="m-menu-cta" href="#contacts">' + cta.textContent.trim() + '</a>';
+        foot.insertAdjacentHTML('beforeend', '<a class="m-menu-phone" href="' + ph.getAttribute('href') + '">' + ph.textContent.trim() + '</a>' +
+                         '<a class="m-menu-cta" href="#contacts">' + cta.textContent.trim() + '</a>');
         menu.appendChild(foot);
       }
       function set(open) {
@@ -7022,6 +7034,9 @@
       }
       btn.addEventListener('click', function () { set(!document.body.classList.contains('m-menu-open')); });
       menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+      document.getElementById('langToggleBtn').addEventListener('click', function () {
+        if (document.body.classList.contains('m-menu-open')) setTimeout(build, 30);
+      });
     })();
   </script>
 
