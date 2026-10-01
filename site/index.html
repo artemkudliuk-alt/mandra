@@ -7065,7 +7065,7 @@
     .footer-top-row { flex-direction: column !important; flex-wrap: nowrap !important; gap: 0 !important; }
     .footer-col-1, .footer-col-2 { flex: none !important; width: 100%; min-width: 0 !important; padding-left: 0 !important;
                                    border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    .footer-col-1 { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    .footer-top-row > .footer-col:first-child { border-top: 1px solid rgba(255, 255, 255, 0.1); }
     .footer-contacts-col { flex: none !important; margin-top: 28px; }
     .footer-col-title { display: flex; align-items: center; justify-content: space-between; gap: 16px;
                         min-height: 58px; margin: 0 !important; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -8881,26 +8881,27 @@
       
       <div class="footer-top-row">
         <!-- Колонка 1: Mandra Invest -->
+<!-- Колонка 1: Проєкт Mandra Petrichor (на прохання замовника — першою) -->
         <div class="footer-col footer-col-1">
-          <h4 class="footer-col-title" id="footerCol1Title">Mandra Invest</h4>
-          <ul class="footer-nav-list">
-            <li><a href="#petrichor-intro" class="footer-nav-link" id="fnAbout">Про Mandra Invest</a></li>
-            <li><a href="#petrichor" class="footer-nav-link" id="fnMap">Інтерактивна мапа</a></li>
-            <li><a href="#faq" class="footer-nav-link" id="fnFaq">FAQ</a></li>
-            <li><a href="#contacts" class="footer-nav-link" id="fnContacts">Контакти</a></li>
-          </ul>
-        </div>
-
-        <!-- Колонка 2: Проєкт Mandra Petrichor -->
-        <div class="footer-col footer-col-2">
           <h4 class="footer-col-title">
             <a href="#petrichor" class="footer-col-title-link" id="footerCol2Title">Проєкт Mandra Petrichor</a>
           </h4>
           <ul class="footer-nav-list">
             <li><a href="#petrichor" class="footer-nav-link" id="fnPetrichor">Mandra Petrichor</a></li>
+            <li><a href="#petrichor" class="footer-nav-link" id="fnMap">Інтерактивна мапа</a></li>
             <li><a href="#petrichor" class="footer-nav-link" id="fnPhase2">II черга</a></li>
             <li><a href="#petrichor" class="footer-nav-link" id="fnPhase3">III черга</a></li>
             <li><a href="#invest-flow" class="footer-nav-link" id="fnBuild">Хід будівництва</a></li>
+          </ul>
+        </div>
+
+        <!-- Колонка 2: Mandra Invest -->
+        <div class="footer-col footer-col-2">
+          <h4 class="footer-col-title" id="footerCol1Title">Mandra Invest</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#petrichor-intro" class="footer-nav-link" id="fnAbout">Про Mandra Invest</a></li>
+            <li><a href="#faq" class="footer-nav-link" id="fnFaq">FAQ</a></li>
+            <li><a href="#contacts" class="footer-nav-link" id="fnContacts">Контакти</a></li>
           </ul>
         </div>
 
