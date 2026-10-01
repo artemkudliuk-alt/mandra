@@ -6672,7 +6672,7 @@
      тому на телефоні їх перекриваємо явними px (подекуди !important —
      частина кеглів приходить змінними, які панель стилів пише в :root).
      ============================================================ */
-  .nav-burger, .m-menu, .m-cta-bar, .mp-pills, .m-dots, .m-more { display: none; }
+  .nav-burger, .m-menu, .m-cta-bar, .mp-pills, .m-nav, .m-more { display: none; }
 
   @media (max-width: 767px) {
     html { scroll-padding-top: 72px; }
@@ -6948,11 +6948,18 @@
   }
   @media (max-width: 767px) {
 
-    /* крапки під свайпом */
-    .m-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-    .m-dots i { width: 6px; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.25);
-                transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s; }
-    .m-dots i.is-on { width: 22px; background: var(--accent-color, #81B873); }
+    /* стрілки під свайпом — праворуч, тонкі. Тільки контур без заливки; на дотик
+       заливаються акцентом, контур зникає — заливка й рамка не сходяться */
+    .m-nav { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+    .m-nav button {
+      width: 46px; height: 46px; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+      border: none; border-radius: 50%; background: transparent; color: #FFFFFF; cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+      transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .m-nav button svg { width: 20px; height: 20px; display: block; }
+    .m-nav button:active { background: var(--accent-color, #81B873); color: #0E1F0B; box-shadow: none; transform: scale(0.94); }
 
     /* етапи: смуга готовності всередині картки своєї черги */
     .bs-bars { display: none !important; }
@@ -12403,22 +12410,117 @@
     (function () {
       if (!window.matchMedia('(max-width: 767px)').matches) return;
 
-      document.querySelectorAll('.why-grid, .bs-grid, .bl-grid, .founders-top-grid').forEach(function (row) {
-        const items = row.children; if (items.length < 2) return;
-        const dots = document.createElement('div'); dots.className = 'm-dots'; dots.setAttribute('aria-hidden', 'true');
-        for (let i = 0; i < items.length; i++) dots.appendChild(document.createElement('i'));
-        row.after(dots);
-        function sync() {
-          const step = items[1].offsetLeft - items[0].offsetLeft;
-          const k = Math.min(items.length - 1, Math.round(row.scrollLeft / step));
-          Array.prototype.forEach.call(dots.children, function (d, i) { d.classList.toggle('is-on', i === k); });
-        }
-        row.addEventListener('scroll', function () { requestAnimationFrame(sync); }, { passive: true });
-        sync();
-      });
-
+      /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
       const cards = document.querySelectorAll('.bs-grid .bs-card'), bars = document.querySelectorAll('.bs-bars .bs-bar');
       cards.forEach(function (c, i) { if (bars[i]) c.appendChild(bars[i]); });
+
+      /* СВАЙП-НАБОРИ ПО КОЛУ. Обабіч оригіналів стоять копії всього набору,
+         тож листати можна безкінечно в обидва боки. Коли гортання завершилось
+         на копії, позиція непомітно перестрибує на той самий оригінал.
+         Копії без id (інакше переклад і getElementById чіплялись би за них),
+         прихованi від читачів екрана, а тап по копії передається оригіналу. */
+      const ARROW = function (d) {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">' +
+          (d < 0 ? '<path d="M20 12H4M10 6l-6 6 6 6"/>' : '<path d="M4 12h16M14 6l6 6-6 6"/>') + '</svg>';
+      };
+      const loops = [];
+
+      document.querySelectorAll('.why-grid, .bs-grid, .bl-grid, .founders-top-grid').forEach(function (row) {
+        const items = Array.prototype.slice.call(row.children);
+        const n = items.length; if (n < 2) return;
+
+        function makeClone(el, i) {
+          const c = el.cloneNode(true);
+          c.classList.add('m-clone');
+          c.setAttribute('aria-hidden', 'true');
+          c.removeAttribute('id');
+          c.querySelectorAll('[id]').forEach(function (x) { x.removeAttribute('id'); });
+          c.querySelectorAll('a, button, [tabindex]').forEach(function (x) { x.setAttribute('tabindex', '-1'); });
+          /* смуга готовності в копії одразу заповнена — спостерігач налива бачить лише оригінали */
+          c.querySelectorAll('.bs-bar').forEach(function (b) {
+            const pct = b.dataset.pct, f = b.querySelector('.bs-bar-fill'), t = b.querySelector('.bs-pct');
+            if (f) { f.style.transition = 'none'; f.style.width = pct + '%'; }
+            if (t) t.textContent = pct + '%';
+          });
+          c.addEventListener('click', function (e) { e.preventDefault(); items[i].click(); });
+          return c;
+        }
+        function build() {
+          row.querySelectorAll('.m-clone').forEach(function (c) { c.remove(); });
+          const head = document.createDocumentFragment(), tail = document.createDocumentFragment();
+          items.forEach(function (el, i) { head.appendChild(makeClone(el, i)); tail.appendChild(makeClone(el, i)); });
+          row.insertBefore(head, items[0]);
+          row.appendChild(tail);
+        }
+
+        const padL = function () { return parseFloat(getComputedStyle(row).scrollPaddingLeft) || 0; };
+        const all = function () { return row.children; };
+        function offsetOf(k) {
+          return row.scrollLeft + all()[k].getBoundingClientRect().left - row.getBoundingClientRect().left - padL();
+        }
+        function current() {
+          const x0 = row.getBoundingClientRect().left + padL(); let best = 0, bd = Infinity;
+          Array.prototype.forEach.call(all(), function (el, k) {
+            const d = Math.abs(el.getBoundingClientRect().left - x0); if (d < bd) { bd = d; best = k; }
+          });
+          return best;
+        }
+        function jumpTo(k) {                       /* без анімації і без прилипання, щоб стрибок не було видно */
+          row.style.scrollSnapType = 'none';
+          row.scrollLeft = offsetOf(k);
+          requestAnimationFrame(function () { row.style.scrollSnapType = ''; });
+        }
+        function normalize() {
+          const k = current();
+          if (k < n) jumpTo(k + n);
+          else if (k >= 2 * n) jumpTo(k - n);
+        }
+
+        build();
+        requestAnimationFrame(function () { jumpTo(n); });
+
+        /* scrollend буває пропускає (заміряно: після плавного scrollTo в Chromium
+           приходить не щоразу), тож страхуємо паузою в прокрутці. Поки палець на
+           екрані — не стрибаємо: інакше набір смикнувся б під пальцем. */
+        let t = 0, touching = false;
+        function settle() { if (!touching) normalize(); }
+        function later() { clearTimeout(t); t = setTimeout(settle, 160); }
+        row.addEventListener('scroll', later, { passive: true });
+        row.addEventListener('scrollend', settle);
+        row.addEventListener('touchstart', function () { touching = true; }, { passive: true });
+        row.addEventListener('touchend', function () { touching = false; later(); }, { passive: true });
+
+        const nav = document.createElement('div');
+        nav.className = 'm-nav';
+        [-1, 1].forEach(function (d) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.setAttribute('aria-label', d < 0 ? 'Попередня картка' : 'Наступна картка');
+          b.innerHTML = ARROW(d);
+          b.addEventListener('click', function () {
+            const k = current() + d;
+            row.scrollTo({ left: offsetOf(k), behavior: 'smooth' });
+          });
+          nav.appendChild(b);
+        });
+        /* стрілки стають рівно по правому краю карток: той самий бокс, що в набору */
+        const rs = getComputedStyle(row);
+        nav.style.margin = '14px ' + rs.marginRight + ' 0 ' + rs.marginLeft;
+        nav.style.padding = '0 ' + rs.paddingRight + ' 0 ' + rs.paddingLeft;
+        row.after(nav);
+
+        loops.push(function () { const k = current(); build(); jumpTo(k); });
+      });
+
+      /* Перемикання мови переписує лише оригінали — копії збираємо заново */
+      if (typeof window.setLanguage === 'function' && loops.length) {
+        const setLang = window.setLanguage;
+        window.setLanguage = function () {
+          const r = setLang.apply(this, arguments);
+          loops.forEach(function (f) { f(); });
+          return r;
+        };
+      }
 
       const lead = document.getElementById('ph1Lead');
       if (lead) {
