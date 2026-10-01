@@ -4807,11 +4807,11 @@
     border: none;
     padding: 0;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.38);
+    color: var(--accent-color, #81B873);
     transition: color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .ph1-rev-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .ph1-rev-arrow:hover { color: #81B873; }
+  .ph1-rev-arrow:hover { color: #DEF7D7; }
   .ph1-rev-prev:hover { transform: translateX(-3px); }
   .ph1-rev-next:hover { transform: translateX(3px); }
 
@@ -6779,7 +6779,8 @@
     /* ---------- ВІДЕОБАНЕР ---------- */
     .vb-head { padding: 0 20px 24px; }
     .vb-head .why-title, .why-title { font-size: clamp(30px, 7.69vw, 46px) !important; }
-    .section-video-banner { aspect-ratio: 4 / 5; }
+    /* банер на телефоні — цілий кадр 16:9 на всю ширину, без обрізання по боках */
+    .section-video-banner { aspect-ratio: 16 / 9; }
     .vb-play { width: 56px; height: 56px; }
 
     /* ---------- УНІКАЛЬНІСТЬ ПРОЄКТУ ---------- */
@@ -6866,7 +6867,8 @@
     .ph1-rev-tag { font-size: clamp(12px, 3.08vw, 19px) !important; }
     .ph1-rev-quote, .ph1-rev-item, .ph1-rev-item p { font-size: clamp(17px, 4.36vw, 26px) !important; line-height: 1.5; }
     .ph1-rev-stars, .ph1-rev-src, .ph1-rev-count { font-size: clamp(14px, 3.59vw, 22px) !important; }
-    .ph1-rev-arrow { width: 44px !important; height: 44px !important; }
+    .ph1-reviews { grid-template-columns: 34px minmax(0, 1fr) 34px !important; gap: 14px !important; }
+    .ph1-rev-arrow { width: 34px !important; height: 44px !important; }
     .trust-brand { font-size: clamp(16px, 4.1vw, 25px) !important; }
     .trust-count { font-size: clamp(28px, 7.18vw, 43px) !important; }
     .trust-sub, .trust-stars { font-size: clamp(14px, 3.59vw, 22px) !important; }
@@ -6884,6 +6886,8 @@
     /* відступ від кнопок черг до карток засновників — менший */
     .section-phase1-live { padding-bottom: 36px !important; }
     .section-founders { padding-top: 20px !important; }
+    /* після логотипів партнерів до наступного фону — вдвічі менше повітря (105 → 52px) */
+    .section-partners { padding-bottom: 21px !important; }
     .founder-name { font-size: clamp(20px, 5.13vw, 31px) !important; }
     .founder-role { font-size: clamp(14px, 3.59vw, 22px) !important; }
     .founders-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
@@ -6972,7 +6976,7 @@
        стрілками й на вузькому телефоні: 30px від 400px, плавно менше на вужчих */
     .m-head > h2 { font-size: min(30px, 7.5vw) !important; }
     .bl-head > .m-head { flex: 1 1 100%; min-width: 0; }
-    .m-head.is-solo { justify-content: flex-end; }
+    .m-head.is-solo { justify-content: center; }
     .m-nav { display: flex; flex: none; align-items: center; gap: 6px; }
     .m-nav button {
       display: inline-flex; align-items: center; justify-content: center;
