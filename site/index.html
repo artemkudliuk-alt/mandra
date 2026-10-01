@@ -6956,14 +6956,14 @@
     /* Стрілки свайп-набору — праворуч від заголовка секції. Без кружків, фону й
        рамок: лише довга тонка лінія з гострим наконечником у фірмовому зеленому.
        На дотик стрілка коротко виїжджає у свій бік. */
-    .m-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+    .m-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .m-head > :not(.m-nav) { flex: 1 1 auto; min-width: 0; margin-bottom: 0 !important; }
     /* найдовше слово заголовка («Унікальність», «будівництва») має влізти поруч зі
        стрілками й на вузькому телефоні: 30px від 400px, плавно менше на вужчих */
     .m-head > h2 { font-size: min(30px, 7.5vw) !important; }
     .bl-head > .m-head { flex: 1 1 100%; min-width: 0; }
     .m-head.is-solo { justify-content: flex-end; }
-    .m-nav { display: flex; flex: none; align-items: center; gap: 6px; padding-bottom: 2px; }
+    .m-nav { display: flex; flex: none; align-items: center; gap: 6px; }
     .m-nav button {
       display: inline-flex; align-items: center; justify-content: center;
       min-width: 38px; min-height: 44px; padding: 0; margin: 0;
