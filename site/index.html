@@ -6956,6 +6956,7 @@
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.6s;
     }
     .ph1-rev-item:not(.is-on) { transform: translateX(14px); }
+    .ph1-rev-count, .ph1-rev-stars { white-space: nowrap; flex: none; }   /* «1 / 2» не ламається на два рядки */
     .ph1-rev-item.is-on { transition-delay: 0.08s, 0.08s, 0s; }
 
     /* ---------- ПЕРША ЧЕРГА ---------- */
