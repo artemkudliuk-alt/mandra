@@ -1430,7 +1430,7 @@
     position: relative;
     z-index: 3;
     background: var(--bg-dark);
-    border-top-left-radius: 22px;      /* наїжджає на маніфест карткою */
+    border-top-left-radius: 22px;      /* наїжджає на героя карткою */
     border-top-right-radius: 22px;
     box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.45);
     padding: clamp(72px, 8vh, 124px) 5vw;
@@ -2740,12 +2740,11 @@
      ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
      Inline Image Capsules: фото вбудовані просто в рядок тексту
      ============================================================ */
-  /* Маніфест з'являється повністю звичайним скролом, далі прилипає під шапкою,
-     а блок Petrichor (наступний у .stack-stage) наїжджає на нього знизу. */
-  .stack-stage { position: relative; }
+  /* ТИМЧАСОВО: маніфест знято, на героя одразу наїжджає блок Petrichor.
+     Повернути — зняти атрибут hidden із секції #about. */
+  #about[hidden] { display: none; }
   .section-manifesto {
-    position: sticky;
-    top: clamp(64px, 5.5vw, 90px);       /* під фіксованою шапкою — як scroll-padding */
+    position: relative;
     z-index: 2;
     background: var(--bg-dark);
     display: flex;
@@ -6761,7 +6760,7 @@
         <!-- BLOCK 3: CTA BUTTON (in-flow, directly under subtitle) -->
         <div class="free-floating-cta" id="freeCta">
       <!-- 1. NUMO Style (Unified Capsule with Internal Flip Arrow) -->
-      <a class="cta-btn-numo" id="btnStyleNumo" href="#about" aria-label="Дізнатися більше" style="display: inline-flex;">
+      <a class="cta-btn-numo" id="btnStyleNumo" href="#petrichor-intro" aria-label="Дізнатися більше" style="display: inline-flex;">
         <span class="btn-arrow btn-arrow-left" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -6772,7 +6771,7 @@
       </a>
 
       <!-- 2. Big Circular Button -->
-      <a class="cta-btn-circle" id="btnStyleCircle" href="#about" style="display: none;" aria-label="Дізнатися більше">
+      <a class="cta-btn-circle" id="btnStyleCircle" href="#petrichor-intro" style="display: none;" aria-label="Дізнатися більше">
         <span class="circle-text">Дізнатися<br>більше</span>
         <span class="circle-arrow-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -6783,19 +6782,19 @@
       </a>
 
       <!-- 3. Geometric Square (Геометрична квадратна) -->
-      <a class="cta-btn-square" id="btnStyleSquare" href="#about" style="display: none;" aria-label="Дізнатися більше">
+      <a class="cta-btn-square" id="btnStyleSquare" href="#petrichor-intro" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
         <span class="arrow-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
       <!-- 4. Luxury Soft Rectangle (Преміум скруглений прямокутник) -->
-      <a class="cta-btn-soft" id="btnStyleSoft" href="#about" style="display: none;" aria-label="Дізнатися більше">
+      <a class="cta-btn-soft" id="btnStyleSoft" href="#petrichor-intro" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
         <span class="soft-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
       <!-- 5. Glass Neomorphic Capsule (Скляна нео-капсула) -->
-      <a class="cta-btn-glass" id="btnStyleGlass" href="#about" style="display: none;" aria-label="Дізнатися більше">
+      <a class="cta-btn-glass" id="btnStyleGlass" href="#petrichor-intro" style="display: none;" aria-label="Дізнатися більше">
         <span>Дізнатися більше</span>
         <span class="glass-icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
@@ -6819,7 +6818,7 @@
     </div>
 
     <!-- 4. SCROLL INDICATOR (BOTTOM CENTER) -->
-    <a class="scroll-indicator" href="#about" aria-label="Скролл до наступного блоку">
+    <a class="scroll-indicator" href="#petrichor-intro" aria-label="Скролл до наступного блоку">
       <span class="scroll-text">SCROLL</span>
       <div class="scroll-line"></div>
     </a>
@@ -6827,28 +6826,7 @@
 
 
 
-  </div><!-- /.hero-stage -->
-
-  <!-- ============================================================
-       ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
-       ============================================================ -->
-  <!-- Маніфест прилипає під шапкою, блок Petrichor наїжджає на нього знизу -->
-  <div class="stack-stage">
-  <!-- ============================================================
-       ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
-       ============================================================ -->
-  <section id="about" class="section-manifesto">
-    <div class="manifesto-container">
-
-      <div class="section-badge" id="mfBadge">[ ПРО MANDRA INVEST ]</div>
-
-      <h2 class="manifesto-text">
-        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span> <span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
-        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми&nbsp;представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
-      </h2>
-
-    </div>
-  </section>
+  <!-- Petrichor наїжджає на героя карткою з першого ж скролу -->
   <section class="section-petrichor-intro" id="petrichor-intro">
     <div class="pi-container">
 
@@ -6937,7 +6915,26 @@
 
     </div>
   </section>
-  </div><!-- /.stack-stage -->
+  </div><!-- /.hero-stage -->
+  <!-- ============================================================
+       ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
+       ============================================================ -->
+  <section id="about" class="section-manifesto" hidden>
+    <div class="manifesto-container">
+
+      <div class="section-badge" id="mfBadge">[ ПРО MANDRA INVEST ]</div>
+
+      <h2 class="manifesto-text">
+        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span> <span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
+        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми&nbsp;представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
+      </h2>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
+       ============================================================ -->
 
   <!-- ============================================================
        ЕКРАН 3.5 — ВІДЕОБАНЕР НА ВЕСЬ ЕКРАН
@@ -8108,7 +8105,7 @@
         <div class="footer-col footer-col-1">
           <h4 class="footer-col-title" id="footerCol1Title">Mandra Invest</h4>
           <ul class="footer-nav-list">
-            <li><a href="#about" class="footer-nav-link" id="fnAbout">Про Mandra Invest</a></li>
+            <li><a href="#petrichor-intro" class="footer-nav-link" id="fnAbout">Про Mandra Invest</a></li>
             <li><a href="#petrichor" class="footer-nav-link" id="fnMap">Інтерактивна мапа</a></li>
             <li><a href="#faq" class="footer-nav-link" id="fnFaq">FAQ</a></li>
             <li><a href="#contacts" class="footer-nav-link" id="fnContacts">Контакти</a></li>
@@ -9794,7 +9791,8 @@
       if (scrollIndicator) {
         scrollIndicator.addEventListener('click', function (e) {
           e.preventDefault();
-          scrollToPos(getSnapY(), HERO_SNAP_DURATION);
+          if (window.lenis) window.lenis.scrollTo('#petrichor-intro', { duration: 1.4 });
+          else document.getElementById('petrichor-intro').scrollIntoView({ behavior: 'smooth' });
         });
       }
     })();
