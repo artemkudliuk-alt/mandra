@@ -7060,10 +7060,25 @@
     .contacts-media-side { order: -1; border-top: none !important; border-bottom: 1px solid rgba(14, 31, 11, 0.08); }
     /* футер на телефоні: дві колонки меню поруч, контакти під ними на всю ширину.
        Раніше на ≤576px колонки ставали в стовпчик — так і було на iPhone (390px) */
-    .footer-top-row { flex-direction: row !important; flex-wrap: wrap !important; gap: 28px 16px !important; }
-    .footer-col-1, .footer-col-2 { flex: 1 1 0 !important; min-width: 0 !important; padding-left: 0 !important; }
-    .footer-contacts-col { flex: 1 1 100% !important; }
-    .footer-col-title, .footer-col-title-link { font-size: clamp(13px, 3.6vw, 16px) !important; line-height: 1.25; }
+    /* футер на телефоні: дві категорії меню — акордеоном. Рядок із назвою і стрілкою
+       вниз, тап розкриває чотири пункти; відкрита одна категорія, перша — одразу */
+    .footer-top-row { flex-direction: column !important; flex-wrap: nowrap !important; gap: 0 !important; }
+    .footer-col-1, .footer-col-2 { flex: none !important; width: 100%; min-width: 0 !important; padding-left: 0 !important;
+                                   border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .footer-col-1 { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    .footer-contacts-col { flex: none !important; margin-top: 28px; }
+    .footer-col-title { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+                        min-height: 58px; margin: 0 !important; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
+    .footer-col-title, .footer-col-title-link { font-size: clamp(15px, 4.1vw, 18px) !important; line-height: 1.25; }
+    .footer-col-title-link { pointer-events: none; }
+    .m-acc-chev { flex: none; width: 22px; height: 22px; color: var(--accent-color, #81B873);
+                  transition: rotate 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+    .footer-col.is-open .m-acc-chev { rotate: 180deg; }
+    .footer-col-1 .footer-nav-list, .footer-col-2 .footer-nav-list {
+      max-height: 0; overflow: hidden; margin: 0 !important; opacity: 0;
+      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .footer-col.is-open .footer-nav-list { max-height: 320px; opacity: 1; padding-bottom: 14px; }
     /* контакти у футері: без підписів «Телефон» / «Email» — лише значки, зелені */
     .footer-contact-label { display: none !important; }
     .footer-contact-icon { color: var(--accent-color, #81B873) !important; }
@@ -12780,6 +12795,24 @@
       function init() {
 
       /* Смуги етапів переїжджають у свої картки — до того, як набори клонуються */
+      /* футер: категорії меню акордеоном (перша відкрита, відкрита завжди одна) */
+      const accCols = Array.prototype.slice.call(document.querySelectorAll('.footer-col-1, .footer-col-2'));
+      accCols.forEach(function (col, i) {
+        const t = col.querySelector('.footer-col-title'); if (!t) return;
+        t.insertAdjacentHTML('beforeend', '<svg class="m-acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>');
+        t.setAttribute('role', 'button'); t.setAttribute('tabindex', '0');
+        const set = function (open) { col.classList.toggle('is-open', open); t.setAttribute('aria-expanded', open); };
+        set(i === 0);
+        const toggle = function (e) {
+          e.preventDefault();
+          const open = !col.classList.contains('is-open');
+          accCols.forEach(function (c) { if (c !== col) { c.classList.remove('is-open'); const tt = c.querySelector('.footer-col-title'); if (tt) tt.setAttribute('aria-expanded', false); } });
+          set(open);
+        };
+        t.addEventListener('click', toggle);
+        t.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') toggle(e); });
+      });
+
       const toTop = document.getElementById('footerScrollTop'), fCol = document.querySelector('.footer-contacts-col');
       if (toTop && fCol) fCol.appendChild(toTop);   /* «Вгору» — праворуч від контактів */
 
