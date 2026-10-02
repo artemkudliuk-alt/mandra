@@ -10570,6 +10570,21 @@
          польоті, щоб стик з сусідніми картинками був непомітний. Черги без
          відео (II) просто ховаються під applyPhase(), сюди не заходять. */
       let activePhaseNum = null;
+      /* Ролики черг підтягуються в кеш заздалегідь, коли до карти лишається
+         екран, — тап по черзі тоді стартує відео без очікування */
+      const mapSec = document.querySelector('.section-masterplan-clean');
+      if (mapSec && 'IntersectionObserver' in window) {
+        const warm = new IntersectionObserver(function (es) {
+          if (!es[0].isIntersecting) return;
+          warm.disconnect();
+          Object.keys(PHASES).forEach(function (k) {
+            const d = PHASES[k];
+            [d.video, d.videoReverse].forEach(function (u) { if (u) fetch(u).catch(function () {}); });
+            if (d.endframe) new Image().src = d.endframe;
+          });
+        }, { rootMargin: '800px 0px' });
+        warm.observe(mapSec);
+      }
       window.onPhaseEnter = function (n) {
         const d = PHASES[n];
         if (!d || !d.video) return;
@@ -10584,15 +10599,25 @@
         sec.dataset.phase = n;                /* мобільний кадр 9:16 веде камеру до будинку цієї черги */
         sec.classList.remove('mp-ended');
         document.body.classList.remove('mp-ended');
-        sec.classList.add('mp-video-active');
-        document.body.classList.add('mp-video-active');   /* ховає глобальну шапку */
         setHot(0);                             /* курсор — position:fixed на body, поза секцією й її каскадом */
 
+        /* Карта гасне лише тоді, коли ролик уже показав перший кадр. Інакше на
+           iPhone, поки відео вантажиться, замість карти секунду видно чорний екран */
+        let shown = false;
+        function reveal() {
+          if (shown || activePhaseNum !== n) return;
+          shown = true;
+          sec.classList.add('mp-video-active');
+          document.body.classList.add('mp-video-active');   /* ховає глобальну шапку */
+        }
         if (endframe) endframe.src = d.endframe;
         src.src = d.video;
         video.load();
         video.currentTime = 0;
-        video.play().catch(function () {});
+        if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(reveal);
+        else video.addEventListener('timeupdate', function onT() { if (video.currentTime > 0) { video.removeEventListener('timeupdate', onT); reveal(); } });
+        setTimeout(reveal, 2500);              /* страховка: повільна мережа чи відмова автоплею */
+        video.play().catch(reveal);
 
         cancelAnimationFrame(phaseRAF);
         function syncBrightness() {
@@ -10630,13 +10655,21 @@
           const d = PHASES[activePhaseNum];
           if (!sec || !video || !src || !d) return;
 
-          sec.classList.remove('mp-ended');
-          document.body.classList.remove('mp-ended');
-
+          /* end-кадр тримається, поки зворотний ролик не дав перший кадр — без чорного проміжку */
+          let shown = false;
+          function reveal() {
+            if (shown) return;
+            shown = true;
+            sec.classList.remove('mp-ended');
+            document.body.classList.remove('mp-ended');
+          }
           src.src = d.videoReverse;
           video.load();
           video.currentTime = 0;
-          video.play().catch(function () {});
+          if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(reveal);
+          else video.addEventListener('timeupdate', function onT() { if (video.currentTime > 0) { video.removeEventListener('timeupdate', onT); reveal(); } });
+          setTimeout(reveal, 2500);
+          video.play().catch(reveal);
 
           cancelAnimationFrame(phaseRAF);
           function syncBrightnessReverse() {
