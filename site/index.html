@@ -523,7 +523,7 @@
     -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
     color: #FFFFFF;
-    font-size: 0.94vw;
+    font-size: 1.1vw;            /* +2–4 пт */
     font-weight: 600;
     letter-spacing: 0.03em;
     padding: 0.35vw 0.6vw;
@@ -684,7 +684,7 @@
     transition: transform 0.05s linear;
     max-width: var(--sub-max-w);
   }
-  p.hero-main-desc strong { font-weight: 800; color: #FFFFFF; }
+  p.hero-main-desc strong { font-weight: 800; color: var(--accent-color, #81B873); font-size: 1.32em; letter-spacing: -0.01em; white-space: nowrap; }   /* 11,3% — помітно, а не губиться */
   p.hero-main-desc {
     font-family: var(--sub-font);
     font-size: var(--sub-size);
@@ -6729,6 +6729,14 @@
      тому на телефоні їх перекриваємо явними px (подекуди !important —
      частина кеглів приходить змінними, які панель стилів пише в :root).
      ============================================================ */
+
+  /* плитки з текстом клієнта: жирний заголовок окремим рядком, пояснення — тихіше */
+  .pi-feature-text { color: rgba(255, 255, 255, 0.66); }
+  .pi-feature-text strong { display: block; margin-bottom: 4px; font-weight: 700; color: #FFFFFF; }
+  .why-tile-text { font-size: clamp(14px, 0.95vw, 17px) !important; font-weight: 500; line-height: 1.45; color: rgba(255, 255, 255, 0.7); max-width: 21em; }
+  .why-tile-text strong { display: block; margin-bottom: 8px; font-size: clamp(20px, 1.47vw, 28px); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; color: #FFFFFF; }
+  .pi-ticker strong { font-weight: 800; color: #FFFFFF; }
+  .pi-status strong { font-weight: 700; color: #FFFFFF; }
   .nav-burger, .m-menu, .m-cta-bar, .mp-pills, .m-nav, .m-more, .m-release { display: none; }
 
   @media (max-width: 767px) {
@@ -7012,6 +7020,15 @@
     /* засновники → «Партнери» той самий відступ, що від заголовка до логотипів (55px) */
     #founders { padding-bottom: 0 !important; }
     #partners { padding-top: 55px !important; }
+
+    .why-tile-text { font-size: clamp(15px, 3.9vw, 19px) !important; }
+    .why-tile-text strong { font-size: clamp(21px, 5.4vw, 28px); }
+    .pi-feature-text { font-size: clamp(13px, 3.4vw, 17px) !important; line-height: 1.4; }
+    .pi-feature-text strong { font-size: clamp(15px, 3.9vw, 20px); }
+    /* значок у куті, текст на всю ширину плитки — без вузької колонки на 6 рядків */
+    .pi-feature { position: relative; display: block !important; padding: 16px 14px !important; }
+    .pi-feature .pi-feature-icon { position: absolute; top: 12px; right: 12px; width: 34px !important; height: 34px !important; }
+    .pi-feature .pi-feature-text strong { padding-right: 38px; }
 
     /* ---------- ПЕРША ЧЕРГА ---------- */
     .phase1-container { padding-left: 20px; padding-right: 20px; }
@@ -7633,25 +7650,25 @@
 
       <div class="pi-col-text">
         <h2 class="pi-title">MANDRA <span class="pi-accent">PETRICHOR</span></h2>
-        <p class="pi-lead" id="piLead">Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.</p>
+        <p class="pi-lead" id="piLead">Діючий заміський готельний комплекс під управлінням Ribas Hotels Group. Модель поєднує приватність котеджів із повноцінним готельним сервісом, що забезпечує стабільний попит та високу завантаженість круглий рік.</p>
       </div>
 
       <div class="pi-features">
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle pathLength="1" style="--i:0" cx="12" cy="13.5" r="5.2"/><circle pathLength="1" style="--i:1" cx="12" cy="13.5" r="2.6" opacity=".55"/><path pathLength="1" style="--i:2" class="ico-fork pi-ease" d="M3.4 6.5v3.2a1.2 1.2 0 0 0 2.4 0V6.5M4.6 11v8.5"/><path pathLength="1" style="--i:2" class="ico-knife pi-ease" d="M20.4 19.5V6.5c-1.5 1-2.1 3-2.1 5.4h2.1"/><path class="ico-steam" d="M10.6 6.2c-.7-.8.7-1.5 0-2.4"/><path class="ico-steam" d="M13.4 6.2c-.7-.8.7-1.5 0-2.4"/></svg></span>
-            <p class="pi-feature-text" id="piF1">Ресторан та SPA-комплекс</p>
+            <p class="pi-feature-text" id="piF1"><strong>SPA та ресторан:</strong> Драйвер всесезонного завантаження та високого чека.</p>
           </article>
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-adult-l pi-ease"><circle pathLength="1" style="--i:0" cx="6.2" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M2.8 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-adult-r pi-ease"><circle pathLength="1" style="--i:0" cx="17.8" cy="6.4" r="2.1"/><path pathLength="1" style="--i:1" d="M14.4 20v-4.6a3.4 3.4 0 0 1 6.8 0V20"/></g><g class="ico-kid"><circle pathLength="1" style="--i:2" cx="12" cy="12.4" r="1.6"/><path pathLength="1" style="--i:3" d="M9.9 20v-2.1a2.1 2.1 0 0 1 4.2 0V20"/></g></svg></span>
-            <p class="pi-feature-text" id="piF3">Простори для сімейного відпочинку</p>
+            <p class="pi-feature-text" id="piF3"><strong>Сімейна зона:</strong> Розширює аудиторію та збільшує середній термін проживання (LOS).</p>
           </article>
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-glass-l pi-ease"><path pathLength="1" style="--i:0" d="M4.6 4h5.2c0 3.4-1.1 5.4-2.6 5.4S4.6 7.4 4.6 4Z"/><path class="ico-wine" d="M5.1 6.3h4.2" opacity=".7"/><path pathLength="1" style="--i:1" d="M7.2 9.4v7.8M5.3 17.2h3.8"/></g><g class="ico-glass-r pi-ease"><path pathLength="1" style="--i:0" d="M14.2 4h5.2c0 3.4-1.1 5.4-2.6 5.4S14.2 7.4 14.2 4Z"/><path class="ico-wine" d="M14.7 6.3h4.2" opacity=".7"/><path pathLength="1" style="--i:1" d="M16.8 9.4v7.8M14.9 17.2h3.8"/></g><path class="ico-clink pi-ease" d="M12 2.6V1.2M10 3.1l-.9-1M14 3.1l.9-1"/></svg></span>
-            <p class="pi-feature-text" id="piF4">Простори для дорослого відпочинку</p>
+            <p class="pi-feature-text" id="piF4"><strong>Приватні зони:</strong> Преміум-сегмент для гостей із високим чеком.</p>
           </article>
           <article class="pi-feature">
             <span class="pi-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-trio"><circle pathLength="1" style="--i:0" class="ico-c1 pi-ease" cx="12" cy="8.3" r="4.3"/><circle pathLength="1" style="--i:1" class="ico-c2 pi-ease" cx="8.2" cy="14.9" r="4.3"/><circle pathLength="1" style="--i:2" class="ico-c3 pi-ease" cx="15.8" cy="14.9" r="4.3"/></g></svg></span>
-            <p class="pi-feature-text" id="piF5">Три концепції відпочинку</p>
+            <p class="pi-feature-text" id="piF5"><strong>3 концепції відпочинку:</strong> 3 формати відпочинку для сімей, пар та бізнес-сегмента.</p>
           </article>
       </div>
 
@@ -7684,7 +7701,7 @@
 
         <div class="pi-status">
           <span class="pulse-dot" aria-hidden="true"></span>
-          <span id="piStatus">Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.</span>
+          <span id="piStatus"><strong>I черга:</strong> Вже працює та приносить дохід &nbsp;·&nbsp; <strong>II–III черги:</strong> Доступний 81 котедж</span>
         </div>
 
         <!-- Десктоп: статус черг двома половинами, як табло -->
@@ -7692,12 +7709,12 @@
           <div class="pi-ph">
             <span class="pulse-dot" aria-hidden="true"></span>
             <span class="pi-ph-k" id="piPh1K">I черга</span>
-            <span class="pi-ph-t" id="piPh1T">Приймає гостей</span>
+            <span class="pi-ph-t" id="piPh1T">Вже працює та приносить дохід</span>
             <span class="pi-ph-tag is-on" id="piPh1Tag">Працює</span>
           </div>
           <div class="pi-ph">
             <span class="pi-ph-k" id="piPh2K">II · III черги</span>
-            <span class="pi-ph-t" id="piPh2T">81 котедж</span>
+            <span class="pi-ph-t" id="piPh2T">Доступний 81 котедж</span>
             <span class="pi-ph-tag is-sale" id="piPh2Tag">У продажу</span>
           </div>
         </div>
@@ -7814,42 +7831,42 @@
 
     <div class="why-grid">
       <div class="why-tile" data-img="assets/tiles/01_season.webp?v=1">
-        <p class="why-tile-text" id="why1">Комплекс 365 днів на рік</p>
+        <p class="why-tile-text" id="why1"><strong>Всесезонний дохід</strong> — високе завантаження та стабільний RevPAR 365 днів на рік.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect pathLength="1" style="--i:0" x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path pathLength="1" style="--i:1" d="M3.5 9.6h17"/><path pathLength="1" style="--i:1" class="ico-rings pi-ease" d="M8 3v3.6M16 3v3.6"/><g class="ico-loop-turn pi-ease"><g class="ico-loop"><path pathLength="1" style="--i:2" d="M15.3 15.1a3.3 3.3 0 1 1-.97-2.34"/><path pathLength="1" style="--i:3" d="M14.6 11.2l-.3 1.8 1.8.2"/></g></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/01_season.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/02_architecture.webp?v=1">
-        <p class="why-tile-text" id="why2">6 різних архітектурних рішень</p>
+        <p class="why-tile-text" id="why2"><strong>6 типів котеджів</strong> — вибір формату під будь-який інвестиційний бюджет.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" class="ico-h1 pi-ease" d="M2.6 19.2 6.4 10.4l3.8 8.8"/><path pathLength="1" style="--i:1" class="ico-h2 pi-ease" d="M9.4 19.2v-5.6l2.9-4.1 2.9 4.1v5.6"/><path pathLength="1" style="--i:2" class="ico-h3 pi-ease" d="M15.6 19.2v-7.6l5.6-2.6v10.2"/><path pathLength="1" style="--i:3" d="M1.8 20.2h20.4"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/02_architecture.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/03_service.webp?v=1">
-        <p class="why-tile-text" id="why3">Керуюча компанія Ribas&nbsp;Hotels&nbsp;Group</p>
+        <p class="why-tile-text" id="why3"><strong>Управління «під ключ»</strong> — операційка та прозора звітність від Ribas&nbsp;Hotels&nbsp;Group.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="ico-key pi-ease"><circle pathLength="1" style="--i:0" cx="13.5" cy="6.6" r="3.4"/><circle cx="13.5" cy="6.6" r=".9"/><path pathLength="1" style="--i:1" d="M13.5 10v10.4M13.5 16.6h2.6M13.5 19.2h2"/></g><g class="ico-tag"><path pathLength="1" style="--i:2" d="M10.8 8.6 8.6 11.4"/><path pathLength="1" style="--i:3" d="M5.4 11.9l3.9-.9 1.3 5.4-3.9.9z"/></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/03_service.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/04_infrastructure.webp?v=1">
-        <p class="why-tile-text" id="why4">Ключова інфраструктура від YOD&nbsp;Group</p>
+        <p class="why-tile-text" id="why4"><strong>Дизайн від YOD&nbsp;Group</strong> — високий середній чек (ADR) та капіталізація об’єкта.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" d="M7 20.6V4.6M4.4 20.6h5.2"/><path pathLength="1" style="--i:1" d="M3.4 4.6h17.2M7 4.6 9.8 2.4l2.8 2.2"/><g class="ico-hook-lift pi-ease"><g class="ico-hook"><path pathLength="1" style="--i:2" d="M16.6 4.6v6"/><rect pathLength="1" style="--i:3" x="14.6" y="10.6" width="4" height="3.4" rx=".6"/></g></g></svg></span>
         <img class="why-tile-img" src="assets/tiles/04_infrastructure.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/05_scenarios.webp?v=1">
-        <p class="why-tile-text" id="why5">3 різні сценарії відпочинку</p>
+        <p class="why-tile-text" id="why5"><strong>Диверсифікація попиту</strong> — 3 формати відпочинку для сімей, пар та бізнес-сегмента.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" style="--i:0" d="M12 21V3.6M9.6 21h4.8"/><path pathLength="1" style="--i:1" class="ico-a1 pi-ease" d="M12 4.4h5.9l1.8 1.8-1.8 1.8H12"/><path pathLength="1" style="--i:2" class="ico-a2 pi-ease" d="M12 9.2H6.1l-1.8 1.8 1.8 1.8H12"/><path pathLength="1" style="--i:3" class="ico-a3 pi-ease" d="M12 14h4.9l1.8 1.8-1.8 1.8H12"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/05_scenarios.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
       </div>
 
       <div class="why-tile" data-img="assets/tiles/06_access.webp?v=1">
-        <p class="why-tile-text" id="why6">Стабільний попит та зручна доступність</p>
+        <p class="why-tile-text" id="why6"><strong>Вигідна локація</strong> — зручна логістика гарантує постійний трафік.</p>
         <span class="why-tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="ico-route" d="M3 20.4c4-3.8 3.2-8 8-9.2s7.2-.6 7.6 1.6"/><g class="ico-pin pi-ease"><path pathLength="1" style="--i:0" d="M18.2 2.8c-2.3 0-4.1 1.8-4.1 4.1 0 3.1 4.1 7 4.1 7s4.1-3.9 4.1-7c0-2.3-1.8-4.1-4.1-4.1z"/><circle pathLength="1" style="--i:1" cx="18.2" cy="6.9" r="1.4"/></g><circle class="ico-walker" cx="0" cy="0" r="1.1"/></svg></span>
         <img class="why-tile-img" src="assets/tiles/06_access.webp?v=1" alt="" loading="lazy" decoding="async">
         <span class="why-tile-scrim" aria-hidden="true"></span>
@@ -9504,25 +9521,25 @@
         desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до <strong>11,3%</strong>.',
         heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
         vbTitleA: 'Відчуй атмосферу', vbTitleB: 'лісу',
-        piLead: 'Заміський готельний комплекс від засновників Ribas Hotels Group та Mandra Moments, у якому приватність котеджів поєднується з сервісом та інфраструктурою готелю.',
-        piPh1K: 'I черга', piPh1T: 'Приймає гостей', piPh1Tag: 'Працює',
-        piPh2K: 'II · III черги', piPh2T: '81 котедж', piPh2Tag: 'У продажу',
-        piStatus: 'Перша черга вже працює. Котеджі другої та третьої черг доступні для придбання.',
+        piLead: 'Діючий заміський готельний комплекс під управлінням Ribas Hotels Group. Модель поєднує приватність котеджів із повноцінним готельним сервісом, що забезпечує стабільний попит та високу завантаженість круглий рік.',
+        piPh1K: 'I черга', piPh1T: 'Вже працює та приносить дохід', piPh1Tag: 'Працює',
+        piPh2K: 'II · III черги', piPh2T: 'Доступний 81 котедж', piPh2Tag: 'У продажу',
+        piStatus: '<strong>I черга:</strong> Вже працює та приносить дохід &nbsp;·&nbsp; <strong>II–III черги:</strong> Доступний 81 котедж',
         piCtaText: 'Переглянути комплекс',
         piTag1: 'територія', piTag2: 'котеджі', piTag4: 'інфраструктура',
-        piF1: 'Ресторан та SPA-комплекс',
+        piF1: '<strong>SPA та ресторан:</strong> Драйвер всесезонного завантаження та високого чека.',
         piF2: 'SPA-комплекс',
-        piF3: 'Простори для сімейного відпочинку',
-        piF4: 'Простори для дорослого відпочинку',
-        piF5: 'Три концепції відпочинку',
+        piF3: '<strong>Сімейна зона:</strong> Розширює аудиторію та збільшує середній термін проживання (LOS).',
+        piF4: '<strong>Приватні зони:</strong> Преміум-сегмент для гостей із високим чеком.',
+        piF5: '<strong>3 концепції відпочинку:</strong> 3 формати відпочинку для сімей, пар та бізнес-сегмента.',
         piF6: 'Готельне управління Ribas Hotels Group',
         whyTitle: 'Унікальність <span class="pi-accent">проєкту</span>',
-        why1: 'Комплекс 365 днів на рік',
-        why2: '6 різних архітектурних рішень',
-        why3: 'Керуюча компанія Ribas Hotels Group',
-        why4: 'Ключова інфраструктура від YOD Group',
-        why5: '3 різні сценарії відпочинку',
-        why6: 'Стабільний попит та зручна доступність',
+        why1: '<strong>Всесезонний дохід</strong> — високе завантаження та стабільний RevPAR 365 днів на рік.',
+        why2: '<strong>6 типів котеджів</strong> — вибір формату під будь-який інвестиційний бюджет.',
+        why3: '<strong>Управління «під ключ»</strong> — операційка та прозора звітність від Ribas&nbsp;Hotels&nbsp;Group.',
+        why4: '<strong>Дизайн від YOD&nbsp;Group</strong> — високий середній чек (ADR) та капіталізація об’єкта.',
+        why5: '<strong>Диверсифікація попиту</strong> — 3 формати відпочинку для сімей, пар та бізнес-сегмента.',
+        why6: '<strong>Вигідна локація</strong> — зручна логістика гарантує постійний трафік.',
         bsTitle: 'Етапи <span class="pi-accent">будівництва</span>',
         bsQ1: 'I черга', bsN1: 'Ареал спокою', bsC1: '20 котеджів',
         bsQ2: 'II черга', bsN2: 'Простір для свідомих батьків', bsC2: '40 котеджів',
@@ -9732,25 +9749,25 @@
         desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to <strong>11.3%</strong>.',
         heroBadge: 'Phase<br>II handover<br>this<br>year',
         vbTitleA: 'Feel the atmosphere of the', vbTitleB: 'forest',
-        piLead: 'A countryside hotel complex by the founders of Ribas Hotels Group and Mandra Moments, where the privacy of a cottage meets the service and infrastructure of a hotel.',
-        piPh1K: 'Phase I', piPh1T: 'Welcoming guests', piPh1Tag: 'Open',
-        piPh2K: 'Phases II · III', piPh2T: '81 cottages', piPh2Tag: 'For sale',
-        piStatus: 'Phase I is already operating. Cottages of phases II and III are available for purchase.',
+        piLead: 'An operating countryside hotel complex managed by Ribas Hotels Group. The model combines the privacy of cottages with full hotel service, ensuring stable demand and high occupancy all year round.',
+        piPh1K: 'Phase I', piPh1T: 'Operating and generating income', piPh1Tag: 'Open',
+        piPh2K: 'Phases II · III', piPh2T: '81 cottages available', piPh2Tag: 'For sale',
+        piStatus: '<strong>Phase I:</strong> Already operating and generating income &nbsp;·&nbsp; <strong>Phases II–III:</strong> 81 cottages available',
         piCtaText: 'Explore the complex',
         piTag1: 'territory', piTag2: 'cottages', piTag4: 'infrastructure',
-        piF1: 'Restaurant & spa complex',
+        piF1: '<strong>Spa and restaurant:</strong> A driver of year-round occupancy and a high average spend.',
         piF2: 'Spa complex',
-        piF3: 'Spaces for family leisure',
-        piF4: 'Spaces for adult leisure',
-        piF5: 'Three leisure concepts',
+        piF3: '<strong>Family area:</strong> Widens the audience and extends the average length of stay (LOS).',
+        piF4: '<strong>Private zones:</strong> A premium segment for high-spending guests.',
+        piF5: '<strong>3 holiday concepts:</strong> 3 formats for families, couples and business guests.',
         piF6: 'Hotel management by Ribas Hotels Group',
         whyTitle: 'What makes the project <span class="pi-accent">unique</span>',
-        why1: 'A resort open 365 days a year',
-        why2: '6 different architectural solutions',
-        why3: 'Managed by Ribas Hotels Group',
-        why4: 'Key infrastructure by YOD Group',
-        why5: '3 different leisure scenarios',
-        why6: 'Steady demand and easy access',
+        why1: '<strong>Year-round income</strong> — high occupancy and stable RevPAR 365 days a year.',
+        why2: '<strong>6 cottage types</strong> — a format for any investment budget.',
+        why3: '<strong>Turnkey management</strong> — operations and transparent reporting by Ribas&nbsp;Hotels&nbsp;Group.',
+        why4: '<strong>Design by YOD&nbsp;Group</strong> — high average daily rate (ADR) and asset value.',
+        why5: '<strong>Diversified demand</strong> — 3 holiday formats for families, couples and business guests.',
+        why6: '<strong>Prime location</strong> — easy logistics guarantee steady traffic.',
         bsTitle: 'Construction <span class="pi-accent">stages</span>',
         bsQ1: 'Phase I', bsN1: 'A haven of calm', bsC1: '20 cottages',
         bsQ2: 'Phase II', bsN2: 'A space for mindful parents', bsC2: '40 cottages',
@@ -10086,7 +10103,9 @@
       /* заголовки секцій мають біло-зелений акцент — їх ставимо з розміткою
          (рядки перекладу наші), усе інше — тільки текстом */
       const withAccent = ['mpTitle', 'partnersTitle', 'synergyTitle', 'bsTitle', 'blTitle',
-                          'faqTitle', 'contactsTitle', 'foundersHeroText'];
+                          'faqTitle', 'contactsTitle', 'foundersHeroText',
+                          'piF1', 'piF3', 'piF4', 'piF5', 'piStatus',
+                          'why1', 'why2', 'why3', 'why4', 'why5', 'why6'];   /* жирні підзаголовки — <strong> */
       s2.forEach(function(id) {
         const el = document.getElementById(id);
         if (el && t[id]) el[withAccent.indexOf(id) >= 0 ? 'innerHTML' : 'textContent'] = t[id];
@@ -12801,7 +12820,7 @@
       const tk = document.createElement('div'); tk.className = 'pi-ticker'; tk.setAttribute('aria-hidden', 'true');
       box.appendChild(tk);
       const fill = function () {
-        const t = src.textContent.trim().replace(/[<>&]/g, '');
+        const t = src.innerHTML.trim();   /* рядок наш, із <strong> */
         tk.innerHTML = new Array(6).fill('<span><i></i>' + t + '</span>').join('');
       };
       fill();
@@ -13077,7 +13096,7 @@
         const tk = document.createElement('div'); tk.className = 'pi-ticker'; tk.setAttribute('aria-hidden', 'true');
         stBox.appendChild(tk);
         const fill = function () {
-          const t = stSrc.textContent.trim().replace(/[<>&]/g, '');
+          const t = stSrc.innerHTML.trim();
           tk.innerHTML = new Array(6).fill('<span><i></i>' + t + '</span>').join('');
         };
         fill();
