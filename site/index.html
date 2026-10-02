@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mandra Invest — приватний природний resort із готельним сервісом</title>
 <meta name="description" content="Приватні котеджі у діючому готельному комплексі Mandra Petrichor серед соснового лісу під Києвом з прогнозованою дохідністю до 11,3%.">
-<link rel="canonical" href="https://mandra-bay.vercel.app/">
+<link rel="canonical" href="https://mandra.nextweb.ua/">
 <!-- Прев'ю посилання в Telegram, Viber, Facebook, WhatsApp -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mandra Invest">
 <meta property="og:locale" content="uk_UA">
-<meta property="og:url" content="https://mandra-bay.vercel.app/">
+<meta property="og:url" content="https://mandra.nextweb.ua/">
 <meta property="og:title" content="Mandra Invest — приватний природний resort із готельним сервісом">
 <meta property="og:description" content="Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.">
-<meta property="og:image" content="https://mandra-bay.vercel.app/assets/og-image.jpg">
+<meta property="og:image" content="https://mandra.nextweb.ua/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Котеджі Mandra Petrichor у сосновому лісі">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mandra Invest — приватний природний resort із готельним сервісом">
 <meta name="twitter:description" content="Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до 11,3%.">
-<meta name="twitter:image" content="https://mandra-bay.vercel.app/assets/og-image.jpg">
+<meta name="twitter:image" content="https://mandra.nextweb.ua/assets/og-image.jpg">
 
 <!-- Google Fonts: 28 Curated Fonts with 100% Cyrillic/Ukrainian & Latin support -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2349,7 +2349,31 @@
     position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(20px, 1.8vw, 36px);
+    --bl-gap: clamp(20px, 1.8vw, 36px);
+    gap: var(--bl-gap);
+  }
+  /* Імпульс по лінії часу — справа наліво, від найстарішої дати до найсвіжішої.
+     Доїжджає до живої точки й розчиняється в ній, точка в цю мить спалахує кільцем */
+  .bl-grid::after {
+    content: '';
+    position: absolute;
+    top: 4.5px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, #DEF7D7 0%, rgba(129, 184, 115, 0.9) 35%, rgba(129, 184, 115, 0) 100%);
+    box-shadow: 0 0 8px rgba(129, 184, 115, 0.8);
+    animation: blRun 4.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  @keyframes blRun {
+    0%   { left: calc((100% + var(--bl-gap)) * 2 / 3); opacity: 0; }
+    6%   { opacity: 1; }
+    60%  { left: 0; opacity: 1; }
+    66%  { left: 0; opacity: 0; }
+    100% { left: 0; opacity: 0; }
   }
   .bl-grid::before {                        /* лінія часу по центру точок */
     content: '';
@@ -2376,16 +2400,20 @@
     background: var(--bg-dark);
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
   }
-  .bl-card:first-child .bl-dot { background: var(--accent-color, #81B873); }
-  .bl-card:first-child .bl-dot::after {    /* найсвіжіший запис: тихий пульс */
+  .bl-card:first-child .bl-dot {           /* найсвіжіший запис: постійне м'яке світіння */
+    background: var(--accent-color, #81B873);
+    box-shadow: 0 0 0 3px rgba(129, 184, 115, 0.16), 0 0 12px 2px rgba(129, 184, 115, 0.55);
+  }
+  .bl-card:first-child .bl-dot::after {    /* і кільце — у мить, коли доїхав імпульс */
     content: '';
     position: absolute;
     inset: -2px;
     border-radius: 50%;
     border: 2px solid var(--accent-color, #81B873);
-    animation: blPulse 2.4s ease-out infinite;
+    opacity: 0;
+    animation: blPulse 4.8s ease-out 2.88s infinite;
   }
-  @keyframes blPulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(2.6); opacity: 0; } }
+  @keyframes blPulse { 0% { transform: scale(1); opacity: 0.85; } 40% { transform: scale(2.6); opacity: 0; } 100% { transform: scale(2.6); opacity: 0; } }
   .bl-card:hover .bl-dot { transform: scale(1.35); background: var(--accent-color, #81B873); }
   .bl-when { display: flex; align-items: baseline; gap: 12px; }
   .bl-day {
@@ -2431,11 +2459,11 @@
     max-width: 30em;
   }
   @media (prefers-reduced-motion: reduce) {
-    .bl-card:first-child .bl-dot::after { animation: none; }
+    .bl-card:first-child .bl-dot::after, .bl-grid::after { animation: none; }
   }
   @media (max-width: 900px) {
     .bl-grid { grid-template-columns: minmax(0, 1fr); }
-    .bl-grid::before { display: none; }
+    .bl-grid::before, .bl-grid::after { display: none; }
   }
 
   /* ТИМЧАСОВО: блок «Ваш шлях інвестора» знято на прохання замовника.
@@ -7264,7 +7292,14 @@
        з'являється з напівпрозорості, а далі естафета: 25 червня → 12 липня */
     .bl-card[data-k="2"]::after { animation-name: blImpulseIn; animation-delay: 0s; }
     .bl-card[data-k="1"]::after { animation-delay: 1.08s; }
-    .bl-card[data-k="0"]::after { animation-delay: 2.16s; }
+    .bl-card[data-k="0"]::after { animation-name: blImpulseEnd; animation-delay: 2.16s; }
+    @keyframes blImpulseEnd {
+      0%   { left: calc(100% + 12px - 26px); opacity: 0; }
+      4%   { opacity: 1; }
+      30%  { left: 0; opacity: 1; }
+      36%  { left: 0; opacity: 0; }
+      100% { left: 0; opacity: 0; }
+    }
     @keyframes blImpulseIn {
       0%   { left: calc(100% + 12px - 26px); opacity: 0; }
       14%  { opacity: 1; }
@@ -7284,11 +7319,12 @@
        щоб кільце не різалось; хвіст попередньої картки сюди все одно не дістає */
     .bl-grid { clip-path: inset(-20px 0 -20px 8px) !important; }
     /* «жива» точка — у найсвіжішого запису та його копій, а не в першого елемента ряду */
-    .bl-card:first-child .bl-dot { background: var(--bg-dark); }
+    .bl-card:first-child .bl-dot { background: var(--bg-dark); box-shadow: none; }
     .bl-card:first-child .bl-dot::after { content: none; }
-    .bl-card[data-k="0"] .bl-dot { background: var(--accent-color, #81B873); }
-    .bl-card[data-k="0"] .bl-dot::after { content: ''; position: absolute; inset: -2px; border-radius: 50%;
-                                          border: 2px solid var(--accent-color, #81B873); animation: blPulse 2.4s ease-out infinite; }
+    .bl-card[data-k="0"] .bl-dot { background: var(--accent-color, #81B873);
+                                   box-shadow: 0 0 0 3px rgba(129, 184, 115, 0.16), 0 0 12px 2px rgba(129, 184, 115, 0.55); }
+    .bl-card[data-k="0"] .bl-dot::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; opacity: 0;
+                                          border: 2px solid var(--accent-color, #81B873); animation: blPulse 3.6s ease-out 3.24s infinite; }
     /* плашка «Локація проєкту»: повітря від значка, відстань до Києва другим рядком,
        стрілка — нормального розміру зі своїм місцем праворуч */
     .mp-address { padding: 14px 14px 14px 16px !important; gap: 14px !important; align-items: center; }
@@ -7591,33 +7627,12 @@
       </a>
 
       <!-- 2. Big Circular Button -->
-      <a class="cta-btn-circle" id="btnStyleCircle" href="#petrichor-intro" style="display: none;" aria-label="Отримати пропозицію">
-        <span class="circle-text">Отримати<br>пропозицію</span>
-        <span class="circle-arrow-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="6" y1="18" x2="18" y2="6"></line>
-            <polyline points="9 6 18 6 18 15"></polyline>
-          </svg>
-        </span>
-      </a>
 
       <!-- 3. Geometric Square (Геометрична квадратна) -->
-      <a class="cta-btn-square" id="btnStyleSquare" href="#petrichor-intro" style="display: none;" aria-label="Отримати пропозицію">
-        <span>Отримати пропозицію</span>
-        <span class="arrow-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </a>
 
       <!-- 4. Luxury Soft Rectangle (Преміум скруглений прямокутник) -->
-      <a class="cta-btn-soft" id="btnStyleSoft" href="#petrichor-intro" style="display: none;" aria-label="Отримати пропозицію">
-        <span>Отримати пропозицію</span>
-        <span class="soft-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </a>
 
       <!-- 5. Glass Neomorphic Capsule (Скляна нео-капсула) -->
-      <a class="cta-btn-glass" id="btnStyleGlass" href="#petrichor-intro" style="display: none;" aria-label="Отримати пропозицію">
-        <span>Отримати пропозицію</span>
-        <span class="glass-icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </a>
         </div>
 
         <div class="hero-release-badge" id="heroReleaseBadge">
@@ -7746,18 +7761,6 @@
   <!-- ============================================================
        ЕКРАН 2 — МАНІФЕСТ «ПРО MANDRA INVEST»
        ============================================================ -->
-  <section id="about" class="section-manifesto" hidden>
-    <div class="manifesto-container">
-
-      <div class="section-badge" id="mfBadge">[ ПРО MANDRA INVEST ]</div>
-
-      <h2 class="manifesto-text">
-        <span class="manifesto-lead-bold"><span class="mf-bold" id="mfPart1">Від ідеї — до працюючого</span> <span class="mf-bold mf-accent" id="mfPart1b">готельного продукту</span>.</span>
-        <span class="manifesto-body-light"><span id="mfPart2">Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments</span>. <span id="mfPart3">Ми&nbsp;представляємо інвестиційні</span> <span id="mfPart3b">проєкти у сфері гостинності</span> <span id="mfPart4">та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості</span><span id="mfPart5">.</span></span>
-      </h2>
-
-    </div>
-  </section>
 
   <!-- ============================================================
        ЕКРАН 3 — MANDRA PETRICHOR: ЩО ЦЕ ЗА КОМПЛЕКС
@@ -7783,63 +7786,6 @@
   <!-- ============================================================
        ЕКРАН 3 — SCROLL SHOWCASE (4 квадранти)
        ============================================================ -->
-  <section class="section-scroll-showcase" id="showcase" hidden>
-    <div class="showcase-sticky">
-
-      <div class="showcase-stage">
-        <div class="showcase-grid">
-          <div class="showcase-lead" data-q="tl">
-            <h2 class="showcase-title" id="showcaseTitle">Ми відповідаємо за</h2>
-            <div class="showcase-card showcase-card-lead">
-            <div class="card-video-pair" data-fade="1.2">
-              <video data-src="assets/screen2/01_location_loop.mp4?v=4" poster="assets/screen2/01_location.webp?v=6"
-                     muted playsinline preload="none" aria-hidden="true"></video>
-              <video data-src="assets/screen2/01_location_loop.mp4?v=4"
-                     muted playsinline preload="none" aria-hidden="true"></video>
-            </div>
-              <span class="card-index">01</span>
-              <div class="card-badge">
-                <span class="card-badge-title" id="sc1Title">Аналіз</span>
-                <span class="card-badge-desc" id="sc1Desc">Локація, ринок та майбутня аудиторія.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="showcase-card" data-q="tr">
-            <div class="card-video-pair" data-fade="1.2">
-              <video data-src="assets/screen2/02_architecture_loop.mp4?v=3" poster="assets/screen2/02_architecture.webp?v=4"
-                     muted playsinline preload="none" aria-hidden="true"></video>
-              <video data-src="assets/screen2/02_architecture_loop.mp4?v=3"
-                     muted playsinline preload="none" aria-hidden="true"></video>
-            </div>
-            <span class="card-index">02</span>
-            <div class="card-badge">
-              <span class="card-badge-title" id="sc2Title">Концепція та девелопмент</span>
-              <span class="card-badge-desc" id="sc2Desc">Позиціонування, продукт, проєктування, будівництво та реалізація.</span>
-            </div>
-          </div>
-
-          <div class="showcase-card" data-q="bl">
-            <img src="assets/screen2/03_infrastructure.webp?v=3" alt="Інфраструктура та сервіс" loading="lazy" decoding="async">
-            <span class="card-index">03</span>
-            <div class="card-badge">
-              <span class="card-badge-title" id="sc3Title">Інфраструктура та управління</span>
-              <span class="card-badge-desc" id="sc3Desc">Створення просторів і сервісів, підготовка комплексу до запуску та професійне управління</span>
-            </div>
-          </div>
-
-          <div class="showcase-card" data-q="br">
-            <img src="assets/screen2/04_service.webp?v=3" alt="Робота з інвесторами" loading="lazy" decoding="async">
-            <span class="card-index">04</span>
-            <div class="card-badge">
-              <span class="card-badge-title" id="sc4Title">Робота з інвесторами</span>
-              <span class="card-badge-desc" id="sc4Desc">Супровід від вибору об'єкта до отримання доходу.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============================================================
        ЕКРАН 4 — ШІСТЬ ПЛИТОК «ЧОМУ MANDRA PETRICHOR»
@@ -7905,82 +7851,6 @@
   <!-- ============================================================
        ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ (withasa.com card stack)
        ============================================================ -->
-  <section class="section-stats-stack" id="stats" hidden>
-    <div class="stats-container">
-
-      <!-- Ліва колонка: інформація за макетом (без плашки зверху) -->
-      <div class="stats-col-info">
-        <h2 class="stats-title" id="stTitle"><span id="stTitleMain">Mandra Invest</span> <span class="stats-title-break" id="stTitleBreak">в цифрах</span></h2>
-        <div class="stats-title-line"></div>
-        <p class="stats-desc" id="stDesc">
-          Ми не просто презентуємо проєкти — ми будуємо їх у високому темпі.
-          Цифри нижче показують реальну динаміку реалізації Mandra Invest та фактичний прогрес наших проєктів.
-        </p>
-        <div class="stats-cta-wrap">
-          <a class="stats-cta-btn" href="#invest" id="stCta">
-            <span id="stCtaText">Дізнатися більше</span>
-            <span class="stats-cta-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Права колонка: каскадний стек карток -->
-      <div class="stats-col-deck">
-        <div class="stats-deck-sticky">
-
-          <!-- 01. Номерний фонд -->
-          <article class="stat-card" data-card="0">
-            <div class="stat-card-media">
-            </div>
-            <div class="stat-card-body">
-              <h3 class="stat-card-num">101</h3>
-              <p class="stat-card-text" id="st1Text">
-                Загальний номерний фонд
-              </p>
-            </div>
-          </article>
-
-          <!-- 02. На ринку з 2020 року -->
-          <article class="stat-card" data-card="1">
-            <div class="stat-card-media">
-            </div>
-            <div class="stat-card-body">
-              <h3 class="stat-card-num">2020</h3>
-              <p class="stat-card-text" id="st2Text">
-                Mandra Moments на ринку девелопменту
-              </p>
-            </div>
-          </article>
-
-          <!-- 03. Реалізовані проєкти -->
-          <article class="stat-card" data-card="2">
-            <div class="stat-card-media">
-            </div>
-            <div class="stat-card-body">
-              <h3 class="stat-card-num">5</h3>
-              <p class="stat-card-text" id="st4Text">
-                Реалізованих проєктів від девелопера Mandra Moments
-              </p>
-            </div>
-          </article>
-
-          <!-- 04. Інвестори (ФІНАЛЬНА КАРТКА НА ВЕРШИНІ СТОПКИ — СТРОГО ЗА МАКЕТОМ) -->
-          <article class="stat-card" data-card="3">
-            <div class="stat-card-media">
-            </div>
-            <div class="stat-card-body">
-              <h3 class="stat-card-num">100+</h3>
-              <p class="stat-card-text" id="st5Text">
-                Інвесторів які стали партнерами проєкту
-              </p>
-            </div>
-          </article>
-
-        </div>
-      </div>
-
-    </div>
-  </section>
 
   <!-- ============================================================
        ЕКРАН 5 — МАЙСТЕР-ПЛАН MANDRA PETRICHOR (16:9)
@@ -8012,11 +7882,6 @@
       <img class="mp-phase-endframe" id="mpPhaseEndframe" src="assets/cherga1_endframe.webp" alt="" aria-hidden="true">
 
       <!-- Інформаційний блок: в лівій частині, чуть зверху та по центру -->
-      <div class="mp-pills" role="group" aria-label="Черги">
-        <button type="button" data-phase="1">I черга</button>
-        <button type="button" data-phase="2">II черга</button>
-        <button type="button" data-phase="3">III черга</button>
-      </div>
       <div class="mp-floating-content">
         <h2 class="mp-float-title" id="mpTitle">Масштаб <span class="pi-accent">Mandra Petrichor</span></h2>
         <div class="mp-float-line"></div>
@@ -8282,26 +8147,6 @@
       </div>
 
       <!-- Нижня сітка з 6 фотографіями реалізованих локацій -->
-      <div class="founders-gallery-grid">
-        <div class="founder-thumb-box" title="Тераса з видом на гори">
-          <img src="assets/founders/gallery_1_v2.webp" alt="Тераса з видом на гори" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Safari Glamping">
-          <img src="assets/founders/gallery_6_hq.webp" alt="Mandra Safari Glamping" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Басейн комплексу">
-          <img src="assets/founders/gallery_3_v2.webp" alt="Басейн комплексу" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Pool">
-          <img src="assets/founders/gallery_2_hq.webp" alt="Mandra Pool" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra A-frame Chalet">
-          <img src="assets/founders/gallery_5_v2.webp" alt="Mandra A-frame Chalet" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-        <div class="founder-thumb-box" title="Mandra Terrace">
-          <img src="assets/founders/gallery_4_hq.webp" alt="Mandra Terrace" class="founder-thumb-img" loading="lazy" decoding="async">
-        </div>
-      </div>
     </div>
   </section>
 
@@ -8385,123 +8230,7 @@
   <!-- ============================================================
        ЕКРАН 8 — СИНЕРГІЯ ПАРТНЕРСТВА ТА ДОХІДНІСТЬ ІНВЕСТОРА
        Mandra Invest (Девелопер) + 3D Архітектурний стіл + Ribas Hotels Group (Оператор)
-       ============================================================ -->
-  <div class="synergy-stage" id="synergyStage" hidden>
-  <section class="section-synergy" id="synergy">
-    <div class="synergy-container">
-
-      <h2 class="synergy-section-title" id="synergyTitle">Як ми <span class="pi-accent">взаємодіємо</span></h2>
-
-      <!-- Головна триколонкова сітка -->
-      <div class="synergy-grid">
-        
-        <!-- ЛІВА КОЛОНКА: ДЕВЕЛОПЕР (Mandra Invest) -->
-        <div class="synergy-side-col developer-col">
-          <div class="syn-logo-plate" data-flow="l">
-            <img src="assets/logo_mandra_moments_synergy.webp" alt="Mandra Moments" class="syn-logo-img syn-logo-mandra" loading="lazy" decoding="async">
-          </div>
-          <h3 class="synergy-col-title" id="synDevTitle">Mandra Moments</h3>
-          <div class="synergy-col-subtitle" id="synDevSubtitle">Девелопер</div>
-          <ul class="synergy-list">
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev1">Концепція</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev2">Реалізація проєкту</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev3">Будівництво</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev4">Розвиток території</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synDev5">Робота з інвесторами</span></li>
-          </ul>
-        </div>
-
-        <!-- ЦЕНТРАЛЬНА КОЛОНКА: 3D АРХІТЕКТУРНИЙ СТІЛ + ПОТОКИ МОНЕТ -->
-        <div class="synergy-center-col">
-          <!-- Схема потоку: два бренди -> вузол злиття -> капітал інвестора.
-               Усе векторне: штрихпунктир біжить через stroke-dashoffset, долари
-               рухає rAF по getPointAtLength, тому швидкість можна плавно
-               підганяти на ховері без ривка. -->
-          <div class="synergy-flow" id="synFlow">
-            <svg class="syn-flow-svg" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <filter id="synGlowGold" x="-60%" y="-60%" width="220%" height="220%">
-                  <feGaussianBlur stdDeviation="2.6" result="b"/>
-                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-                <filter id="synBokehBlur" x="-100%" y="-100%" width="300%" height="300%">
-                  <feGaussianBlur stdDeviation="22"/>
-                </filter>
-              </defs>
-
-              <path id="synPathL" fill="none"/>
-              <path id="synPathR" fill="none"/>
-              <path id="synPathD" fill="none"/>
-
-              <g class="syn-line" data-line="l">
-                <use href="#synPathL" class="syn-base"/>
-                <use href="#synPathL" class="syn-dash"/>
-                <use href="#synPathL" class="syn-pulse"/>
-              </g>
-              <g class="syn-line" data-line="r">
-                <use href="#synPathR" class="syn-base"/>
-                <use href="#synPathR" class="syn-dash"/>
-                <use href="#synPathR" class="syn-pulse"/>
-              </g>
-              <g class="syn-line" data-line="d">
-                <use href="#synPathD" class="syn-base"/>
-                <use href="#synPathD" class="syn-dash"/>
-                <use href="#synPathD" class="syn-pulse"/>
-              </g>
-
-              <!-- Вузол злиття -->
-              <!-- Квадратики (l) і кружечки (r) заходять ПІД іконку; монетки (d) лишаються поверх -->
-              <g class="syn-glyphs" id="synGlyphsBack"></g>
-
-              <g class="syn-node" id="synNode">
-                <!-- Растрове фото картки, 3х більше за попередню спробу.
-                     Свічення — не по силуету (то виходило суцільною плямою,
-                     бо розмиття з'їдало прямокутну форму), а два м'які
-                     розмиті бліки за картинкою: зелений зліва, синій справа. -->
-                <ellipse class="syn-node-halo" cx="-90" cy="-9" rx="90" ry="70" fill="#6BDB9C"/>
-                <ellipse class="syn-node-halo" cx="90" cy="-9" rx="90" ry="70" fill="#5FACFF"/>
-                <g class="syn-node-icon" id="synNodeIcon">
-                  <image href="assets/synergy_house_icon.webp" x="-180" y="-82.2" width="360" height="145.9" preserveAspectRatio="xMidYMid meet"/>
-                </g>
-              </g>
-
-              <g class="syn-glyphs" id="synGlyphs"></g>
-            </svg>
-          </div>
-
-          <!-- Архітектурна метрика Інвестора (без AI-плашки-пігулки) -->
-          <div class="synergy-investor-stat" id="synInvestorPlate">
-            <div class="investor-stat-header">
-              <span class="investor-stat-tag" id="synInvBadge">ІНВЕСТОР</span>
-            </div>
-            <div class="investor-stat-main">
-              <span class="investor-stat-num" id="synInvAmount">до 35 892 $</span>
-              <span class="investor-stat-period" id="synInvPeriod">/ на рік</span>
-            </div>
-            <div class="investor-stat-desc" id="synInvLabel">Стабільний прогнозований прибуток інвестора з щоквартальними виплатами</div>
-          </div>
-        </div>
-
-        <!-- ПРАВА КОЛОНКА: ГОТЕЛЬНЕ УПРАВЛІННЯ (Ribas Hotels Group) -->
-        <div class="synergy-side-col operator-col">
-          <div class="syn-logo-plate" data-flow="r">
-            <img src="assets/partners/logo_ribas.svg" alt="Ribas Hotels Group" class="syn-logo-img syn-logo-ribas" loading="lazy" decoding="async">
-          </div>
-          <h3 class="synergy-col-title" id="synRibasTitle">Ribas Hotels Group</h3>
-          <div class="synergy-col-subtitle" id="synRibasSubtitle">Готельне управління</div>
-          <ul class="synergy-list">
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas1">Операційна модель</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas2">Стандарти сервісу</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas3">Продажі та маркетинг</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas4">Управління комплексом</span></li>
-            <li class="synergy-item"><span class="synergy-bullet"></span><span id="synRibas5">Фінансова результативність</span></li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-  </div><!-- /.synergy-stage -->
+       ============================================================ --><!-- /.synergy-stage -->
 
   <!-- Модальне вікно перегляду відео курорту -->
   <div class="phase1-video-modal" id="phase1VideoModal" onclick="closePhase1Video(event)">
@@ -8617,79 +8346,6 @@
        Розтягнутий по ширині, без рамок, великі цифри з прапорцем-покажчиком,
        арочні фото праворуч, кнопка знизу, фоновий напис RIBAS із 4-го кроку
        ============================================================ -->
-  <section class="section-invest-flow" id="invest-flow" hidden>
-    <div class="invest-flow-container">
-
-      <div class="flow-head">
-        <h2 class="invest-flow-title">
-          <span class="title-accent" id="investFlowTitleLine1">ВАШ ШЛЯХ ІНВЕСТОРА:</span>
-          <span class="title-white" id="investFlowTitleLine2">ВІД ПРИДБАННЯ ДО ДОХОДУ</span>
-        </h2>
-        <p class="invest-flow-lead" id="investFlowLead">Як працює інвестування з Mandra: від вибору нерухомості до стабільного отримання щоквартального доходу.</p>
-      </div>
-
-      <!-- Дерево кроків: лоза по центру, вісім листків почергово ліворуч і праворуч,
-           читання згори вниз. Форму листка тримає border-radius, тому вона тягнеться
-           під будь-який обсяг тексту й лишається різкою на будь-якому екрані. -->
-      <div class="flow-tree" id="flowTree">
-        <svg class="flow-vine" preserveAspectRatio="none" aria-hidden="true">
-          <path class="flow-vine-base" data-v="0" fill="none"/>
-          <path class="flow-vine-base" data-v="1" fill="none"/>
-          <path class="flow-vine-base" data-v="2" fill="none"/>
-          <path class="flow-vine-live" data-v="0" fill="none"/>
-          <path class="flow-vine-live" data-v="1" fill="none"/>
-          <path class="flow-vine-live" data-v="2" fill="none"/>
-          <g class="flow-sprigs"></g>
-        </svg>
-
-        <ol class="flow-leaves">
-          <li class="flow-leaf" data-side="l" data-tone="light">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">01</span>
-              <h3 class="flow-leaf-title" id="stepTitle1">Від вибору об'єкту до підписання договору.</h3>
-              <p class="flow-leaf-desc" id="stepDesc1">Ми підбираємо оптимальну пропозицію під вашу інвестиційну ціль та забезпечуємо повний супровід угоди.</p>
-            </div>
-          </li>
-          <li class="flow-leaf" data-side="r" data-tone="dark">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">02</span>
-              <h3 class="flow-leaf-title" id="stepTitle2">Оплачуєте — одразу або в розтермінування.</h3>
-              <p class="flow-leaf-desc" id="stepDesc2">Обирайте зручний формат оплати та плануйте інвестицію у комфортному для вас темпі.</p>
-            </div>
-          </li>
-          <li class="flow-leaf" data-side="l" data-tone="light">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">03</span>
-              <h3 class="flow-leaf-title" id="stepTitle3">Реалізація проєкту та комплектація.</h3>
-              <p class="flow-leaf-desc" id="stepDesc3">Девелопер відповідає за будівництво, комплектацію та підготовку об'єкта до введення в експлуатацію.</p>
-            </div>
-          </li>
-          <li class="flow-leaf" data-side="r" data-tone="dark">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">04</span>
-              <h3 class="flow-leaf-title" id="stepTitle4">Готельне управління комплексом.</h3>
-              <p class="flow-leaf-desc" id="stepDesc4">Ribas Hotels Group бере на себе повний цикл управління комплексом — від операційної роботи до сервісу та контролю стандартів.</p>
-            </div>
-          </li>
-          <li class="flow-leaf" data-side="l" data-tone="light">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">05</span>
-              <h3 class="flow-leaf-title" id="stepTitle5">Контроль вашого бізнесу у смартфоні.</h3>
-              <p class="flow-leaf-desc" id="stepDesc5">Застосунок Ribas Investor, аналітика та звітність у вашому смартфоні.</p>
-            </div>
-          </li>
-          <li class="flow-leaf" data-side="r" data-tone="dark">
-            <div class="flow-leaf-body">
-              <span class="flow-leaf-num">06</span>
-              <h3 class="flow-leaf-title" id="stepTitle6">Не лише інвестиція, а й власний формат відпочинку.</h3>
-              <p class="flow-leaf-desc" id="stepDesc6">Для інвестора передбачено 19 бонусних днів на рік для особистого проживання в комплексі без втрати прибутку.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-
-    </div>
-  </section>
 
   <!-- ============================================================
        ЕКРАН 11: НАЙЧАСТІШІ ПИТАННЯ (FAQ ACCORDION)
@@ -9003,995 +8659,8 @@
     </div>
   </footer>
 
-  <!-- Sleek Side Tab Trigger -->
-  <div class="side-inspector-tab" id="sideInspectorTab" onclick="toggleInspector()" title="Відкрити студію дизайну">
-    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-    <span class="tab-text">Дизайн-студія</span>
-  </div>
-
-  <!-- SLIDE-OUT INSPECTOR DRAWER (LIQUID GLASS FLOATING PLAQUE WITH MARGINS) -->
-  <aside class="inspector-drawer" id="inspectorDrawer">
-    <div class="drawer-header">
-      <div class="drawer-title">Дизайн-студія MANDRA</div>
-      <button class="drawer-close-btn" onclick="closeInspector()" title="Закрити панель (Esc)">✕</button>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="drawer-top-actions">
-      <button class="btn-drawer-action save" onclick="saveSettings()" title="Зберегти налаштування">💾 Зафіксувати</button>
-      <button class="btn-drawer-action" onclick="toggleCleanMode()">Сховати UI (H)</button>
-      <button class="btn-drawer-action" onclick="resetAll()">Скинути</button>
-    </div>
-
-    <!-- 3 EDITOR TABS: [🔘 Кнопка] [🔤 Заголовок] [📝 Підзаголовок] -->
-    <div class="editor-section-tabs">
-      <button class="editor-tab-btn active" onclick="switchEditorTab('tabButton', this)">🔘 Кнопка (5 видів)</button>
-      <button class="editor-tab-btn" onclick="switchEditorTab('tabHeadline', this)">🔤 Заголовок (30)</button>
-      <button class="editor-tab-btn" onclick="switchEditorTab('tabSubheadline', this)">📝 Підзаголовок (30)</button>
-    </div>
-
-    <div class="drawer-scroll-body">
-      <!-- ========================================================
-           TAB 1: BUTTON EDITOR
-           ======================================================== -->
-      <div class="tab-pane active" id="tabButton">
-        <div class="section-label">Вигляд кнопки (5 варіантів)</div>
-        <div class="btn-style-grid">
-          <div class="style-card active" data-style="numo" onclick="setButtonStyle('numo', this)">
-            <div class="style-card-title">1. Капсула NUMO</div>
-            <div class="style-card-desc">Єдина капсула з фліп-стрілкою</div>
-          </div>
-          <div class="style-card" data-style="circle" onclick="setButtonStyle('circle', this)">
-            <div class="style-card-title">2. Велика кругла ⚪</div>
-            <div class="style-card-desc">Архітектурне коло з текстом</div>
-          </div>
-          <div class="style-card" data-style="square" onclick="setButtonStyle('square', this)">
-            <div class="style-card-title">3. Геометрична ⬛</div>
-            <div class="style-card-desc">Чіткі прямі кути 90°</div>
-          </div>
-          <div class="style-card" data-style="soft" onclick="setButtonStyle('soft', this)">
-            <div class="style-card-title">4. Soft Rectangle</div>
-            <div class="style-card-desc">Преміум скруглені кути</div>
-          </div>
-          <div class="style-card" data-style="glass" onclick="setButtonStyle('glass', this)">
-            <div class="style-card-title">5. Скляна Нео-капсула</div>
-            <div class="style-card-desc">Blur-скло з акцентним кругом</div>
-          </div>
-        </div>
-
-        <div class="section-label">Швидкі позиції на екрані</div>
-        <div class="preset-row">
-          <button class="preset-btn active" onclick="setButtonPosition('3.6vw', '80vh')">Внизу зліва (під текстом)</button>
-          <button class="preset-btn" onclick="setButtonPosition('76vw', '80vh')">Внизу справа (NUMO)</button>
-          <button class="preset-btn" onclick="setButtonPosition('44vw', '82vh')">По центру внизу</button>
-          <button class="preset-btn" onclick="setButtonPosition('78vw', '52vh')">Справа по центру</button>
-        </div>
-
-        <div class="section-label">Вільне переміщення по ВСЬОМУ екрану</div>
-        <div class="control-row">
-          <div class="control-top"><span>Позиція X (Ширина всього екрана)</span><span class="control-val" id="valBtnPosX">15vw</span></div>
-          <input type="range" id="rngBtnPosX" min="0" max="88" step="0.5" value="15" oninput="updateVar('--btn-pos-x', this.value + 'vw', 'valBtnPosX')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Позиція Y (Висота всього екрана)</span><span class="control-val" id="valBtnPosY">71vh</span></div>
-          <input type="range" id="rngBtnPosY" min="10" max="92" step="0.5" value="71" oninput="updateVar('--btn-pos-y', this.value + 'vh', 'valBtnPosY')">
-        </div>
-
-        <div class="control-row">
-          <div class="control-top"><span>Масштаб кнопки (Scale)</span><span class="control-val" id="valBtnScale">1.0</span></div>
-          <input type="range" id="rngBtnScale" min="0.75" max="1.4" step="0.05" value="1.0" oninput="updateVar('--btn-scale', this.value, 'valBtnScale')">
-        </div>
-      </div>
-
-      <!-- ========================================================
-           TAB 2: MAIN HEADLINE (30 FONTS & 5 EFFECTS)
-           ======================================================== -->
-      <div class="tab-pane" id="tabHeadline">
-        <div class="section-label">Текст головного заголовка</div>
-        <textarea id="inpMainHeadline" class="text-input-field" rows="3" oninput="setMainHeadline(this.value)">MANDRA Invest — дохідна нерухомість, у яку хочеться повертатися</textarea>
-
-        <!-- 5 VISUAL EFFECTS FOR HEADLINE -->
-        <div class="section-label">5 Ефектів заголовка</div>
-        <div class="fx-btn-grid" id="headlineFxGrid">
-          <button class="fx-btn active" onclick="setHeadlineEffect('fx-solid', this)">1. Чистий (Solid)</button>
-          <button class="fx-btn" onclick="setHeadlineEffect('fx-outline', this)">2. Контур / Пустота</button>
-          <button class="fx-btn" onclick="setHeadlineEffect('fx-gradient', this)">3. Рідкий Градієнт</button>
-          <button class="fx-btn" onclick="setHeadlineEffect('fx-glow', this)">4. Хвойне Сяйво</button>
-          <button class="fx-btn" onclick="setHeadlineEffect('fx-line', this)">5. Підкреслення</button>
-        </div>
-
-        <!-- 30 FONTS FOR HEADLINE -->
-        <div class="section-label">
-          <span>Шрифти заголовка (30 варіантів)</span>
-        </div>
-        <input type="text" class="font-search-input" placeholder="🔍 Швидкий пошук шрифту..." oninput="searchFonts(this.value, 'headlineFontGrid')">
-        
-        <div class="font-select-grid-30" id="headlineFontGrid">
-          <div class="f-card active" data-font="Unbounded" onclick="setHeadlineFont('Unbounded', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Unbounded', sans-serif;">Unbounded</div>
-            <div class="f-card-cat">🇺🇦 Сучасний широкий</div>
-          </div>
-          <div class="f-card" data-font="Manrope" onclick="setHeadlineFont('Manrope', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Manrope', sans-serif;">Manrope</div>
-            <div class="f-card-cat">🇺🇦 Преміум гротеск</div>
-          </div>
-          <div class="f-card" data-font="Forum" onclick="setHeadlineFont('Forum', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Forum', serif;">Forum</div>
-            <div class="f-card-cat">🇺🇦 Римська антиква</div>
-          </div>
-          <div class="f-card" data-font="Prata" onclick="setHeadlineFont('Prata', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Prata', serif;">Prata</div>
-            <div class="f-card-cat">🇺🇦 Глянцевий Editorial</div>
-          </div>
-          <div class="f-card" data-font="Tenor Sans" onclick="setHeadlineFont('Tenor Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Tenor Sans', sans-serif;">Tenor Sans</div>
-            <div class="f-card-cat">🇺🇦 Скандинавський шик</div>
-          </div>
-          <div class="f-card" data-font="Montserrat" onclick="setHeadlineFont('Montserrat', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Montserrat', sans-serif;">Montserrat</div>
-            <div class="f-card-cat">🇺🇦 Геометричний</div>
-          </div>
-          <div class="f-card" data-font="Playfair Display" onclick="setHeadlineFont('Playfair Display', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Playfair Display', serif;">Playfair Display</div>
-            <div class="f-card-cat">🇺🇦 Розкішний журнальний</div>
-          </div>
-          <div class="f-card" data-font="Oswald" onclick="setHeadlineFont('Oswald', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Oswald', sans-serif;">Oswald</div>
-            <div class="f-card-cat">🇺🇦 Монументальний плакат</div>
-          </div>
-          <div class="f-card" data-font="Rubik" onclick="setHeadlineFont('Rubik', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Rubik', sans-serif;">Rubik</div>
-            <div class="f-card-cat">🇺🇦 М'який геометрик</div>
-          </div>
-          <div class="f-card" data-font="Cormorant Garamond" onclick="setHeadlineFont('Cormorant Garamond', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Cormorant Garamond', serif;">Cormorant</div>
-            <div class="f-card-cat">🇺🇦 Висока мода</div>
-          </div>
-          <div class="f-card" data-font="Inter" onclick="setHeadlineFont('Inter', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Inter', sans-serif;">Inter</div>
-            <div class="f-card-cat">🇺🇦 Чистий нейтрал</div>
-          </div>
-          <div class="f-card" data-font="Cinzel" onclick="setHeadlineFont('Cinzel', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Cinzel', serif;">Cinzel</div>
-            <div class="f-card-cat">Римська велич</div>
-          </div>
-          <div class="f-card" data-font="Syne" onclick="setHeadlineFont('Syne', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Syne', sans-serif;">Syne</div>
-            <div class="f-card-cat">NUMO Style</div>
-          </div>
-          <div class="f-card" data-font="Comfortaa" onclick="setHeadlineFont('Comfortaa', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Comfortaa', sans-serif;">Comfortaa</div>
-            <div class="f-card-cat">🇺🇦 Округлий органік</div>
-          </div>
-          <div class="f-card" data-font="Raleway" onclick="setHeadlineFont('Raleway', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Raleway', sans-serif;">Raleway</div>
-            <div class="f-card-cat">🇺🇦 Витончений гротеск</div>
-          </div>
-          <div class="f-card" data-font="Lora" onclick="setHeadlineFont('Lora', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Lora', serif;">Lora</div>
-            <div class="f-card-cat">🇺🇦 Літературний сериф</div>
-          </div>
-          <div class="f-card" data-font="Mulish" onclick="setHeadlineFont('Mulish', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Mulish', sans-serif;">Mulish</div>
-            <div class="f-card-cat">🇺🇦 Мінімалістичний</div>
-          </div>
-          <div class="f-card" data-font="Exo 2" onclick="setHeadlineFont('Exo 2', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Exo 2', sans-serif;">Exo 2</div>
-            <div class="f-card-cat">🇺🇦 Технологічний</div>
-          </div>
-          <div class="f-card" data-font="Alumni Sans" onclick="setHeadlineFont('Alumni Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Alumni Sans', sans-serif;">Alumni Sans</div>
-            <div class="f-card-cat">🇺🇦 Ультра-високий</div>
-          </div>
-          <div class="f-card" data-font="Jost" onclick="setHeadlineFont('Jost', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Jost', sans-serif;">Jost</div>
-            <div class="f-card-cat">🇺🇦 Німецький геометрик</div>
-          </div>
-          <div class="f-card" data-font="Commissioner" onclick="setHeadlineFont('Commissioner', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Commissioner', sans-serif;">Commissioner</div>
-            <div class="f-card-cat">🇺🇦 Швейцарський нео</div>
-          </div>
-          <div class="f-card" data-font="El Messiri" onclick="setHeadlineFont('El Messiri', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'El Messiri', sans-serif;">El Messiri</div>
-            <div class="f-card-cat">🇺🇦 Витончений модерн</div>
-          </div>
-          <div class="f-card" data-font="Spectral" onclick="setHeadlineFont('Spectral', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Spectral', serif;">Spectral</div>
-            <div class="f-card-cat">🇺🇦 Книжкова антиква</div>
-          </div>
-          <div class="f-card" data-font="Russo One" onclick="setHeadlineFont('Russo One', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Russo One', sans-serif;">Russo One</div>
-            <div class="f-card-cat">🇺🇦 Масивний бруталізм</div>
-          </div>
-          <div class="f-card" data-font="Yeseva One" onclick="setHeadlineFont('Yeseva One', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Yeseva One', serif;">Yeseva One</div>
-            <div class="f-card-cat">🇺🇦 Контрастний артистичний</div>
-          </div>
-          <div class="f-card" data-font="Philosopher" onclick="setHeadlineFont('Philosopher', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Philosopher', sans-serif;">Philosopher</div>
-            <div class="f-card-cat">🇺🇦 Витончений філософ</div>
-          </div>
-          <div class="f-card" data-font="Fira Sans" onclick="setHeadlineFont('Fira Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Fira Sans', sans-serif;">Fira Sans</div>
-            <div class="f-card-cat">🇺🇦 Індустріальний чіткий</div>
-          </div>
-          <div class="f-card" data-font="Podkova" onclick="setHeadlineFont('Podkova', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Podkova', serif;">Podkova</div>
-            <div class="f-card-cat">🇺🇦 Брусковий архітектурний</div>
-          </div>
-          <div class="f-card" data-font="Uni Sans" onclick="setHeadlineFont('Uni Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Uni Sans', sans-serif;">Uni Sans</div>
-            <div class="f-card-cat">🇺🇦 Монументальний капітель</div>
-          </div>
-          <div class="f-card" data-font="Cocogoose" onclick="setHeadlineFont('Cocogoose', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Cocogoose', sans-serif;">Cocogoose</div>
-            <div class="f-card-cat">Італійський дисплей</div>
-          </div>
-        </div>
-
-        <div class="section-label">Параметри заголовка</div>
-        <div class="control-row">
-          <div class="control-top"><span>Розмір літер (Size)</span><span class="control-val" id="valTitleSize">3.6vw</span></div>
-          <input type="range" id="rngTitleSize" min="2.0" max="7.5" step="0.1" value="3.6" oninput="updateVar('--title-size', this.value + 'vw', 'valTitleSize')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Товщина (Weight)</span><span class="control-val" id="valTitleWeight">700</span></div>
-          <input type="range" id="rngTitleWeight" min="300" max="900" step="100" value="700" oninput="updateVar('--title-weight', this.value, 'valTitleWeight')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Міжрядковий інтервал (Line-height)</span><span class="control-val" id="valTitleLh">1.15</span></div>
-          <input type="range" id="rngTitleLh" min="0.95" max="1.5" step="0.02" value="1.15" oninput="updateVar('--title-lh', this.value, 'valTitleLh')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Міжлітерний інтервал (Spacing)</span><span class="control-val" id="valTitleLs">-0.02em</span></div>
-          <input type="range" id="rngTitleLs" min="-0.06" max="0.2" step="0.005" value="-0.02" oninput="updateVar('--title-ls', this.value + 'em', 'valTitleLs')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Ширина блоку заголовка</span><span class="control-val" id="valTitleMaxW">66vw</span></div>
-          <input type="range" id="rngTitleMaxW" min="30" max="85" step="1" value="66" oninput="updateVar('--title-max-w', this.value + 'vw', 'valTitleMaxW')">
-        </div>
-
-        <div class="section-label">Переміщення заголовка (X / Y)</div>
-        <div class="xy-grid">
-          <div class="control-row">
-            <div class="control-top"><span>Заголовок X</span><span class="control-val" id="valTitleX">0vw</span></div>
-            <input type="range" id="rngTitleX" min="-20" max="40" step="0.5" value="0" oninput="updateVar('--title-x', this.value + 'vw', 'valTitleX')">
-          </div>
-          <div class="control-row">
-            <div class="control-top"><span>Заголовок Y</span><span class="control-val" id="valTitleY">0vh</span></div>
-            <input type="range" id="rngTitleY" min="-20" max="30" step="0.5" value="0" oninput="updateVar('--title-y', this.value + 'vh', 'valTitleY')">
-          </div>
-        </div>
-      </div>
-
-      <!-- ========================================================
-           TAB 3: SUBTITLE / DESCRIPTION (30 FONTS & 5 EFFECTS)
-           ======================================================== -->
-      <div class="tab-pane" id="tabSubheadline">
-        <div class="section-label">Текст підзаголовка</div>
-        <textarea id="inpMainDesc" class="text-input-field" rows="3" oninput="setMainDesc(this.value)">Ми створюємо не просто котеджі — ми формуємо повноцінний інвестиційний продукт готельної сфери.</textarea>
-
-        <!-- 5 VISUAL EFFECTS FOR SUBTITLE -->
-        <div class="section-label">5 Ефектів підзаголовка</div>
-        <div class="fx-btn-grid" id="subheadlineFxGrid">
-          <button class="fx-btn active" onclick="setSubEffect('fx-solid', this)">1. Чистий (Solid)</button>
-          <button class="fx-btn" onclick="setSubEffect('fx-outline', this)">2. Контур / Пустота</button>
-          <button class="fx-btn" onclick="setSubEffect('fx-gradient', this)">3. Рідкий Градієнт</button>
-          <button class="fx-btn" onclick="setSubEffect('fx-glow', this)">4. Хвойне Сяйво</button>
-          <button class="fx-btn" onclick="setSubEffect('fx-line', this)">5. Підкреслення</button>
-        </div>
-
-        <!-- 30 FONTS FOR SUBTITLE -->
-        <div class="section-label">
-          <span>Шрифт підзаголовка (30 варіантів)</span>
-        </div>
-        <input type="text" class="font-search-input" placeholder="🔍 Швидкий пошук шрифту..." oninput="searchFonts(this.value, 'subheadlineFontGrid')">
-
-        <div class="font-select-grid-30" id="subheadlineFontGrid">
-          <div class="f-card active" data-font="Manrope" onclick="setSubFont('Manrope', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Manrope', sans-serif;">Manrope</div>
-            <div class="f-card-cat">Преміум чистий гротеск</div>
-          </div>
-          <div class="f-card" data-font="Inter" onclick="setSubFont('Inter', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Inter', sans-serif;">Inter</div>
-            <div class="f-card-cat">Нейтральний мінімал</div>
-          </div>
-          <div class="f-card" data-font="Tenor Sans" onclick="setSubFont('Tenor Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Tenor Sans', sans-serif;">Tenor Sans</div>
-            <div class="f-card-cat">Скандинавський шик</div>
-          </div>
-          <div class="f-card" data-font="Montserrat" onclick="setSubFont('Montserrat', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Montserrat', sans-serif;">Montserrat</div>
-            <div class="f-card-cat">Геометричний чіткий</div>
-          </div>
-          <div class="f-card" data-font="Forum" onclick="setSubFont('Forum', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Forum', serif;">Forum</div>
-            <div class="f-card-cat">Курортна антиква</div>
-          </div>
-          <div class="f-card" data-font="Unbounded" onclick="setSubFont('Unbounded', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Unbounded', sans-serif;">Unbounded</div>
-            <div class="f-card-cat">Широкий акцентний</div>
-          </div>
-          <div class="f-card" data-font="Lora" onclick="setSubFont('Lora', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Lora', serif;">Lora</div>
-            <div class="f-card-cat">Літературний сериф</div>
-          </div>
-          <div class="f-card" data-font="Raleway" onclick="setSubFont('Raleway', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Raleway', sans-serif;">Raleway</div>
-            <div class="f-card-cat">Тонкий елегантний</div>
-          </div>
-          <div class="f-card" data-font="Mulish" onclick="setSubFont('Mulish', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Mulish', sans-serif;">Mulish</div>
-            <div class="f-card-cat">Скандинавський спокій</div>
-          </div>
-          <div class="f-card" data-font="Playfair Display" onclick="setSubFont('Playfair Display', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Playfair Display', serif;">Playfair Display</div>
-            <div class="f-card-cat">Висока антиква</div>
-          </div>
-          <div class="f-card" data-font="Rubik" onclick="setSubFont('Rubik', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Rubik', sans-serif;">Rubik</div>
-            <div class="f-card-cat">М'який геометрик</div>
-          </div>
-          <div class="f-card" data-font="Cormorant Garamond" onclick="setSubFont('Cormorant Garamond', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Cormorant Garamond', serif;">Cormorant</div>
-            <div class="f-card-cat">Висока мода</div>
-          </div>
-          <div class="f-card" data-font="Prata" onclick="setSubFont('Prata', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Prata', serif;">Prata</div>
-            <div class="f-card-cat">Глянцевий Editorial</div>
-          </div>
-          <div class="f-card" data-font="Comfortaa" onclick="setSubFont('Comfortaa', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Comfortaa', sans-serif;">Comfortaa</div>
-            <div class="f-card-cat">Округлий затишний</div>
-          </div>
-          <div class="f-card" data-font="Jost" onclick="setSubFont('Jost', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Jost', sans-serif;">Jost</div>
-            <div class="f-card-cat">Чиста геометрія</div>
-          </div>
-          <div class="f-card" data-font="Commissioner" onclick="setSubFont('Commissioner', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Commissioner', sans-serif;">Commissioner</div>
-            <div class="f-card-cat">Швейцарський гротеск</div>
-          </div>
-          <div class="f-card" data-font="Spectral" onclick="setSubFont('Spectral', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Spectral', serif;">Spectral</div>
-            <div class="f-card-cat">Книжковий стиль</div>
-          </div>
-          <div class="f-card" data-font="Fira Sans" onclick="setSubFont('Fira Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Fira Sans', sans-serif;">Fira Sans</div>
-            <div class="f-card-cat">Індустріальний</div>
-          </div>
-          <div class="f-card" data-font="El Messiri" onclick="setSubFont('El Messiri', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'El Messiri', sans-serif;">El Messiri</div>
-            <div class="f-card-cat">Витончений органік</div>
-          </div>
-          <div class="f-card" data-font="Philosopher" onclick="setSubFont('Philosopher', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Philosopher', sans-serif;">Philosopher</div>
-            <div class="f-card-cat">Модерний сериф</div>
-          </div>
-          <div class="f-card" data-font="Oswald" onclick="setSubFont('Oswald', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Oswald', sans-serif;">Oswald</div>
-            <div class="f-card-cat">Вузький плакатний</div>
-          </div>
-          <div class="f-card" data-font="Exo 2" onclick="setFont('Exo 2', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Exo 2', sans-serif;">Exo 2</div>
-            <div class="f-card-cat">Технологічний</div>
-          </div>
-          <div class="f-card" data-font="Alumni Sans" onclick="setSubFont('Alumni Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Alumni Sans', sans-serif;">Alumni Sans</div>
-            <div class="f-card-cat">Високий вузький</div>
-          </div>
-          <div class="f-card" data-font="Cinzel" onclick="setSubFont('Cinzel', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Cinzel', serif;">Cinzel</div>
-            <div class="f-card-cat">Римська класика</div>
-          </div>
-          <div class="f-card" data-font="Syne" onclick="setSubFont('Syne', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Syne', sans-serif;">Syne</div>
-            <div class="f-card-cat">NUMO Style</div>
-          </div>
-          <div class="f-card" data-font="Russo One" onclick="setSubFont('Russo One', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Russo One', sans-serif;">Russo One</div>
-            <div class="f-card-cat">Масивний бруталізм</div>
-          </div>
-          <div class="f-card" data-font="Yeseva One" onclick="setSubFont('Yeseva One', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Yeseva One', serif;">Yeseva One</div>
-            <div class="f-card-cat">Контрастний сериф</div>
-          </div>
-          <div class="f-card" data-font="Podkova" onclick="setSubFont('Podkova', 'serif', this)">
-            <div class="f-card-name" style="font-family: 'Podkova', serif;">Podkova</div>
-            <div class="f-card-cat">Брусковий архітектурний</div>
-          </div>
-          <div class="f-card" data-font="Uni Sans" onclick="setSubFont('Uni Sans', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Uni Sans', sans-serif;">Uni Sans</div>
-            <div class="f-card-cat">Монументальний капітель</div>
-          </div>
-          <div class="f-card" data-font="Cocogoose" onclick="setSubFont('Cocogoose', 'sans-serif', this)">
-            <div class="f-card-name" style="font-family: 'Cocogoose', sans-serif;">Cocogoose</div>
-            <div class="f-card-cat">Стиснутий дисплей</div>
-          </div>
-        </div>
-
-        <div class="section-label">Параметри підзаголовка</div>
-        <div class="control-row">
-          <div class="control-top"><span>Розмір тексту (Size)</span><span class="control-val" id="valSubSize">1.44vw</span></div>
-          <input type="range" id="rngSubSize" min="0.75" max="2.6" step="0.01" value="1.44" oninput="updateVar('--sub-size', this.value + 'vw', 'valSubSize')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Товщина (Weight)</span><span class="control-val" id="valSubWeight">400</span></div>
-          <input type="range" id="rngSubWeight" min="300" max="700" step="100" value="400" oninput="updateVar('--sub-weight', this.value, 'valSubWeight')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Міжрядковий інтервал (Line-height)</span><span class="control-val" id="valSubLh">1.6</span></div>
-          <input type="range" id="rngSubLh" min="1.1" max="2.1" step="0.05" value="1.6" oninput="updateVar('--sub-lh', this.value, 'valSubLh')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Міжлітерний інтервал (Spacing)</span><span class="control-val" id="valSubLs">0em</span></div>
-          <input type="range" id="rngSubLs" min="-0.03" max="0.15" step="0.005" value="0" oninput="updateVar('--sub-ls', this.value + 'em', 'valSubLs')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Ширина блоку підзаголовка</span><span class="control-val" id="valSubMaxW">45vw</span></div>
-          <input type="range" id="rngSubMaxW" min="20" max="75" step="1" value="45" oninput="updateVar('--sub-max-w', this.value + 'vw', 'valSubMaxW')">
-        </div>
-        <div class="control-row">
-          <div class="control-top"><span>Прозорість (Opacity)</span><span class="control-val" id="valSubOpacity">0.85</span></div>
-          <input type="range" id="rngSubOpacity" min="0.4" max="1.0" step="0.05" value="0.85" oninput="updateVar('--sub-opacity', this.value, 'valSubOpacity')">
-        </div>
-
-        <div class="section-label">Переміщення підзаголовка (X / Y)</div>
-        <div class="xy-grid">
-          <div class="control-row">
-            <div class="control-top"><span>Підзаголовок X</span><span class="control-val" id="valSubX">0vw</span></div>
-            <input type="range" id="rngSubX" min="-20" max="40" step="0.5" value="0" oninput="updateVar('--sub-x', this.value + 'vw', 'valSubX')">
-          </div>
-          <div class="control-row">
-            <div class="control-top"><span>Підзаголовок Y</span><span class="control-val" id="valSubY">0vh</span></div>
-            <input type="range" id="rngSubY" min="-20" max="30" step="0.5" value="0" oninput="updateVar('--sub-y', this.value + 'vh', 'valSubY')">
-          </div>
-        </div>
-      </div>
-    </div>
-  </aside>
-
   <script>
     const root = document.documentElement;
-    const drawer = document.getElementById('inspectorDrawer');
-
-    function toggleInspector() {
-      drawer.classList.toggle('open');
-    }
-
-    function closeInspector() {
-      drawer.classList.remove('open');
-    }
-
-    function toggleCleanMode() {
-      closeInspector();
-      document.body.classList.toggle('hide-ui');
-    }
-
-    function switchEditorTab(tabId, btnEl) {
-      document.querySelectorAll('.editor-tab-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-    }
-
-    /* Button Style Switcher */
-    function setButtonStyle(styleName, el) {
-      document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
-      if (el) el.classList.add('active');
-
-      const styles = {
-        numo: document.getElementById('btnStyleNumo'),
-        circle: document.getElementById('btnStyleCircle'),
-        square: document.getElementById('btnStyleSquare'),
-        soft: document.getElementById('btnStyleSoft'),
-        glass: document.getElementById('btnStyleGlass')
-      };
-
-      Object.keys(styles).forEach(k => {
-        styles[k].style.display = (k === styleName) ? (k === 'circle' ? 'flex' : 'inline-flex') : 'none';
-      });
-
-      saveSettings();
-    }
-
-    function setButtonPosition(x, y) {
-      root.style.setProperty('--btn-pos-x', x);
-      root.style.setProperty('--btn-pos-y', y);
-      document.getElementById('rngBtnPosX').value = parseFloat(x);
-      document.getElementById('valBtnPosX').textContent = x;
-      document.getElementById('rngBtnPosY').value = parseFloat(y);
-      document.getElementById('valBtnPosY').textContent = y;
-      saveSettings();
-    }
-
-    /* Text Effects */
-    const fxClasses = ['fx-solid', 'fx-outline', 'fx-gradient', 'fx-glow', 'fx-line'];
-
-    function setHeadlineEffect(effectClass, btnEl) {
-      const h1 = document.getElementById('heroMainHeadline');
-      fxClasses.forEach(c => h1.classList.remove(c));
-      h1.classList.add(effectClass);
-
-      document.querySelectorAll('#headlineFxGrid .fx-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      saveSettings();
-    }
-
-    function setSubEffect(effectClass, btnEl) {
-      const p = document.getElementById('heroMainDesc');
-      fxClasses.forEach(c => p.classList.remove(c));
-      p.classList.add(effectClass);
-
-      document.querySelectorAll('#subheadlineFxGrid .fx-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      saveSettings();
-    }
-
-    /* BILINGUAL LANGUAGE SWITCHING (UA / EN) */
-    const translations = {
-      ua: {
-        navPetrichor: 'MANDRA PETRICHOR',
-        navInfra: 'ІНФРАСТРУКТУРА',
-        navMap: 'ІНТЕРАКТИВНА МАПА',
-        navBuild: 'БУДІВНИЦТВО',
-        navContacts: 'КОНТАКТИ',
-        topBtn: 'Онлайн заявка',
-        headline: 'Приватний природний <span class="title-word-accent">resort</span> із готельним сервісом.',
-        desc: 'Приватні котеджі у діючому готельному комплексі серед природи з прогнозованою дохідністю до <strong>11,3%</strong>.',
-        heroBadge: 'Здача<br>II черги<br>вже цього<br>року',
-        vbTitleA: 'Відчуй атмосферу', vbTitleB: 'лісу',
-        piLead: 'Діючий заміський готельний комплекс під управлінням Ribas Hotels Group. Модель поєднує приватність котеджів із повноцінним готельним сервісом, що забезпечує стабільний попит та високу завантаженість круглий рік.',
-        piPh1K: 'I черга', piPh1T: 'Вже працює та приносить дохід', piPh1Tag: 'Працює',
-        piPh2K: 'II · III черги', piPh2T: 'Доступний 81 котедж', piPh2Tag: 'У продажу',
-        piStatus: '<strong>I черга:</strong> Вже працює та приносить дохід &nbsp;·&nbsp; <strong>II–III черги:</strong> Доступний 81 котедж',
-        piCtaText: 'Переглянути комплекс',
-        piTag1: 'територія', piTag2: 'котеджі', piTag4: 'інфраструктура',
-        piF1: '<strong>SPA та ресторан:</strong> Драйвер всесезонного завантаження та високого чека',
-        piF2: 'SPA-комплекс',
-        piF3: '<strong>Сімейна зона:</strong> Розширює аудиторію та збільшує середній термін проживання (LOS)',
-        piF4: '<strong>Приватні зони:</strong> Преміум-сегмент для гостей із високим чеком',
-        piF5: '<strong>3 концепції відпочинку:</strong> 3 формати відпочинку для сімей, пар та бізнес-сегмента',
-        piF6: 'Готельне управління Ribas Hotels Group',
-        whyTitle: 'Унікальність <span class="pi-accent">проєкту</span>',
-        why1: '<strong>Всесезонний дохід</strong> <span class="why-note">високе завантаження та стабільний RevPAR 365 днів на рік</span>',
-        why2: '<strong>6 типів котеджів</strong> <span class="why-note">вибір формату під будь‑який інвестиційний бюджет</span>',
-        why3: '<strong>Управління «під ключ»</strong> <span class="why-note">операційка та прозора звітність від Ribas&nbsp;Hotels&nbsp;Group</span>',
-        why4: '<strong>Дизайн від YOD&nbsp;Group</strong> <span class="why-note">високий середній чек (ADR) та капіталізація об’єкта</span>',
-        why5: '<strong>Диверсифікація попиту</strong> <span class="why-note">3 формати відпочинку для сімей, пар та бізнес-сегмента</span>',
-        why6: '<strong>Вигідна локація</strong> <span class="why-note">зручна логістика гарантує постійний трафік</span>',
-        bsTitle: 'Етапи <span class="pi-accent">будівництва</span>',
-        bsQ1: 'I черга', bsN1: 'Ареал спокою', bsC1: '20 котеджів',
-        bsQ2: 'II черга', bsN2: 'Простір для свідомих батьків', bsC2: '40 котеджів',
-        bsQ3: 'III черга', bsN3: 'Місце твоїх ідеальних побачень', bsC3: '41 котедж',
-        blTitle: 'Хід <span class="pi-accent">будівництва</span>',
-        blAll: 'Усі записи',
-        blD1: 'липня 2026', blD2: 'червня 2026', blD3: 'травня 2026',
-        blT1: 'Встановлення освітлення в будинках 2 черги та закінчення будівництва будинку для капібар',
-        blT2: 'Фундамент ресторану, СПА і івент-холу закінчений! Активні роботи на 2 та 3 чергах',
-        blT3: 'Підготовка під заливку фундаменту для ресторана, СПА та івент-холу',
-        piUnit1: 'га', piUnit4: 'м²',
-        piCard1: 'Території комплексу',
-        piCard2: 'Котеджів у складі комплексу',
-        piCard4: 'Інфраструктури комплексу',
-        ctaText: 'Отримати пропозицію',
-        ctaCircle: 'Отримати<br>пропозицію',
-        showcaseTitle: 'Ми відповідаємо за',
-        showcaseSub: 'Локація, ринок, концепція, інфраструктура та сервіс — повний цикл реалізації проєкту.',
-        sc1Title: 'Аналіз',
-        sc1Desc: 'Локація, ринок та майбутня аудиторія.',
-        sc2Title: 'Концепція та девелопмент',
-        sc2Desc: 'Позиціонування, продукт, проєктування, будівництво та реалізація.',
-        sc3Title: 'Інфраструктура та управління',
-        sc3Desc: 'Створення просторів і сервісів, підготовка комплексу до запуску та професійне управління',
-        sc4Title: 'Робота з інвесторами',
-        sc4Desc: "Супровід від вибору об'єкта до отримання доходу.",
-
-        mfBadge: '[ ПРО MANDRA INVEST ]',
-        mfPart1: 'Від ідеї — до працюючого',
-        mfPart1b: 'готельного продукту',
-        mfPart2: 'Mandra Invest — відділ продажу дохідних готельних проєктів девелопера Mandra Moments',
-        mfPart3: 'Ми представляємо інвестиційні',
-        mfPart3b: 'проєкти у сфері гостинності',
-        mfPart4: "та супроводжуємо інвестора на всіх етапах — від вибору об'єкта та ознайомлення з фінансовою моделлю до придбання нерухомості",
-        mfPart5: '.',
-        mfCap1Tip: 'A-frame шале Mandra з чаном',
-        mfCap2Tip: 'Засновники та партнери Ribas Hotels',
-        mfCap3Tip: 'Інвестиційні проєкти Mandra',
-        mfCap4Tip: 'Супровід інвестора та дохідність',
-        mfFooterTitle: 'Ми відповідаємо за:',
-        mfP1Name: 'Аналіз',
-        mfP1Desc: 'Локація, ринок та майбутня аудиторія',
-        mfP2Name: 'Концепція та девелопмент',
-        mfP2Desc: 'Позиціювання, проєкт, проєктування та реалізація',
-        mfP3Name: 'Інфраструктура та управління',
-        mfP3Desc: 'Створення просторів, запуск і готельний оператор',
-        mfP4Name: 'Робота з інвесторами',
-        mfP4Desc: "Супровід від вибору об'єкта до стабільного доходу",
-
-        /* ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ */
-        stTitleMain: 'Mandra Invest', stTitleBreak: 'в цифрах',
-        stDesc: 'Наша робота — це прозорість, високі темпи реалізації та гарантована дохідність для інвесторів. Показники поруч демонструють реальну динаміку розвитку компанії та стабільний попит на наші проєкти.',
-        stCtaText: 'Дізнатися більше',
-        st1Text: 'Загальний номерний фонд',
-        st2Text: 'Mandra Moments на ринку девелопменту',
-        st4Text: 'Реалізованих проєктів від девелопера Mandra Moments',
-        st5Text: 'Інвесторів які стали партнерами проєкту',
-
-        /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
-        mpEyebrow: 'МАСШТАБ MANDRA PETRICHOR',
-        mpTitle: 'Масштаб <span class="pi-accent">Mandra Petrichor</span>',
-        mpSubtitle: 'Один комплекс. Три різні концепції відпочинку.',
-        mpDesc: 'Mandra Petrichor — заміський комплекс у сосновому лісі поблизу Києва, що розвивається як єдина територія з трьома окремими концепціями. Кожна черга орієнтована на свою аудиторію та створює власний сценарій відпочинку. Разом вони формують масштабний комплекс із різними причинами для поїздки протягом року.',
-        mpPhaseNum: 'III черга',
-        mpPhaseTitle: 'Місце для найкращих побачень',
-        mpPhaseDesc: 'Adults Only концепція для пар, приватного відпочинку та нових спільних вражень.',
-        mpPhaseCount: '41 котедж',
-        mpCursorLabel: 'Дивитись ближче',
-        mpPhL1: 'SPA-комплекс', mpPhL2: 'ресторан', mpPhL3: 'event hall',
-        mpPhL4: 'простори для побачень', mpPhL5: 'вілли для двох',
-        mpM1Lbl: 'території комплексу',
-        mpM2Lbl: 'черги з окремими концепціями',
-        mpM3Lbl: 'котедж у межах єдиного комплексу',
-        mpTabAll: '✦ Всі черги',
-        mpTab1: '01 • I черга (Ареал спокою)',
-        mpTab2: '02 • II черга (Для батьків)',
-        mpTab3: '03 • III черга (Місце для побачень)',
-        mpDivideBtnText: 'Розділити на 3 комплекси',
-        /* ЕКРАН 6 — ПАРТНЕРИ */
-        partnersTitle: 'Партнери <span class="pi-accent">Mandra Invest</span>',
-        /* ЕКРАН 7 — ЗАСНОВНИКИ */
-        foundersHeroText: 'Власний інвестиційний проєкт від засновників <span class="pi-accent">Mandra Moments</span> та <span class="pi-accent">Ribas&nbsp;Hotels&nbsp;Group</span>',
-        founderName1: 'Артур Лупашко',
-        founderRole1: 'Засновник Ribas Hotels Group і співзасновник Mandra Moments',
-        founderName2: 'Сергій Боєв',
-        founderRole2: 'Співзасновник Mandra Moments',
-        /* ЕКРАН 8 — СИНЕРГІЯ (ДЕВЕЛОПЕР + ОПЕРАТОР + ІНВЕСТОР) */
-        synergyTitle: 'Як ми <span class="pi-accent">взаємодіємо</span>',
-        synDevTitle: 'Mandra Moments',
-        synDevSubtitle: 'Девелопер',
-        synDev1: 'Концепція',
-        synDev2: 'Реалізація проєкту',
-        synDev3: 'Будівництво',
-        synDev4: 'Розвиток території',
-        synDev5: 'Робота з інвесторами',
-        synRibasTitle: 'Ribas Hotels Group',
-        synRibasSubtitle: 'Готельне управління',
-        synRibas1: 'Операційна модель',
-        synRibas2: 'Стандарти сервісу',
-        synRibas3: 'Продажі та маркетинг',
-        synRibas4: 'Управління комплексом',
-        synRibas5: 'Фінансова результативність',
-        synInvBadge: 'ІНВЕСТОР',
-        synInvSubtag: 'ФІНАНСОВА МОДЕЛЬ',
-        synInvAmount: 'до 35 892 $',
-        synInvPeriod: '/ на рік',
-        synInvLabel: 'Стабільний прогнозований прибуток інвестора з щоквартальними виплатами',
-        /* ЕКРАН 9 — ПЕРША ЧЕРГА MANDRA PETRICHOR (NUMO STYLE) */
-        ph1Badge: '[ ДІЮЧИЙ КУРОРТ ]',
-        ph1TitleOlive: 'Перша черга Mandra Petrichor',
-        ph1TitleWhite: 'уже працює',
-        ph1Lead: 'Перша черга введена в експлуатацію, приймає гостей і всі котеджі продані та працюють у складі єдиного готельного комплексу. Це вже діючий продукт із командою, сервісом, інфраструктурою та реальним досвідом гостей. Досвід першої черги дозволяє нам вдосконалювати сервіс, аналізувати попит і створювати наступні черги як продовження єдиної концепції Mandra Petrichor.',
-        ph1M1Val: '20',
-        ph1M1Desc: 'котеджів у діючій першій черзі',
-        ph1M2Val: '100%',
-        ph1M2Desc: 'котеджів продано',
-        ph1M3Val: '3 298',
-        ph1M3Desc: 'вже прийняв комплекс',
-        ph1M4Val: '25%',
-        ph1M4Desc: 'повторних бронювань',
-        ph1GoogleVal: '1 200',
-        ph1GoogleSub: 'відгуків Google • 4.9 ★',
-        ph1BookingVal: '125',
-        ph1PlayLabel: 'Відео з відкриття першої черги',
-        phaseCapText1: 'Переглянути діючий комплекс',
-        phaseCapText2: 'Перейти до II черги',
-        phaseCapText3: 'Перейти до III черги',
-        /* ЕКРАН 10 — ВАШ ШЛЯХ ІНВЕСТОРА (6 КРОКІВ) */
-        investFlowTitleLine1: 'ВАШ ШЛЯХ ІНВЕСТОРА:',
-        investFlowTitleLine2: 'ВІД ПРИДБАННЯ ДО ДОХОДУ',
-        investFlowLead: 'Як працює інвестування з Mandra: від вибору нерухомості до стабільного отримання щоквартального доходу.',
-        investFlowCtaText: 'Дізнатися більше про умови інвестування',
-        stepBadge1: 'Крок 1',
-        stepTitle1: 'Від вибору об\'єкту до підписання договору.',
-        stepDesc1: 'Ми підбираємо оптимальну пропозицію під вашу інвестиційну ціль та забезпечуємо повний супровід угоди.',
-        stepBadge2: 'Крок 2',
-        stepTitle2: 'Оплачуєте — одразу або в розтермінування.',
-        stepDesc2: 'Обирайте зручний формат оплати та плануйте інвестицію у комфортному для вас темпі.',
-        stepBadge3: 'Крок 3',
-        stepTitle3: 'Реалізація проєкту та комплектація.',
-        stepDesc3: 'Девелопер відповідає за будівництво, комплектацію та підготовку об\'єкта до введення в експлуатацію.',
-        stepBadge4: 'Крок 4',
-        stepTitle4: 'Готельне управління комплексом.',
-        stepDesc4: 'Ribas Hotels Group бере на себе повний цикл управління комплексом — від операційної роботи до сервісу та контролю стандартів.',
-        stepBadge5: 'Крок 5',
-        stepTitle5: 'Контроль вашого бізнесу у смартфоні.',
-        stepDesc5: 'Застосунок Ribas Investor, аналітика та звітність у вашому смартфоні.',
-        stepBadge6: 'Крок 6',
-        stepTitle6: 'Не лише інвестиція, а й власний формат відпочинку.',
-        stepDesc6: 'Для інвестора передбачено 19 бонусних днів на рік для особистого проживання в комплексі без втрати прибутку.',
-        /* ЕКРАН 11 — НАЙЧАСТІШІ ПИТАННЯ */
-        faqTitle: 'Найчастіші <span class="pi-accent">питання</span>',
-        faqQ1: 'Де розташований Mandra Petrichor?',
-        faqA1: 'Mandra Petrichor будується у селі Забуяння Київської області, приблизно за 70 км від Києва, серед соснового лісу. Загальна територія комплексу — 9,8 га.',
-        faqQ2: 'Скільки черг передбачено в Mandra Petrichor?',
-        faqA2: 'Проєкт розвивається у трьох чергах, кожна з окремою концепцією відпочинку. I черга вже працює та приймає гостей. II та III черги наразі будуються.',
-        faqQ3: 'Коли планується завершення будівництва?',
-        faqA3: 'II черга — IV квартал 2026 року.<br>III черга — IV квартал 2027 року.',
-        faqQ4: 'Чи можна придбати будинок у розтермінування?',
-        faqA4: 'Так. Для об\'єктів II черги доступне розтермінування до кінця 2027 року, для III черги — до кінця 2028 року. Актуальні умови залежать від конкретного об\'єкта.',
-        faqQ5: 'Хто керує Mandra Petrichor?',
-        faqA5: 'Готельним управлінням комплексу займається Ribas Hotels Group — керуюча компанія відповідає за операційну діяльність, бронювання, роботу з гостями, сервіс, продажі та управління об\'єктами.',
-        faqQ6: 'Як власник отримує дохід від будинку?',
-        faqA6: 'Після введення об\'єкта в експлуатацію будинок передається в систему готельного управління та здається гостям. Дохід власника формується від фактичної роботи його об\'єкта в складі комплексу відповідно до умов договору та фінансової моделі.',
-        faqQ7: 'Як нараховуються виплати власникам?',
-        faqA7: 'Виплати розраховуються відповідно до умов договору та фактичних результатів роботи об\'єкта. На суму доходу впливають завантаження, вартість проживання, операційні витрати та інші передбачені договором показники.',
-        faqQ8: 'Чи може власник самостійно проживати у своєму будинку?',
-        faqA8: 'Так. Власник отримує 19 бонусних днів на рік для особистого відпочинку у своєму будинку. Умови та порядок використання бонусних днів визначаються договором з керуючою компанією.',
-
-        /* ЕКРАН 12 — КОНТАКТНА ФОРМА */
-        contactsTitle: 'Потрібна <span class="pi-accent">консультація?</span>',
-        contactsSubtitle: 'Наш консультант надасть вам безкоштовну допомогу',
-        lblContactName: "Ваше ім'я",
-        lblContactPhone: 'Ваш номер телефону',
-        lblContactComment: 'Ваш коментар',
-        txtContactSubmit: 'Отримати консультацію',
-        contactsGuaranteeText: 'Конфіденційність гарантовано • Відповідаємо протягом 10 хвилин',
-        consultantStatusText: "Зараз на зв'язку",
-        consultantName: 'Іллона Омельченко',
-        consultantRole: 'Провідний інвестиційний експерт',
-
-        /* ФУТЕР (NUMO STYLE) */
-        footerScrollTopText: 'ВГОРУ',
-        footerCol1Title: 'Mandra Invest',
-        fnAbout: 'Про Mandra Invest',
-        fnMap: 'Інтерактивна мапа',
-        fnPetrichor: 'Mandra Petrichor',
-        fnPhase2: 'II черга',
-        fnPhase3: 'III черга',
-        fnBuild: 'Хід будівництва',
-        fnFaq: 'FAQ',
-        fnContacts: 'Контакти',
-        footerCol2Title: 'Проект Mandra Petrichor',
-        footerPhoneLabel: 'Телефон',
-        footerEmailLabel: 'Email',
-        footerCopyright: '2016-2026 Mandra Invest',
-        footerCreator: 'Made in Nextweb'
-      },
-      en: {
-        navPetrichor: 'MANDRA PETRICHOR',
-        navInfra: 'INFRASTRUCTURE',
-        navMap: 'INTERACTIVE MAP',
-        navBuild: 'CONSTRUCTION',
-        navContacts: 'CONTACTS',
-        topBtn: 'Online Request',
-        headline: 'A private natural <span class="title-word-accent">resort</span> with hotel service.',
-        desc: 'Private cottages in an operating hotel complex surrounded by nature, with a projected yield of up to <strong>11.3%</strong>.',
-        heroBadge: 'Phase<br>II handover<br>this<br>year',
-        vbTitleA: 'Feel the atmosphere of the', vbTitleB: 'forest',
-        piLead: 'An operating countryside hotel complex managed by Ribas Hotels Group. The model combines the privacy of cottages with full hotel service, ensuring stable demand and high occupancy all year round.',
-        piPh1K: 'Phase I', piPh1T: 'Operating and generating income', piPh1Tag: 'Open',
-        piPh2K: 'Phases II · III', piPh2T: '81 cottages available', piPh2Tag: 'For sale',
-        piStatus: '<strong>Phase I:</strong> Already operating and generating income &nbsp;·&nbsp; <strong>Phases II–III:</strong> 81 cottages available',
-        piCtaText: 'Explore the complex',
-        piTag1: 'territory', piTag2: 'cottages', piTag4: 'infrastructure',
-        piF1: '<strong>Spa and restaurant:</strong> A driver of year-round occupancy and a high average spend',
-        piF2: 'Spa complex',
-        piF3: '<strong>Family area:</strong> Widens the audience and extends the average length of stay (LOS)',
-        piF4: '<strong>Private zones:</strong> A premium segment for high-spending guests',
-        piF5: '<strong>3 holiday concepts:</strong> 3 formats for families, couples and business guests',
-        piF6: 'Hotel management by Ribas Hotels Group',
-        whyTitle: 'What makes the project <span class="pi-accent">unique</span>',
-        why1: '<strong>Year-round income</strong> <span class="why-note">high occupancy and stable RevPAR 365 days a year</span>',
-        why2: '<strong>6 cottage types</strong> <span class="why-note">a format for any investment budget</span>',
-        why3: '<strong>Turnkey management</strong> <span class="why-note">operations and transparent reporting by Ribas&nbsp;Hotels&nbsp;Group</span>',
-        why4: '<strong>Design by YOD&nbsp;Group</strong> <span class="why-note">high average daily rate (ADR) and asset value</span>',
-        why5: '<strong>Diversified demand</strong> <span class="why-note">3 holiday formats for families, couples and business guests</span>',
-        why6: '<strong>Prime location</strong> <span class="why-note">easy logistics guarantee steady traffic</span>',
-        bsTitle: 'Construction <span class="pi-accent">stages</span>',
-        bsQ1: 'Phase I', bsN1: 'A haven of calm', bsC1: '20 cottages',
-        bsQ2: 'Phase II', bsN2: 'A space for mindful parents', bsC2: '40 cottages',
-        bsQ3: 'Phase III', bsN3: 'A place for your perfect dates', bsC3: '41 cottages',
-        blTitle: 'Construction <span class="pi-accent">progress</span>',
-        blAll: 'All updates',
-        blD1: 'July 2026', blD2: 'June 2026', blD3: 'May 2026',
-        blT1: 'Lighting installed in the phase II cabins and the capybara house completed',
-        blT2: 'Foundation of the restaurant, spa and event hall finished. Active works on phases II and III',
-        blT3: 'Ground prepared for the foundation pour of the restaurant, spa and event hall',
-        piUnit1: 'ha', piUnit4: 'm²',
-        piCard1: 'Hectares of the complex',
-        piCard2: 'Cottages within the complex',
-        piCard4: 'Of infrastructure',
-        ctaText: 'Get an offer',
-        ctaCircle: 'Get an<br>offer',
-        showcaseTitle: 'We are responsible for',
-        showcaseSub: 'Location, market, concept, infrastructure and service — complete project delivery lifecycle.',
-        sc1Title: 'Analysis',
-        sc1Desc: 'Location, market dynamics and future target audience.',
-        sc2Title: 'Concept & Development',
-        sc2Desc: 'Positioning, product vision, engineering, construction and execution.',
-        sc3Title: 'Infrastructure & Management',
-        sc3Desc: 'Creating spaces and services, pre-launch preparation and professional hospitality management',
-        sc4Title: 'Investor Relations',
-        sc4Desc: 'Comprehensive guidance from asset selection to ongoing dividend yield.',
-
-        mfBadge: '[ ABOUT MANDRA INVEST ]',
-        mfPart1: 'From vision to a thriving',
-        mfPart1b: 'hospitality product',
-        mfPart2: 'Mandra Invest is the official investment division of developer Mandra Moments',
-        mfPart3: 'We curate high-yield investment',
-        mfPart3b: 'hospitality projects in the Carpathians',
-        mfPart4: 'and support investors through every milestone — from asset selection and financial modeling to final acquisition',
-        mfPart5: '.',
-        mfCap1Tip: 'Mandra A-frame chalet with hot tub',
-        mfCap2Tip: 'Founders & Ribas Hotels partners',
-        mfCap3Tip: 'Mandra investment projects',
-        mfCap4Tip: 'Investor advisory & yield',
-        mfFooterTitle: 'We are responsible for:',
-        mfP1Name: 'Analysis',
-        mfP1Desc: 'Location, market dynamics & future demographics',
-        mfP2Name: 'Concept & Development',
-        mfP2Desc: 'Architecture, engineering & turnkey execution',
-        mfP3Name: 'Hospitality & Management',
-        mfP3Desc: 'Resort spaces & Ribas Hotels Group operations',
-        mfP4Name: 'Investor Advisory',
-        mfP4Desc: 'Full guidance from selection to passive dividends',
-
-        /* ЕКРАН 4 — МАНДРА ІНВЕСТ В ЦИФРАХ */
-        stTitleMain: 'Mandra Invest', stTitleBreak: 'in Numbers',
-        stDesc: 'Our work embodies transparency, high implementation pace, and guaranteed returns for investors. The adjacent metrics demonstrate the dynamic company growth and steady demand for our developments.',
-        stCtaText: 'Learn More',
-        st1Text: 'Total room stock',
-        st2Text: 'Mandra Moments on the development market',
-        st4Text: 'Completed projects by developer Mandra Moments',
-        st5Text: 'Investors who became project partners',
-
-        /* ЕКРАН 5 — МАНДРА ПЕТРІКОР */
-        mpEyebrow: 'SCALE OF MANDRA PETRICHOR',
-        mpTitle: 'Scale of <span class="pi-accent">Mandra Petrichor</span>',
-        mpSubtitle: 'One complex. Three distinct vacation concepts.',
-        mpDesc: 'Mandra Petrichor is an expansive country resort in a pine forest near Kyiv, developing as a unified territory with three independent concepts. Each phase is tailored to its distinct audience and creates its own vacation storyline. Together they forge an all-season destination resort.',
-        mpPhaseNum: 'Phase III',
-        mpPhaseTitle: 'A place for the finest dates',
-        mpPhaseDesc: 'An Adults Only concept for couples, private retreats and new shared experiences.',
-        mpPhaseCount: '41 cottages',
-        mpCursorLabel: 'Take a closer look',
-        mpPhL1: 'SPA complex', mpPhL2: 'restaurant', mpPhL3: 'event hall',
-        mpPhL4: 'date spaces', mpPhL5: 'villas for two',
-        mpM1Lbl: 'resort territory',
-        mpM2Lbl: 'phases with distinct concepts',
-        mpM3Lbl: 'cottages across one ecosystem',
-        mpTabAll: '✦ All Phases',
-        mpTab1: '01 • Phase I (Haven of Serenity)',
-        mpTab2: '02 • Phase II (Conscious Parents)',
-        mpTab3: '03 • Phase III (Best Dates & SPA)',
-        mpDivideBtnText: 'Divide into 3 Complexes',
-        /* SCREEN 6 — PARTNERS */
-        partnersTitle: '<span class="pi-accent">Mandra Invest</span> Partners',
-        /* SCREEN 7 — FOUNDERS */
-        foundersHeroText: 'Proprietary investment project from the founders of <span class="pi-accent">Mandra Moments</span> &amp; <span class="pi-accent">Ribas&nbsp;Hotels&nbsp;Group</span>',
-        founderName1: 'Artur Lupashko',
-        founderRole1: 'Founder of Ribas Hotels Group & Co-founder of Mandra Moments',
-        founderName2: 'Serhiy Boiev',
-        founderRole2: 'Co-founder of Mandra Moments',
-        /* SCREEN 8 — SYNERGY (DEVELOPER + OPERATOR + INVESTOR) */
-        synergyTitle: 'How we <span class="pi-accent">work together</span>',
-        synDevTitle: 'Mandra Moments',
-        synDevSubtitle: 'Developer',
-        synDev1: 'Concept',
-        synDev2: 'Project Implementation',
-        synDev3: 'Turnkey Construction',
-        synDev4: 'Territory Development',
-        synDev5: 'Investor Relations',
-        synRibasTitle: 'Ribas Hotels Group',
-        synRibasSubtitle: 'Hospitality Management',
-        synRibas1: 'Operating Model',
-        synRibas2: 'Service Standards',
-        synRibas3: 'Sales & Marketing',
-        synRibas4: 'Resort Management',
-        synRibas5: 'Financial Performance',
-        synInvBadge: 'INVESTOR',
-        synInvSubtag: 'FINANCIAL MODEL',
-        synInvAmount: 'up to $35,892',
-        synInvPeriod: '/ per year',
-        synInvLabel: 'Predictable high-yield investor returns with quarterly FX payouts',
-        /* SCREEN 9 — PHASE I MANDRA PETRICHOR (NUMO STYLE) */
-        ph1Badge: '[ OPERATIONAL RESORT ]',
-        ph1TitleOlive: 'Phase I Mandra Petrichor',
-        ph1TitleWhite: 'is already operational',
-        ph1Lead: 'Phase I has been commissioned, is welcoming guests, and every cottage is sold and operating within one integrated resort complex. This is already an active product — with a team, service, infrastructure, and real guest experience. The experience of Phase I lets us refine service, read real demand, and build the next phases as a continuation of one Mandra Petrichor concept.',
-        ph1M1Val: '20',
-        ph1M1Desc: 'cottages in active operation',
-        ph1M2Val: '100%',
-        ph1M2Desc: 'cottages sold out',
-        ph1M3Val: '3,298',
-        ph1M3Desc: 'guests hosted to date',
-        ph1M4Val: '25%',
-        ph1M4Desc: 'repeat bookings rate',
-        ph1GoogleVal: '1,200',
-        ph1GoogleSub: 'Google reviews • 4.9 ★',
-        ph1PlayLabel: 'Watch Resort Video',
-        phaseCapText1: 'Explore Operative Complex',
-        phaseCapText2: 'Go to Phase II',
-        phaseCapText3: 'Go to Phase III',
-        /* SCREEN 10 — INVESTOR JOURNEY (6 STEPS) */
-        investFlowTitleLine1: 'YOUR INVESTOR JOURNEY:',
-        investFlowTitleLine2: 'FROM ACQUISITION TO REVENUE',
-        investFlowLead: 'How investing with Mandra works: from property selection to steady quarterly dividend distributions.',
-        investFlowCtaText: 'Learn more about investment terms',
-        stepBadge1: 'Step 1',
-        stepTitle1: 'From choosing a property to signing the contract.',
-        stepDesc1: 'We select the optimal offer for your investment goal and provide full support throughout the deal.',
-        stepBadge2: 'Step 2',
-        stepTitle2: 'Payment — lump sum or structured installment.',
-        stepDesc2: 'Choose a convenient payment format and plan your investment at a pace that\'s comfortable for you.',
-        stepBadge3: 'Step 3',
-        stepTitle3: 'Project realization and turn-key outfitting.',
-        stepDesc3: 'The developer handles full construction, utility engineering, and commissioning readiness.',
-        stepBadge4: 'Step 4',
-        stepTitle4: 'Professional hotel management.',
-        stepDesc4: 'Ribas Hotels Group takes on the full cycle of managing the complex — from day-to-day operations to service and standards control.',
-        stepBadge5: 'Step 5',
-        stepTitle5: 'Control your business from your smartphone.',
-        stepDesc5: 'The Ribas Investor app gives you analytics and reporting right on your smartphone.',
-        stepBadge6: 'Step 6',
-        stepTitle6: 'Not just an investment, but your own way to vacation.',
-        stepDesc6: 'Investors get 19 bonus days a year for personal stays at the complex without losing any profit.',
-        /* SCREEN 11 — FAQ ACCORDION */
-        faqTitle: 'Frequently Asked <span class="pi-accent">Questions</span>',
-        faqQ1: 'Where is Mandra Petrichor located?',
-        faqA1: 'Mandra Petrichor is being built in the village of Zabuiannia, Kyiv region, about 70 km from Kyiv, in a pine forest. The complex covers 9.8 hectares.',
-        faqQ2: 'How many phases does Mandra Petrichor have?',
-        faqA2: 'The project is developing in three phases, each with its own leisure concept. Phase I is already operating and welcoming guests. Phases II and III are under construction.',
-        faqQ3: 'When is construction due to finish?',
-        faqA3: 'Phase II — Q4 2026.<br>Phase III — Q4 2027.',
-        faqQ4: 'Can a cottage be bought in instalments?',
-        faqA4: 'Yes. Instalments are available until the end of 2027 for phase II properties and until the end of 2028 for phase III. The exact terms depend on the particular property.',
-        faqQ5: 'Who manages Mandra Petrichor?',
-        faqA5: 'Hotel management is handled by Ribas Hotels Group — the management company is responsible for operations, bookings, guest relations, service, sales and property management.',
-        faqQ6: 'How does an owner earn income from a cottage?',
-        faqA6: 'Once commissioned, the cottage enters the hotel management system and is rented out to guests. The owner\'s income comes from the actual performance of their property within the complex, under the terms of the contract and the financial model.',
-        faqQ7: 'How are payouts to owners calculated?',
-        faqA7: 'Payouts are calculated under the terms of the contract and the actual performance of the property. Occupancy, room rates, operating costs and other indicators set out in the contract all affect the amount.',
-        faqQ8: 'Can an owner stay in their own cottage?',
-        faqA8: 'Yes. An owner receives 19 bonus nights a year for personal stays in their own cottage. The terms and the booking procedure are set out in the contract with the management company.',
-
-        /* SCREEN 12 — CONTACT FORM */
-        contactsTitle: 'Need a <span class="pi-accent">Consultation?</span>',
-        contactsSubtitle: 'Our personal advisor will provide dedicated guidance free of charge',
-        lblContactName: 'Your Name',
-        lblContactPhone: 'Your Phone Number',
-        lblContactComment: 'Your Comment',
-        txtContactSubmit: 'Get Consultation',
-        contactsGuaranteeText: 'Privacy guaranteed • We respond within 10 minutes',
-        consultantStatusText: 'Online Now',
-        consultantName: 'Illona Omelchenko',
-        consultantRole: 'Lead Investment Expert',
-
-        /* FOOTER (NUMO STYLE) */
-        footerScrollTopText: 'TOP',
-        footerCol1Title: 'Mandra Invest',
-        fnAbout: 'About Mandra Invest',
-        fnMap: 'Interactive Map',
-        fnPetrichor: 'Mandra Petrichor',
-        fnPhase2: 'Phase II',
-        fnPhase3: 'Phase III',
-        fnBuild: 'Construction Timeline',
-        fnFaq: 'FAQ',
-        fnContacts: 'Contacts',
-        footerCol2Title: 'Project Mandra Petrichor',
-        footerPhoneLabel: 'Phone',
-        footerEmailLabel: 'Email',
-        footerCopyright: '2016-2026 Mandra Invest',
-        footerCreator: 'Made in Nextweb'
-      }
-    };
-
-    const ukFlagSvg = `<svg viewBox="0 0 60 40" preserveAspectRatio="xMidYMid slice"><rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l30 20M60 40L30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, -1)"/><path d="M60 0L30 20M0 40l30 20" stroke="#C8102E" stroke-width="2.6" transform="translate(0, 1)"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/></svg>`;
-    const uaFlagSvg = `<svg viewBox="0 0 60 40" preserveAspectRatio="xMidYMid slice"><rect width="60" height="20" fill="#0057B7"/><rect y="20" width="60" height="20" fill="#FFD700"/></svg>`;
-
-    let currentLang = 'ua';
-
     function toggleLanguage() {
       setLanguage(currentLang === 'ua' ? 'en' : 'ua');
     }
@@ -10029,7 +8698,6 @@
       }
       document.getElementById('btnTopAction').textContent = t.topBtn;
       document.getElementById('heroMainHeadline').innerHTML = t.headline;
-      document.getElementById('inpMainHeadline').value = t.headline.replace(/<[^>]*>/g, '');
       document.getElementById('heroMainDesc').innerHTML = t.desc;   /* рядок наш, з <strong> для 11,3% */
       ['faqA1', 'faqA2', 'faqA3', 'faqA4', 'faqA5', 'faqA6', 'faqA7', 'faqA8'].forEach(function (id) {
         const el = document.getElementById(id);
@@ -10039,21 +8707,12 @@
       if (whyTitleEl && t.whyTitle) whyTitleEl.innerHTML = t.whyTitle;
       const badgeText = document.getElementById('heroReleaseBadgeText');
       if (badgeText && t.heroBadge) badgeText.innerHTML = t.heroBadge;
-      document.getElementById('inpMainDesc').value = t.desc.replace(/<[^>]*>/g, '');
 
       // Update CTA buttons
       const numoPill = document.querySelector('#btnStyleNumo .action-pill');
       if (numoPill) numoPill.textContent = t.ctaText;
       const numoBtn = document.getElementById('btnStyleNumo');
       if (numoBtn) numoBtn.setAttribute('aria-label', t.ctaText);
-      const circleText = document.querySelector('#btnStyleCircle .circle-text');
-      if (circleText) circleText.innerHTML = t.ctaCircle;
-      const squareText = document.querySelector('#btnStyleSquare span:first-child');
-      if (squareText) squareText.textContent = t.ctaText;
-      const softText = document.querySelector('#btnStyleSoft span:first-child');
-      if (softText) softText.textContent = t.ctaText;
-      const glassText = document.querySelector('#btnStyleGlass span:first-child');
-      if (glassText) glassText.textContent = t.ctaText;
 
       /* --- ЕКРАН 2, 3, 4, 5 текстові поля --- */
       const s2 = ['showcaseTitle','showcaseSub','sc1Title','sc1Desc','sc2Title','sc2Desc',
@@ -10152,220 +8811,6 @@
     }
 
     /* Text & Font Handlers */
-    function setMainHeadline(val) {
-      const cleanVal = val.replace(/<[^>]*>/g, '');
-      const formatted = cleanVal.replace(/\b(resort)\b/i, '<span class="title-word-accent">$1</span>');
-      document.getElementById('heroMainHeadline').innerHTML = formatted;
-      saveSettings();
-    }
-    function setMainDesc(val) {
-      document.getElementById('heroMainDesc').textContent = val;
-      saveSettings();
-    }
-
-    function setHeadlineFont(fontName, fallback, el) {
-      document.querySelectorAll('#headlineFontGrid .f-card').forEach(c => c.classList.remove('active'));
-      if (el) el.classList.add('active');
-      root.style.setProperty('--title-font', `'${fontName}', ${fallback}`);
-      saveSettings();
-    }
-
-    function setSubFont(fontName, fallback, el) {
-      document.querySelectorAll('#subheadlineFontGrid .f-card').forEach(c => c.classList.remove('active'));
-      if (el) el.classList.add('active');
-      root.style.setProperty('--sub-font', `'${fontName}', ${fallback}`);
-      saveSettings();
-    }
-
-    function searchFonts(query, gridId) {
-      const q = query.toLowerCase().trim();
-      document.querySelectorAll(`#${gridId} .f-card`).forEach(card => {
-        const name = (card.getAttribute('data-font') || '').toLowerCase();
-        card.style.display = name.includes(q) ? 'block' : 'none';
-      });
-    }
-
-    function updateVar(cssVar, value, labelId) {
-      root.style.setProperty(cssVar, value);
-      if (labelId) document.getElementById(labelId).textContent = value;
-      clearTimeout(window._saveTimer);
-      window._saveTimer = setTimeout(saveSettings, 500);
-    }
-
-    function saveSettings() {
-      const activeStyleCard = document.querySelector('.style-card.active');
-      const activeHeadlineFx = document.querySelector('#headlineFxGrid .fx-btn.active');
-      const activeSubFx = document.querySelector('#subheadlineFxGrid .fx-btn.active');
-
-      const state = {
-        btnStyle: activeStyleCard ? activeStyleCard.getAttribute('data-style') : 'numo',
-        btnPosX: document.getElementById('rngBtnPosX').value,
-        btnPosY: document.getElementById('rngBtnPosY').value,
-        btnScale: document.getElementById('rngBtnScale').value,
-        headlineText: document.getElementById('inpMainHeadline').value,
-        headlineFx: activeHeadlineFx ? activeHeadlineFx.getAttribute('onclick').match(/'(.*?)'/)[1] : 'fx-solid',
-        headlineFont: root.style.getPropertyValue('--title-font') || "'Unbounded', sans-serif",
-        headlineSize: document.getElementById('rngTitleSize').value,
-        headlineWeight: document.getElementById('rngTitleWeight').value,
-        headlineLh: document.getElementById('rngTitleLh').value,
-        headlineLs: document.getElementById('rngTitleLs').value,
-        headlineMaxW: document.getElementById('rngTitleMaxW').value,
-        headlineX: document.getElementById('rngTitleX').value,
-        headlineY: document.getElementById('rngTitleY').value,
-        subText: document.getElementById('inpMainDesc').value,
-        subFx: activeSubFx ? activeSubFx.getAttribute('onclick').match(/'(.*?)'/)[1] : 'fx-solid',
-        subFont: root.style.getPropertyValue('--sub-font') || "'Manrope', sans-serif",
-        subSize: document.getElementById('rngSubSize').value,
-        subWeight: document.getElementById('rngSubWeight').value,
-        subLh: document.getElementById('rngSubLh').value,
-        subLs: document.getElementById('rngSubLs').value,
-        subMaxW: document.getElementById('rngSubMaxW').value,
-        subOpacity: document.getElementById('rngSubOpacity').value,
-        subX: document.getElementById('rngSubX').value,
-        subY: document.getElementById('rngSubY').value
-      };
-      localStorage.setItem('mandra_hero_state_v2', JSON.stringify(state));
-      const btn = document.querySelector('.btn-drawer-action.save');
-      if (btn) {
-        btn.textContent = '✓ Зафіксовано!';
-        setTimeout(() => btn.textContent = '💾 Зафіксувати', 1500);
-      }
-    }
-
-    function loadSettings() {
-      const saved = localStorage.getItem('mandra_hero_state_v2');
-      if (!saved) {
-        setButtonStyle('numo', document.querySelector('.style-card[data-style="numo"]'));
-        setButtonPosition('15vw', '71vh');
-        return;
-      }
-      try {
-        const s = JSON.parse(saved);
-        // За замовчуванням кнопка зліва під текстом (NUMO стиль), як зафіксовано користувачем
-        let styleToSet = s.btnStyle || 'numo';
-        let posX = s.btnPosX || '15';
-        let posY = s.btnPosY || '71';
-
-        if (styleToSet === 'circle' && (posX === '3.5' || posX === '3.6')) {
-          styleToSet = 'numo';
-          posX = '76';
-          posY = '80';
-        }
-
-        const card = document.querySelector(`.style-card[data-style="${styleToSet}"]`);
-        setButtonStyle(styleToSet, card);
-        setButtonPosition(posX + 'vw', posY + 'vh');
-
-        if (s.btnScale) {
-          updateVar('--btn-scale', s.btnScale, 'valBtnScale');
-          document.getElementById('rngBtnScale').value = s.btnScale;
-        }
-
-        if (s.headlineFx) {
-          const btn = Array.from(document.querySelectorAll('#headlineFxGrid .fx-btn')).find(b => b.getAttribute('onclick').includes(s.headlineFx));
-          setHeadlineEffect(s.headlineFx, btn);
-        }
-        if (s.headlineFont) {
-          root.style.setProperty('--title-font', s.headlineFont);
-          const fName = s.headlineFont.replace(/'/g, '').split(',')[0].trim();
-          document.querySelectorAll('#headlineFontGrid .f-card').forEach(c => {
-            c.classList.toggle('active', c.getAttribute('data-font') === fName);
-          });
-        }
-        if (s.headlineSize && parseFloat(s.headlineSize) >= 3.0) {
-          updateVar('--title-size', s.headlineSize + 'vw', 'valTitleSize');
-          document.getElementById('rngTitleSize').value = s.headlineSize;
-        } else {
-          updateVar('--title-size', '3.6vw', 'valTitleSize');
-          document.getElementById('rngTitleSize').value = '3.6';
-        }
-        if (s.headlineWeight) {
-          updateVar('--title-weight', s.headlineWeight, 'valTitleWeight');
-          document.getElementById('rngTitleWeight').value = s.headlineWeight;
-        }
-        if (s.headlineLh) {
-          updateVar('--title-lh', s.headlineLh, 'valTitleLh');
-          document.getElementById('rngTitleLh').value = s.headlineLh;
-        }
-        if (s.headlineLs) {
-          updateVar('--title-ls', s.headlineLs + 'em', 'valTitleLs');
-          document.getElementById('rngTitleLs').value = s.headlineLs;
-        }
-        if (s.headlineMaxW) {
-          updateVar('--title-max-w', s.headlineMaxW + 'vw', 'valTitleMaxW');
-          document.getElementById('rngTitleMaxW').value = s.headlineMaxW;
-        }
-        if (s.headlineX) {
-          updateVar('--title-x', s.headlineX + 'vw', 'valTitleX');
-          document.getElementById('rngTitleX').value = s.headlineX;
-        }
-        if (s.headlineY) {
-          updateVar('--title-y', s.headlineY + 'vh', 'valTitleY');
-          document.getElementById('rngTitleY').value = s.headlineY;
-        }
-
-        if (s.subFx) {
-          const btn = Array.from(document.querySelectorAll('#subheadlineFxGrid .fx-btn')).find(b => b.getAttribute('onclick').includes(s.subFx));
-          setSubEffect(s.subFx, btn);
-        }
-        if (s.subFont) {
-          root.style.setProperty('--sub-font', s.subFont);
-          const fName = s.subFont.replace(/'/g, '').split(',')[0].trim();
-          document.querySelectorAll('#subheadlineFontGrid .f-card').forEach(c => {
-            c.classList.toggle('active', c.getAttribute('data-font') === fName);
-          });
-        }
-        /* розмір і ширина підзаголовка — лише з CSS: збережений стан у
-           браузері перебивав зміни, внесені в код */
-        if (s.subWeight) {
-          updateVar('--sub-weight', s.subWeight, 'valSubWeight');
-          document.getElementById('rngSubWeight').value = s.subWeight;
-        }
-        if (s.subLh) {
-          updateVar('--sub-lh', s.subLh, 'valSubLh');
-          document.getElementById('rngSubLh').value = s.subLh;
-        }
-        if (s.subLs) {
-          updateVar('--sub-ls', s.subLs + 'em', 'valSubLs');
-          document.getElementById('rngSubLs').value = s.subLs;
-        }
-        if (s.subOpacity) {
-          updateVar('--sub-opacity', s.subOpacity, 'valSubOpacity');
-          document.getElementById('rngSubOpacity').value = s.subOpacity;
-        }
-        if (s.subX) {
-          updateVar('--sub-x', s.subX + 'vw', 'valSubX');
-          document.getElementById('rngSubX').value = s.subX;
-        }
-        if (s.subY) {
-          updateVar('--sub-y', s.subY + 'vh', 'valSubY');
-          document.getElementById('rngSubY').value = s.subY;
-        }
-      } catch (e) {
-        console.error('Failed to load settings:', e);
-      }
-    }
-
-    function resetAll() {
-      localStorage.removeItem('mandra_hero_state_v2');
-      location.reload();
-    }
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeInspector();
-      if ((e.key === 'h' || e.key === 'H') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') toggleCleanMode();
-    });
-
-    // Close drawer when clicking anywhere outside it on the screen
-    document.addEventListener('click', (e) => {
-      if (drawer.classList.contains('open') &&
-          !drawer.contains(e.target) &&
-          !document.getElementById('sideInspectorTab').contains(e.target)) {
-        closeInspector();
-      }
-    });
-
-    loadSettings();
 
     // Top navbar scroll styling (deepens glass background and shadow on scroll)
     (function initTopNavbarScroll() {
